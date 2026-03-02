@@ -149,37 +149,6 @@ function initializeTables() {
       ]);
     }
     stmt.free();
-
-    // Seed demo players
-    const playersResult = db.exec("SELECT COUNT(*) as count FROM user_profiles");
-    const playersCount = playersResult.length > 0 ? playersResult[0].values[0][0] : 0;
-    
-    if (playersCount === 0) {
-      const demoPlayers = [
-        { id: "demo-1", user_id: "demo-p1", name: "Ahmed Raza", city: "Lahore", level: 4.0, play_type: "Doubles", bio: "Looking for doubles tonight 🎾", age: 28, gender: "M", wins: 34, losses: 12 },
-        { id: "demo-2", user_id: "demo-p2", name: "Sara Khan", city: "Karachi", level: 3.5, play_type: "Both", bio: "Anyone for a 7 AM rally? ☀️", age: 24, gender: "F", wins: 18, losses: 8 },
-        { id: "demo-3", user_id: "demo-p3", name: "Bilal Hussain", city: "Islamabad", level: 4.5, play_type: "Singles", bio: "PTCL ranked — need tough practice matches", age: 32, gender: "M", wins: 67, losses: 23 },
-        { id: "demo-4", user_id: "demo-p4", name: "Fatima Malik", city: "Lahore", level: 3.0, play_type: "Both", bio: "Learning — patient partner please 🙏", age: 26, gender: "F", wins: 5, losses: 15 },
-        { id: "demo-5", user_id: "demo-p5", name: "Hamza Sheikh", city: "Karachi", level: 3.5, play_type: "Singles", bio: "After-office games, DHA area only", age: 22, gender: "M", wins: 22, losses: 19 },
-        { id: "demo-6", user_id: "demo-p6", name: "Zara Ahmed", city: "Islamabad", level: 4.0, play_type: "Doubles", bio: "Smash queen 👑 looking for mixed doubles", age: 29, gender: "F", wins: 31, losses: 11 },
-        { id: "demo-7", user_id: "demo-p7", name: "Usman Ali", city: "Lahore", level: 5.0, play_type: "Both", bio: "Former national circuit — serious players only", age: 35, gender: "M", wins: 120, losses: 34 },
-        { id: "demo-8", user_id: "demo-p8", name: "Ayesha Siddiqui", city: "Faisalabad", level: 3.0, play_type: "Both", bio: "Weekend warrior — free Sunday mornings", age: 23, gender: "F", wins: 8, losses: 20 },
-      ];
-
-      const playerStmt = db.prepare(`
-        INSERT INTO user_profiles (id, user_id, name, city, level, play_type, bio, age, gender, wins, losses, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `);
-
-      for (const player of demoPlayers) {
-        playerStmt.run([
-          player.id, player.user_id, player.name, player.city, player.level, player.play_type,
-          player.bio, player.age, player.gender, player.wins, player.losses, Date.now(), Date.now()
-        ]);
-      }
-      playerStmt.free();
-      console.log("Seeded demo players");
-    }
   }
 
   saveDb();
