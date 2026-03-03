@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Save, ChevronRight } from "lucide-react";
+import { Save, ChevronRight, ChevronLeft, User, MapPin, Trophy, MessageCircle } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cities } from "@/data";
 import { useSession } from "@/lib/auth/client";
-import { getProfile, updateProfile } from "@/lib/api";
+import { updateProfile } from "@/lib/api";
 
 const LEVEL_LABELS: Record<number, string> = {
   2.5: "Beginner",
@@ -16,6 +16,12 @@ const LEVEL_LABELS: Record<number, string> = {
   4.5: "Expert",
   5.0: "Pro",
 };
+
+const STEPS = [
+  { id: 1, title: "Profile", icon: User, description: "Basic info" },
+  { id: 2, title: "Level", icon: Trophy, description: "Your skill" },
+  { id: 3, title: "About", icon: MessageCircle, description: "Bio" },
+];
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -63,7 +69,7 @@ export default function OnboardingPage() {
   if (isPending) {
     return (
       <div className="min-h-dvh bg-background flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-brand border-t-transparent rounded-full animate-spin" />
+        <div className="w-10 h-10 border-4 border-lime-400 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -72,16 +78,32 @@ export default function OnboardingPage() {
 
   return (
     <div className="min-h-dvh bg-background flex flex-col">
-      {/* Progress */}
-      <div className="px-6 pt-8">
-        <div className="flex items-center gap-2 mb-8">
-          {[1, 2, 3].map((s) => (
-            <div
-              key={s}
-              className={`flex-1 h-1.5 rounded-full transition-colors ${
-                s <= step ? "bg-brand" : "bg-surface-2"
-              }`}
-            />
+      {/* Header */}
+      <div className="px-6 pt-8 pb-4">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-black text-foreground">Setup Profile</h1>
+          <span className="text-sm text-muted-foreground">Step {step} of 3</span>
+        </div>
+        
+        {/* Step indicators */}
+        <div className="flex items-center gap-2">
+          {STEPS.map((s, idx) => (
+            <div key={s.id} className="flex items-center gap-2 flex-1">
+              <div
+                className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold transition-all ${
+                  step >= s.id
+                    ? "bg-lime-400 text-black"
+                    : "bg-secondary text-muted-foreground"
+                }`}
+              >
+                {step > s.id ? "✓" : idx + 1}
+              </div>
+              {idx < STEPS.length - 1 && (
+                <div className={`flex-1 h-1 rounded-full transition-colors ${
+                  step > s.id ? "bg-lime-400" : "bg-secondary"
+                }`} />
+              )}
+            </div>
           ))}
         </div>
       </div>
@@ -89,32 +111,34 @@ export default function OnboardingPage() {
       {/* Step 1: Basic Info */}
       {step === 1 && (
         <div className="px-6 flex-1">
-          <h1 className="text-2xl font-black text-white mb-2">Welcome! 🎾</h1>
-          <p className="text-muted-foreground mb-8">Let&apos;s set up your tennis profile</p>
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-foreground mb-1">Welcome to Tennis Connect! 🎾</h2>
+            <p className="text-muted-foreground text-base">Let's set up your profile</p>
+          </div>
 
           <div className="space-y-5">
             <div>
-              <label className="text-sm text-muted-foreground mb-1.5 block">Your Name</label>
+              <label className="text-base font-medium text-foreground mb-2 block">Your Name</label>
               <input
                 type="text"
                 value={profile.name}
                 onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                className="w-full h-12 px-4 rounded-2xl bg-surface border border-line text-white placeholder:text-muted-foreground focus:outline-none focus:border-brand"
-                placeholder="What should we call you?"
+                className="w-full h-14 px-5 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-lime-400 text-lg"
+                placeholder="Enter your name"
               />
             </div>
 
             <div>
-              <label className="text-sm text-muted-foreground mb-1.5 block">Your City</label>
+              <label className="text-base font-medium text-foreground mb-3 block">Select City</label>
               <div className="flex gap-2 flex-wrap">
                 {cities.map((city) => (
                   <button
                     key={city}
                     onClick={() => setProfile({ ...profile, city, preferredCities: [city] })}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all ${
+                    className={`px-5 py-3 rounded-xl text-base font-semibold border-2 transition-all ${
                       profile.city === city
-                        ? "bg-brand text-black border-brand"
-                        : "bg-surface border-line text-muted-foreground"
+                        ? "bg-lime-400 text-black border-lime-400"
+                        : "bg-card border-border text-muted-foreground hover:border-lime-400/50"
                     }`}
                   >
                     {city}
@@ -124,19 +148,19 @@ export default function OnboardingPage() {
             </div>
 
             <div>
-              <label className="text-sm text-muted-foreground mb-1.5 block">Gender</label>
-              <div className="flex gap-3">
+              <label className="text-base font-medium text-foreground mb-3 block">Gender</label>
+              <div className="flex gap-4">
                 {(["M", "F"] as const).map((g) => (
                   <button
                     key={g}
                     onClick={() => setProfile({ ...profile, gender: g })}
-                    className={`flex-1 py-3 rounded-xl text-sm font-semibold border transition-all ${
+                    className={`flex-1 py-4 rounded-xl text-base font-semibold border-2 transition-all ${
                       profile.gender === g
-                        ? "bg-brand text-black border-brand"
-                        : "bg-surface border-line text-muted-foreground"
+                        ? "bg-lime-400 text-black border-lime-400"
+                        : "bg-card border-border text-muted-foreground hover:border-lime-400/50"
                     }`}
                   >
-                    {g === "M" ? "Male" : "Female"}
+                    {g === "M" ? "👨 Male" : "👩 Female"}
                   </button>
                 ))}
               </div>
@@ -148,13 +172,15 @@ export default function OnboardingPage() {
       {/* Step 2: Tennis Level */}
       {step === 2 && (
         <div className="px-6 flex-1">
-          <h1 className="text-2xl font-black text-white mb-2">Your Level</h1>
-          <p className="text-muted-foreground mb-8">Help us match you with the right players</p>
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-foreground mb-1">Your Skill Level</h2>
+            <p className="text-muted-foreground text-base">Help us match you with right players</p>
+          </div>
 
-          <div className="bg-surface border border-line rounded-2xl p-6 mb-6">
+          <div className="bg-card border border-border rounded-3xl p-6 mb-6">
             <div className="flex items-center justify-between mb-6">
-              <span className="text-muted-foreground text-sm">NTRP Level</span>
-              <span className="text-brand font-black text-3xl">{profile.level}</span>
+              <span className="text-muted-foreground text-base">NTRP Level</span>
+              <span className="text-lime-400 font-black text-4xl">{profile.level}</span>
             </div>
 
             <Slider
@@ -166,30 +192,30 @@ export default function OnboardingPage() {
               className="w-full"
             />
 
-            <div className="flex justify-between mt-3">
+            <div className="flex justify-between mt-4">
               {[2.5, 3.0, 3.5, 4.0, 4.5, 5.0].map((l) => (
-                <span key={l} className={`text-xs font-bold ${l === profile.level ? "text-brand" : "text-zinc-600"}`}>
+                <span key={l} className={`text-sm font-bold ${l === profile.level ? "text-lime-400" : "text-muted-foreground"}`}>
                   {l}
                 </span>
               ))}
             </div>
 
-            <p className="text-center text-muted-foreground text-sm mt-4">
+            <p className="text-center text-foreground text-lg font-semibold mt-6 py-3 bg-secondary rounded-xl">
               {LEVEL_LABELS[profile.level]}
             </p>
           </div>
 
           <div>
-            <label className="text-sm text-muted-foreground mb-3 block">Play Type</label>
+            <label className="text-base font-medium text-foreground mb-3 block">Preferred Play Type</label>
             <div className="flex gap-3">
               {(["Singles", "Doubles", "Both"] as const).map((pt) => (
                 <button
                   key={pt}
                   onClick={() => setProfile({ ...profile, playType: pt })}
-                  className={`flex-1 py-3 rounded-xl text-sm font-semibold border transition-all ${
+                  className={`flex-1 py-4 rounded-xl text-base font-semibold border-2 transition-all ${
                     profile.playType === pt
-                      ? "bg-brand text-black border-brand"
-                      : "bg-surface border-line text-muted-foreground"
+                      ? "bg-lime-400 text-black border-lime-400"
+                      : "bg-card border-border text-muted-foreground hover:border-lime-400/50"
                   }`}
                 >
                   {pt}
@@ -203,23 +229,25 @@ export default function OnboardingPage() {
       {/* Step 3: Bio */}
       {step === 3 && (
         <div className="px-6 flex-1">
-          <h1 className="text-2xl font-black text-white mb-2">About You</h1>
-          <p className="text-muted-foreground mb-8">Tell others what you&apos;re looking for</p>
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-foreground mb-1">About You</h2>
+            <p className="text-muted-foreground text-base">Tell others what you're looking for</p>
+          </div>
 
           <div>
-            <label className="text-sm text-muted-foreground mb-1.5 block">Bio</label>
+            <label className="text-base font-medium text-foreground mb-2 block">Your Bio</label>
             <textarea
               value={profile.bio}
               onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-              className="w-full h-40 px-4 py-3 rounded-2xl bg-surface border border-line text-white placeholder:text-muted-foreground focus:outline-none focus:border-brand resize-none"
-              placeholder="e.g., Weekend warrior, looking for regular partners..."
+              className="w-full h-48 px-5 py-4 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-lime-400 resize-none text-lg"
+              placeholder="Tell us about your tennis journey, what you're looking for..."
             />
           </div>
 
-          <div className="mt-6 p-4 bg-brand/10 border border-brand/20 rounded-2xl">
-            <p className="text-brand text-sm font-medium">✓ You&apos;re all set!</p>
-            <p className="text-muted-foreground text-xs mt-1">
-              Complete your profile to start connecting with players near you.
+          <div className="mt-6 p-5 bg-lime-400/10 border-2 border-lime-400/30 rounded-2xl">
+            <p className="text-lime-400 text-base font-semibold">🎾 Ready to connect!</p>
+            <p className="text-muted-foreground text-sm mt-1">
+              Complete your profile to start discovering players and courts near you.
             </p>
           </div>
         </div>
@@ -227,37 +255,37 @@ export default function OnboardingPage() {
 
       {/* Navigation */}
       <div className="px-6 pb-8 pt-4">
-        <div className="flex gap-3">
+        <div className="flex gap-4">
           {step > 1 && (
             <button
               onClick={() => setStep(step - 1)}
-              className="flex-1 py-4 border border-line text-muted-foreground font-bold rounded-2xl"
+              className="flex items-center justify-center gap-2 flex-1 py-5 border-2 border-border text-foreground font-bold rounded-2xl hover:bg-card transition-colors"
             >
-              Back
+              <ChevronLeft size={20} /> Back
             </button>
           )}
           {step < 3 ? (
             <button
               onClick={() => setStep(step + 1)}
               disabled={step === 1 && !profile.name}
-              className="flex-1 py-4 bg-brand text-black font-black rounded-2xl disabled:opacity-40"
+              className="flex-1 py-5 bg-lime-400 text-black font-black rounded-2xl disabled:opacity-40 flex items-center justify-center gap-2 text-lg"
             >
-              Continue <ChevronRight className="inline" size={18} />
+              Continue <ChevronRight size={20} />
             </button>
           ) : (
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1 py-4 bg-brand text-black font-black rounded-2xl disabled:opacity-70 flex items-center justify-center gap-2"
+              className="flex-1 py-5 bg-lime-400 text-black font-black rounded-2xl disabled:opacity-70 flex items-center justify-center gap-3 text-lg"
             >
               {saving ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                  <div className="w-6 h-6 border-3 border-black/30 border-t-black rounded-full animate-spin" />
                   Saving...
                 </>
               ) : (
                 <>
-                  <Save size={18} />
+                  <Save size={22} />
                   Get Started
                 </>
               )}

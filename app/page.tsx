@@ -32,22 +32,22 @@ export default function DiscoverPage() {
       <TennisBall style={{ top: '15%', right: '2%', animationDelay: '0.5s' }} />
       <TennisBall style={{ top: '40%', left: '5%', animationDelay: '1s' }} />
       
-      {/* ── Top Bar ── */}
+      {/* Top Bar */}
       <header className="sticky top-0 z-30 glass dark:glass border-b border-white/10 px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {/* Logo */}
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-lime-400 to-lime-500 flex items-center justify-center shadow-lg lime-glow">
-              <svg viewBox="0 0 24 24" className="w-6 h-6 text-black">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-lime-400 to-lime-500 flex items-center justify-center shadow-lg lime-glow">
+              <svg viewBox="0 0 24 24" className="w-7 h-7 text-black">
                 <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="1.5"/>
                 <path d="M8 12 Q12 4 16 12 Q12 20 8 12" fill="none" stroke="currentColor" strokeWidth="1"/>
               </svg>
             </div>
             <div>
-              <h1 className="text-white font-bold text-lg leading-none tracking-tight">
+              <h1 className="text-foreground font-bold text-xl leading-none">
                 Tennis Connect
               </h1>
-              <p className="text-orange-500 text-[10px] font-semibold tracking-widest uppercase">
+              <p className="text-orange-500 text-xs font-bold tracking-widest uppercase">
                 Pakistan
               </p>
             </div>
@@ -62,7 +62,7 @@ export default function DiscoverPage() {
 
       <div className="mx-4 my-3 flex items-center gap-3">
         <div className="flex-1 h-px bg-white/10" />
-        <span className="text-white/50 text-xs font-medium tracking-wide uppercase">Discover</span>
+        <span className="text-white/50 text-sm font-medium tracking-wide uppercase">Discover</span>
         <div className="flex-1 h-px bg-white/10" />
       </div>
 

@@ -30,7 +30,6 @@ export default function LoginPage() {
       if (result.error) {
         setError(result.error.message || "Invalid email or password");
       } else {
-        // Check if profile exists
         try {
           const profile = await getProfile();
           if (!profile || !profile.name) {
@@ -51,41 +50,45 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-dvh bg-background flex flex-col">
-      <div className="p-6 pt-12">
-        <div className="w-12 h-12 rounded-xl bg-brand/10 border border-brand/30 flex items-center justify-center mb-4">
-          <span className="text-brand font-black text-sm">TCP</span>
+      <div className="p-8 pt-14">
+        {/* Logo */}
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-lime-400 to-lime-500 flex items-center justify-center mb-6 lime-glow">
+          <svg viewBox="0 0 24 24" className="w-10 h-10 text-black">
+            <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+            <path d="M8 12 Q12 4 16 12 Q12 20 8 12" fill="none" stroke="currentColor" strokeWidth="1"/>
+          </svg>
         </div>
-        <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
-        <p className="text-muted-foreground text-sm">Sign in to continue to Tennis Connect</p>
+        <h1 className="text-3xl font-black text-foreground mb-2">Welcome Back!</h1>
+        <p className="text-muted-foreground text-lg">Sign in to continue</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex-1 px-6 space-y-4">
+      <form onSubmit={handleSubmit} className="flex-1 px-6 space-y-5">
         {error && (
-          <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+          <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-base">
             {error}
           </div>
         )}
 
         <div>
-          <label className="text-sm text-muted-foreground mb-1.5 block">Email</label>
+          <label className="text-base font-medium text-foreground mb-2 block">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full h-11 px-4 rounded-lg bg-pit border border-line text-white placeholder:text-muted-foreground focus:outline-none focus:border-brand"
-            placeholder="you@example.com"
+            className="w-full h-14 px-5 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-lime-400 text-lg"
+            placeholder="your@email.com"
             required
           />
         </div>
 
         <div>
-          <label className="text-sm text-muted-foreground mb-1.5 block">Password</label>
+          <label className="text-base font-medium text-foreground mb-2 block">Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full h-11 px-4 rounded-lg bg-pit border border-line text-white placeholder:text-muted-foreground focus:outline-none focus:border-brand"
-            placeholder="Enter your password"
+            className="w-full h-14 px-5 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-lime-400 text-lg"
+            placeholder="Enter password"
             required
           />
         </div>
@@ -93,16 +96,16 @@ export default function LoginPage() {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-11 mt-4 bg-brand hover:bg-brand/90 text-black font-semibold"
+          className="w-full h-14 mt-4 bg-lime-400 hover:bg-lime-500 text-black font-bold text-lg rounded-2xl"
         >
           {loading ? "Signing in..." : "Sign In"}
         </Button>
       </form>
 
       <div className="p-6 text-center">
-        <p className="text-muted-foreground text-sm">
-          Don&apos;t have an account?{" "}
-          <Link href="/signup" className="text-brand font-medium">
+        <p className="text-muted-foreground text-base">
+          Don't have an account?{" "}
+          <Link href="/signup" className="text-lime-400 font-semibold">
             Sign up
           </Link>
         </p>
