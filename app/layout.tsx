@@ -4,6 +4,7 @@ import "./globals.css";
 import { BottomTabBar } from "@/components/layout/BottomTabBar";
 import { ServiceWorkerRegistrar } from "@/components/layout/ServiceWorkerRegistrar";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { SplashScreen } from "@/components/providers/SplashScreen";
 
 const geist = Geist({
   variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geist.variable} antialiased min-h-dvh`}>
         <ThemeProvider>
+          <SplashScreen />
           <ServiceWorkerRegistrar />
           <main className="lg:max-w-none lg:w-full max-w-lg mx-auto relative min-h-dvh bg-gradient-light dark:bg-gradient-dark transition-colors duration-300">
             {children}
