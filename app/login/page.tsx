@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/lib/auth/client";
 import { getProfile } from "@/lib/api";
+import { TennisRacketLogo } from "@/components/providers/TennisIcons";
 
 export const dynamic = "force-dynamic";
 
@@ -52,11 +53,8 @@ export default function LoginPage() {
     <div className="min-h-dvh bg-background flex flex-col">
       <div className="p-8 pt-14">
         {/* Logo */}
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-lime-400 to-lime-500 flex items-center justify-center mb-6 lime-glow">
-          <svg viewBox="0 0 24 24" className="w-10 h-10 text-black">
-            <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M8 12 Q12 4 16 12 Q12 20 8 12" fill="none" stroke="currentColor" strokeWidth="1"/>
-          </svg>
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-lime-500 to-lime-600 flex items-center justify-center mb-6 lime-glow">
+          <TennisRacketLogo size={48} className="text-black" />
         </div>
         <h1 className="text-3xl font-black text-foreground mb-2">Welcome Back!</h1>
         <p className="text-muted-foreground text-lg">Sign in to continue</p>
@@ -75,7 +73,7 @@ export default function LoginPage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full h-14 px-5 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-lime-400 text-lg"
+            className="w-full h-14 px-5 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-lime-500 text-lg"
             placeholder="your@email.com"
             required
           />
@@ -87,7 +85,7 @@ export default function LoginPage() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full h-14 px-5 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-lime-400 text-lg"
+            className="w-full h-14 px-5 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-lime-500 text-lg"
             placeholder="Enter password"
             required
           />
@@ -96,7 +94,7 @@ export default function LoginPage() {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-14 mt-4 bg-lime-400 hover:bg-lime-500 text-black font-bold text-lg rounded-2xl"
+          className="w-full h-14 mt-4 bg-lime-500 hover:bg-lime-600 text-black font-bold text-lg rounded-2xl"
         >
           {loading ? "Signing in..." : "Sign In"}
         </Button>
@@ -105,7 +103,7 @@ export default function LoginPage() {
       <div className="p-6 text-center">
         <p className="text-muted-foreground text-base">
           Don't have an account?{" "}
-          <Link href="/signup" className="text-lime-400 font-semibold">
+          <Link href="/signup" className="text-lime-500 font-semibold">
             Sign up
           </Link>
         </p>
