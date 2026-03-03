@@ -4,10 +4,9 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { MapPin, Star, RefreshCw, Heart, X, Trophy } from "lucide-react";
 import confetti from "canvas-confetti";
-import { players, coaches, courts } from "@/data";
 import type { Player, Coach, Court, SwipeItem } from "@/data";
 import { useAppStore } from "@/store/useAppStore";
-import { getDiscover, getCourts } from "@/lib/api";
+import { getDiscover } from "@/lib/api";
 
 // ─── Swipe Card (draggable wrapper) ──────────────────────────────────────────
 
@@ -293,7 +292,7 @@ function EmptyStack({ onReset }: { onReset: () => void }) {
 
 // ─── Main SwipeStack ──────────────────────────────────────────────────────────
 
-type TabType = "players" | "courts" | "coaches";
+type TabType = "players";
 
 export function SwipeStack() {
   const { selectedCity, swipedRightIds, swipedLeftIds, swipeLeft, triggerMatch, resetDeck,
@@ -301,36 +300,23 @@ export function SwipeStack() {
 
   const [tab, setTab] = useState<TabType>("players");
   const [triggerDir, setTriggerDir] = useState<"left" | "right" | null>(null);
-  const [apiPlayers, setApiPlayers] = useState<Player[]>([]);
+  const [apiPlayers, setApiPlayers] = useState<SwipeItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (tab === "players") {
-      setLoading(true);
-      getDiscover(selectedCity === "All" ? undefined : selectedCity)
-        .then((data) => {
-          if (Array.isArray(data)) {
-            setApiPlayers(data);
-          }
-        })
-        .catch(() => setApiPlayers([]))
-        .finally(() => setLoading(false));
-    }
-  }, [tab, selectedCity]);
+    setLoading(true);
+    getDiscover(selectedCity === "All" ? undefined : selectedCity)
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setApiPlayers(data);
+        }
+      })
+      .catch(() => setApiPlayers([]))
+      .finally(() => setLoading(false));
+  }, [selectedCity]);
 
   // Build filtered deck based on tab + city
-  const deck = (() => {
-    const city = selectedCity;
-    if (tab === "players") {
-      // Use API players if available, fallback to sample data
-      const playerList = apiPlayers.length > 0 ? apiPlayers : players;
-      return playerList.filter((p) => city === "All" || p.city === city);
-    }
-    if (tab === "coaches") {
-      return coaches.filter((c) => city === "All" || c.city === city);
-    }
-    return courts.filter((c) => city === "All" || c.city === city);
-  })();
+  const deck = apiPlayers.filter((p) => selectedCity === "All" || p.city === selectedCity);
 
   const swipedIds = new Set([...swipedRightIds, ...swipedLeftIds]);
   const remaining = deck.filter((item) => !swipedIds.has(item.id));
@@ -347,17 +333,12 @@ export function SwipeStack() {
     });
   };
 
-  const handleSwipeRight = (item: SwipeItem | Court) => {
-    if (item.kind === "court") {
-      swipeLeft(item.id); // courts just get saved, no match overlay
-      fireConfetti();
-    } else {
-      fireConfetti();
-      triggerMatch(item as Player | Coach);
-    }
+  const handleSwipeRight = (item: SwipeItem) => {
+    fireConfetti();
+    triggerMatch(item as Player);
   };
 
-  const handleSwipeLeft = (item: SwipeItem | Court) => {
+  const handleSwipeLeft = (item: SwipeItem) => {
     swipeLeft(item.id);
   };
 
@@ -367,8 +348,6 @@ export function SwipeStack() {
 
   const TABS: { id: TabType; label: string }[] = [
     { id: "players", label: "Players" },
-    { id: "courts", label: "Courts" },
-    { id: "coaches", label: "Coaches" },
   ];
 
   return (
@@ -424,15 +403,11 @@ export function SwipeStack() {
                       triggerDir={triggerDir}
                       onTriggerDone={() => setTriggerDir(null)}
                     >
-                      {item.kind === "player" && <PlayerCard p={item} />}
-                      {item.kind === "coach" && <CoachCard c={item} />}
-                      {item.kind === "court" && <CourtCard c={item} />}
+                      <PlayerCard p={item as Player} />
                     </SwipeCardWrapper>
                   ) : (
                     <div className="absolute inset-0 rounded-3xl overflow-hidden">
-                      {item.kind === "player" && <PlayerCard p={item as Player} />}
-                      {item.kind === "coach" && <CoachCard c={item as Coach} />}
-                      {item.kind === "court" && <CourtCard c={item as Court} />}
+                      <PlayerCard p={item as Player} />
                     </div>
                   )}
                 </div>

@@ -1,19 +1,21 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { LayoutDashboard, Users, Building2, Calendar, LogOut, Settings } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Simple admin check - in production, use proper auth
-  const isAdmin = true; // For now, allow all access
+  const cookieStore = await cookies();
+  const adminAuth = cookieStore.get("admin-auth")?.value;
+  const adminPassword = process.env.ADMIN_PASSWORD;
 
-  if (!isAdmin) {
-    redirect("/login");
+  if (!adminAuth || adminAuth !== adminPassword) {
+    redirect("/admin-login");
   }
 
   return (

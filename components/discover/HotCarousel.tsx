@@ -1,52 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { hotItems } from "@/data";
-import type { Player, Coach, Court } from "@/data";
+import type { Player } from "@/data";
 import { Star, MapPin } from "lucide-react";
+import { getDiscover } from "@/lib/api";
 
-function HotCard({ item }: { item: Player | Coach | Court }) {
-  if (item.kind === "court") {
-    return (
-      <div className="relative shrink-0 w-36 h-44 rounded-2xl overflow-hidden border border-line">
-        <Image src={item.photo} alt={item.name} fill className="object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-3">
-          <p className="text-white text-xs font-bold leading-tight line-clamp-2">
-            {item.name}
-          </p>
-          <p className="text-brand text-xs font-bold mt-0.5">
-            Rs.{item.pricePerHour.toLocaleString()}/hr
-          </p>
-          <span className="inline-block mt-1 text-[10px] bg-brand/20 text-brand px-1.5 py-0.5 rounded-md font-medium">
-            {item.surface}
-          </span>
-        </div>
-      </div>
-    );
-  }
-
-  if (item.kind === "coach") {
-    return (
-      <div className="relative shrink-0 w-36 h-44 rounded-2xl overflow-hidden border border-line">
-        <Image src={item.photo} alt={item.name} fill className="object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-        <div className="absolute top-2 right-2 flex items-center gap-0.5 bg-black/60 rounded-full px-2 py-0.5">
-          <Star size={10} className="fill-yellow-400 text-yellow-400" />
-          <span className="text-white text-[10px] font-bold">{item.rating}</span>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 p-3">
-          <p className="text-white text-xs font-bold leading-tight">{item.name}</p>
-          <p className="text-zinc-300 text-[10px] mt-0.5">{item.specialization}</p>
-          <p className="text-brand text-xs font-bold mt-0.5">
-            Rs.{item.ratePerHour.toLocaleString()}/hr
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // Player
+function HotCard({ item }: { item: Player }) {
   return (
     <div className="relative shrink-0 w-36 h-44 rounded-2xl overflow-hidden border border-line">
       <Image src={item.photo} alt={item.name} fill className="object-cover" />
@@ -67,8 +27,21 @@ function HotCard({ item }: { item: Player | Coach | Court }) {
 }
 
 export function HotCarousel() {
-  // Double the list for seamless loop
-  const doubled = [...hotItems, ...hotItems];
+  const [players, setPlayers] = useState<Player[]>([]);
+
+  useEffect(() => {
+    getDiscover()
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setPlayers(data.slice(0, 10));
+        }
+      })
+      .catch(() => setPlayers([]));
+  }, []);
+
+  if (players.length === 0) return null;
+
+  const doubled = [...players, ...players];
 
   return (
     <div className="px-4">

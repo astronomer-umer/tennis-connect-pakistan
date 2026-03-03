@@ -117,42 +117,8 @@ function initializeTables() {
     )
   `);
 
-  const courtsResult = db.exec("SELECT COUNT(*) as count FROM courts");
-  const courtsCount = courtsResult.length > 0 ? courtsResult[0].values[0][0] : 0;
-  
-  if (courtsCount === 0) {
-    const courts = [
-      { id: "c1", name: "Bagh-e-Jinnah PLTA", city: "Lahore", surface: "Grass", surfaces: "Grass,Hard", pricePerHour: 800, distance: "3.2 km", totalCourts: 6, amenities: "Changing Rooms,Cafe,Parking,Floodlights", isOpen: 1, openTime: "06:00", closeTime: "21:00", featured: 1 },
-      { id: "c2", name: "DHA Phase 8 Sports Complex", city: "Lahore", surface: "Hard", surfaces: "Hard", pricePerHour: 1200, distance: "8.5 km", totalCourts: 4, amenities: "AC Lobby,Pro Shop,Coaching,Parking", isOpen: 1, openTime: "06:00", closeTime: "23:00", featured: 1 },
-      { id: "c3", name: "DHA XX Block Courts", city: "Lahore", surface: "Hard", surfaces: "Hard", pricePerHour: 1000, distance: "11.2 km", totalCourts: 3, amenities: "Parking,Floodlights,Water Cooler", isOpen: 1, openTime: "05:30", closeTime: "22:00", featured: 0 },
-      { id: "c4", name: "Nishtar Park Tennis Club", city: "Lahore", surface: "Hard", surfaces: "Hard", pricePerHour: 900, distance: "5.7 km", totalCourts: 2, amenities: "Changing Rooms,Parking", isOpen: 1, openTime: "06:00", closeTime: "20:00", featured: 0 },
-      { id: "c5", name: "Punjab Tennis Academy", city: "Lahore", surface: "Hard", surfaces: "Hard", pricePerHour: 700, distance: "4.1 km", totalCourts: 5, amenities: "Coaching,Ball Machine,Parking", isOpen: 1, openTime: "07:00", closeTime: "21:00", featured: 0 },
-      { id: "c6", name: "PTF National Training Centre", city: "Islamabad", surface: "Hard", surfaces: "Hard", pricePerHour: 1500, distance: "6.8 km", totalCourts: 10, amenities: "World-Class Facility,Gym,Physiotherapy,Cafe,Coaching", isOpen: 1, openTime: "06:00", closeTime: "22:00", featured: 1 },
-      { id: "c7", name: "CDA Tennis Club", city: "Islamabad", surface: "Hard", surfaces: "Hard", pricePerHour: 1100, distance: "9.3 km", totalCourts: 4, amenities: "Changing Rooms,Parking,Floodlights", isOpen: 1, openTime: "06:00", closeTime: "22:30", featured: 0 },
-      { id: "c8", name: "Gulberg Greens Club", city: "Islamabad", surface: "Hard", surfaces: "Hard", pricePerHour: 1300, distance: "14.2 km", totalCourts: 3, amenities: "Premium Facilities,Pool,Restaurant,Valet Parking", isOpen: 1, openTime: "07:00", closeTime: "23:00", featured: 0 },
-      { id: "c9", name: "F-9 Park Tennis", city: "Islamabad", surface: "Hard", surfaces: "Hard", pricePerHour: 600, distance: "4.5 km", totalCourts: 2, amenities: "Free Parking,Open Air", isOpen: 1, openTime: "06:00", closeTime: "19:00", featured: 0 },
-      { id: "c10", name: "Naya Nazimabad Gymkhana", city: "Karachi", surface: "Hard", surfaces: "Hard", pricePerHour: 1400, distance: "7.6 km", totalCourts: 4, amenities: "Members Club,Cafe,Changing Rooms,Coaching", isOpen: 1, openTime: "06:00", closeTime: "22:00", featured: 1 },
-      { id: "c11", name: "DHA Karachi Sports Complex", city: "Karachi", surface: "Hard", surfaces: "Hard", pricePerHour: 1600, distance: "12.4 km", totalCourts: 6, amenities: "Premium Courts,AC Lounges,Pro Shop,Valet", isOpen: 1, openTime: "06:00", closeTime: "23:00", featured: 0 },
-      { id: "c12", name: "Defence Club Grass Courts", city: "Karachi", surface: "Grass", surfaces: "Grass", pricePerHour: 1800, distance: "15.1 km", totalCourts: 3, amenities: "Heritage Grass Courts,Clubhouse,Fine Dining,Valet", isOpen: 1, openTime: "07:00", closeTime: "21:00", featured: 1 },
-    ];
-
-    const stmt = db.prepare(`
-      INSERT INTO courts (id, name, city, surface, surfaces, price_per_hour, distance, total_courts, amenities, is_open, open_time, close_time, featured, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    for (const court of courts) {
-      stmt.run([
-        court.id, court.name, court.city, court.surface, court.surfaces,
-        court.pricePerHour, court.distance, court.totalCourts, court.amenities,
-        court.isOpen, court.openTime, court.closeTime, court.featured, Date.now()
-      ]);
-    }
-    stmt.free();
-  }
-
   saveDb();
-  console.log("Database initialized");
+  console.log("Database initialized (empty - use admin panel to add data)");
 }
 
 export function saveDb() {

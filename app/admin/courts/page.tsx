@@ -11,6 +11,7 @@ interface Court {
   surface: string;
   surfaces: string;
   price_per_hour: number;
+  photo: string;
   distance: string;
   total_courts: number;
   amenities: string;
@@ -31,6 +32,7 @@ export default function AdminCourts() {
     surface: "Hard",
     surfaces: "Hard",
     pricePerHour: 1000,
+    photo: "",
     distance: "0 km",
     totalCourts: 1,
     amenities: "",
@@ -77,6 +79,7 @@ export default function AdminCourts() {
       surface: court.surface,
       surfaces: court.surfaces,
       pricePerHour: court.price_per_hour,
+      photo: court.photo || "",
       distance: court.distance,
       totalCourts: court.total_courts,
       amenities: court.amenities,
@@ -101,6 +104,7 @@ export default function AdminCourts() {
       surface: "Hard",
       surfaces: "Hard",
       pricePerHour: 1000,
+      photo: "",
       distance: "0 km",
       totalCourts: 1,
       amenities: "",
@@ -169,6 +173,11 @@ export default function AdminCourts() {
               <div>
                 <label className="block text-sm text-gray-400 mb-1">Court Name</label>
                 <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-2 bg-gray-700 rounded-lg" required />
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">Image URL</label>
+                <input type="url" value={formData.photo} onChange={(e) => setFormData({...formData, photo: e.target.value})} className="w-full px-4 py-2 bg-gray-700 rounded-lg" placeholder="https://example.com/court-image.jpg" />
               </div>
               
               <div className="grid grid-cols-2 gap-4">
