@@ -1,6 +1,9 @@
+"use client";
+
 import { CitySelector } from "@/components/discover/CitySelector";
 import { HotCarousel } from "@/components/discover/HotCarousel";
 import { SwipeStack } from "@/components/discover/SwipeStack";
+import { ThemeToggle } from "@/components/providers/ThemeToggle";
 
 function TennisBall({ style }: { style?: React.CSSProperties }) {
   return (
@@ -16,20 +19,20 @@ function TennisBall({ style }: { style?: React.CSSProperties }) {
 
 export default function DiscoverPage() {
   return (
-    <div className="flex flex-col min-h-dvh bg-background pb-tab relative overflow-hidden">
+    <div className="flex flex-col min-h-dvh pb-tab relative overflow-hidden">
       {/* Tennis ball decorations */}
       <TennisBall style={{ top: '10%', left: '5%' }} />
       <TennisBall style={{ top: '30%', right: '5%', animationDelay: '0.3s' }} />
       
       {/* ── Top Bar ── */}
-      <header className="sticky top-0 z-30 glass border-b border-line px-5 py-3">
+      <header className="sticky top-0 z-30 glass dark:glass border-b border-line px-5 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-brand/10 border border-brand/30 flex items-center justify-center shadow-[0_0_10px_#00ff9d30]">
               <span className="text-brand font-black text-xs tracking-tight">TCP</span>
             </div>
             <div>
-              <h1 className="text-white font-black text-sm leading-none tracking-tight">
+              <h1 className="text-foreground dark:text-white font-black text-sm leading-none tracking-tight">
                 Tennis Connect
               </h1>
               <p className="text-brand text-[10px] font-semibold tracking-widest uppercase">
@@ -37,8 +40,9 @@ export default function DiscoverPage() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-muted-foreground text-xs">Find players near you</span>
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground text-xs hidden sm:inline">Find players</span>
+            <ThemeToggle />
           </div>
         </div>
       </header>
