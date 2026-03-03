@@ -41,7 +41,7 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${geist.variable} antialiased bg-pit min-h-dvh`}>
         <ServiceWorkerRegistrar />
-        <main className="max-w-lg mx-auto relative min-h-dvh bg-background">
+        <main className="lg:max-w-none lg:w-full max-w-lg mx-auto relative min-h-dvh bg-background">
           {children}
         </main>
         <BottomTabBar />

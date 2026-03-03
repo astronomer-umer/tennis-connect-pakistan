@@ -2,11 +2,29 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Compass, MapPin, Zap, User } from "lucide-react";
+import { MapPin, Zap, User, Flame } from "lucide-react";
 import { useAppStore } from "@/store/useAppStore";
 
+function TennisIcon({ className }: { className?: string }) {
+  return (
+    <svg 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+      className={className}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+      <path d="M2 12h20" />
+    </svg>
+  );
+}
+
 const TABS = [
-  { href: "/", label: "Discover", Icon: Compass },
+  { href: "/", label: "Discover", Icon: TennisIcon },
   { href: "/courts", label: "Courts", Icon: MapPin },
   { href: "/matches", label: "Matches", Icon: Zap },
   { href: "/profile", label: "Profile", Icon: User },
@@ -43,7 +61,7 @@ export function BottomTabBar() {
                   className={active ? "drop-shadow-[0_0_8px_#00ff9d]" : ""}
                 />
                 {showBadge && (
-                  <span className="absolute -top-1 -right-1.5 w-4 h-4 bg-brand text-pit text-[9px] font-black rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1.5 w-4 h-4 bg-orange-500 text-white text-[9px] font-black rounded-full flex items-center justify-center animate-pulse-orange">
                     {matchCount > 9 ? "9+" : matchCount}
                   </span>
                 )}

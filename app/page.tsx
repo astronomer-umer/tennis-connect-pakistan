@@ -2,9 +2,25 @@ import { CitySelector } from "@/components/discover/CitySelector";
 import { HotCarousel } from "@/components/discover/HotCarousel";
 import { SwipeStack } from "@/components/discover/SwipeStack";
 
+function TennisBall({ style }: { style?: React.CSSProperties }) {
+  return (
+    <div className="absolute tennis-bounce opacity-30 pointer-events-none" style={style}>
+      <svg width="40" height="40" viewBox="0 0 40 40" className="text-brand">
+        <circle cx="20" cy="20" r="18" fill="currentColor" opacity="0.3"/>
+        <path d="M8 20 Q20 5 32 20 Q20 35 8 20" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+        <path d="M8 20 Q20 35 32 20 Q20 5 8 20" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+      </svg>
+    </div>
+  );
+}
+
 export default function DiscoverPage() {
   return (
-    <div className="flex flex-col min-h-dvh bg-background pb-tab">
+    <div className="flex flex-col min-h-dvh bg-background pb-tab relative overflow-hidden">
+      {/* Tennis ball decorations */}
+      <TennisBall style={{ top: '10%', left: '5%' }} />
+      <TennisBall style={{ top: '30%', right: '5%', animationDelay: '0.3s' }} />
+      
       {/* ── Top Bar ── */}
       <header className="sticky top-0 z-30 glass border-b border-line px-5 py-3">
         <div className="flex items-center justify-between">
@@ -28,10 +44,6 @@ export default function DiscoverPage() {
       </header>
 
       <CitySelector />
-
-      <div className="mx-4 mb-2 p-2 rounded-lg bg-brand/10 border border-brand/20 text-center">
-        <p className="text-brand text-xs font-medium">🎾 Sample players & courts for demo</p>
-      </div>
 
       <HotCarousel />
 
