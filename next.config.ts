@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
       { hostname: "randomuser.me" },
       { hostname: "picsum.photos" },
       { hostname: "images.unsplash.com" },
+      { hostname: "api.dicebear.com" },
     ],
   },
   async headers() {

@@ -11,7 +11,12 @@ export async function getDb() {
   if (db) return db;
 
   const SQL = await initSqlJs();
-  dbPath = path.join(process.cwd(), "tennis-connect.db");
+  
+  // Use /tmp on Vercel (read-only filesystem), cwd locally
+  const isVercel = process.env.VERCEL === "1";
+  dbPath = isVercel
+    ? path.join("/tmp", "tennis-connect.db")
+    : path.join(process.cwd(), "tennis-connect.db");
 
   if (fs.existsSync(dbPath)) {
     const buffer = fs.readFileSync(dbPath);
