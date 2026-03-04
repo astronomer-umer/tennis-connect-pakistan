@@ -35,16 +35,26 @@ export default function AdminPlayers() {
     losses: 0,
   });
 
-  useEffect(() => {
-    loadPlayers();
-  }, []);
-
   const loadPlayers = async () => {
     const res = await fetch("/api/admin/players");
     const data = await res.json();
     setPlayers(data);
     setLoading(false);
   };
+
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchData() {
+      const res = await fetch("/api/admin/players");
+      const data = await res.json();
+      if (!cancelled) {
+        setPlayers(data);
+        setLoading(false);
+      }
+    }
+    fetchData();
+    return () => { cancelled = true; };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

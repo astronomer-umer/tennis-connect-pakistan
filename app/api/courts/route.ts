@@ -1,13 +1,30 @@
 import { NextResponse } from "next/server";
 import { runQuery } from "@/lib/server-db";
 
+interface CourtRow {
+  id: string;
+  name: string;
+  city: string;
+  surface: string;
+  surfaces: string;
+  price_per_hour: number;
+  photo: string;
+  distance: string;
+  total_courts: number;
+  amenities: string;
+  is_open: number;
+  open_time: string;
+  close_time: string;
+  featured: number;
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const city = searchParams.get("city");
   const featured = searchParams.get("featured");
 
   let sql = "SELECT * FROM courts WHERE 1=1";
-  const params: any[] = [];
+  const params: string[] = [];
 
   if (city && city !== "All") {
     sql += " AND city = ?";
@@ -20,9 +37,9 @@ export async function GET(request: Request) {
 
   sql += " ORDER BY featured DESC, name ASC";
 
-  const courts = await runQuery(sql, params);
+  const courts = await runQuery<CourtRow>(sql, params);
 
-  const result = courts.map((c: any) => ({
+  const result = courts.map((c) => ({
     id: c.id,
     kind: "court",
     name: c.name,

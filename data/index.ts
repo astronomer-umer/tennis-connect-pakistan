@@ -81,6 +81,6 @@ export const TIME_SLOTS = [
 ];
 
 // All slots available (admin can manage via API)
-export function isSlotAvailable(slot: string): boolean {
+export function isSlotAvailable(_slot?: string): boolean {
   return true;
 }

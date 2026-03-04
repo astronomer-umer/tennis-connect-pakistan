@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Users, Building2, Calendar, LogOut, Settings } from "lucide-react";
+import { LayoutDashboard, Users, Building2, Calendar, LogOut } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 

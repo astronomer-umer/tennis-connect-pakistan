@@ -2,9 +2,9 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
-import { MapPin, Star, RefreshCw, Heart, X, Trophy } from "lucide-react";
+import { MapPin, RefreshCw, Heart, X, Trophy } from "lucide-react";
 import confetti from "canvas-confetti";
-import type { Player, Coach, Court, SwipeItem } from "@/data";
+import type { Player, Coach, SwipeItem } from "@/data";
 import { useAppStore } from "@/store/useAppStore";
 import { getDiscover } from "@/lib/api";
 
@@ -161,77 +161,6 @@ function PlayerCard({ p }: { p: Player }) {
   );
 }
 
-function CoachCard({ c }: { c: Coach }) {
-  return (
-    <div className="absolute inset-0 rounded-3xl overflow-hidden">
-      <Image src={c.photo} alt={c.name} fill className="object-cover" unoptimized />
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
-      {/* Coach badge */}
-      <div className="absolute top-5 left-5 bg-black/70 backdrop-blur-sm rounded-xl px-3 py-1.5">
-        <span className="text-brand text-xs font-bold tracking-wide">COACH</span>
-      </div>
-      {/* Rating */}
-      <div className="absolute top-5 right-5 flex items-center gap-1 bg-black/60 backdrop-blur-sm rounded-xl px-2.5 py-1.5">
-        <Star size={12} className="fill-yellow-400 text-yellow-400" />
-        <span className="text-white text-xs font-bold">{c.rating}</span>
-      </div>
-      <div className="absolute bottom-0 left-0 right-0 p-5 pb-6">
-        <h2 className="text-white text-2xl font-extrabold">{c.name}</h2>
-        <div className="flex items-center gap-1.5 mt-0.5">
-          <MapPin size={12} className="text-brand" />
-          <span className="text-zinc-300 text-sm">{c.city}</span>
-        </div>
-        <p className="text-brand text-sm font-semibold mt-1">{c.specialization}</p>
-        <div className="flex items-center gap-4 mt-2">
-          <span className="text-zinc-300 text-xs">{c.yearsExperience}yr exp</span>
-          <span className="text-zinc-300 text-xs">{c.students} students</span>
-          <span className="text-brand text-sm font-bold">Rs.{c.ratePerHour.toLocaleString()}/hr</span>
-        </div>
-        <p className="text-white/60 text-xs mt-2 line-clamp-2">{c.bio}</p>
-      </div>
-    </div>
-  );
-}
-
-function CourtCard({ c }: { c: Court }) {
-  return (
-    <div className="absolute inset-0 rounded-3xl overflow-hidden">
-      <Image src={c.photo} alt={c.name} fill className="object-cover" unoptimized />
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/15 to-transparent" />
-      {/* Distance */}
-      <div className="absolute top-5 right-5 bg-black/60 backdrop-blur-sm rounded-full px-3 py-1.5">
-        <span className="text-white text-xs font-medium">{c.distance}</span>
-      </div>
-      {/* Courts count */}
-      <div className="absolute top-5 left-5 bg-black/60 backdrop-blur-sm rounded-xl px-2.5 py-1.5">
-        <span className="text-brand text-xs font-bold">{c.totalCourts} courts</span>
-      </div>
-      <div className="absolute bottom-0 left-0 right-0 p-5 pb-6">
-        <h2 className="text-white text-2xl font-extrabold leading-tight">{c.name}</h2>
-        <div className="flex items-center gap-1.5 mt-0.5">
-          <MapPin size={12} className="text-brand" />
-          <span className="text-zinc-300 text-sm">{c.city}</span>
-        </div>
-        <div className="flex items-center gap-2 mt-2">
-          <span className="bg-brand/20 text-brand text-xs px-2 py-1 rounded-lg font-semibold">
-            {c.surface}
-          </span>
-          <span className="text-white font-extrabold text-lg">
-            Rs.{c.pricePerHour.toLocaleString()}/hr
-          </span>
-        </div>
-        <div className="flex gap-2 mt-2 flex-wrap">
-          {c.amenities.slice(0, 3).map((a) => (
-            <span key={a} className="text-[10px] text-zinc-400 bg-surface-2 px-2 py-0.5 rounded-md">
-              {a}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ─── Match Overlay ─────────────────────────────────────────────────────────────
 
 function MatchOverlay({
@@ -301,18 +230,15 @@ export function SwipeStack() {
   const [tab, setTab] = useState<TabType>("players");
   const [triggerDir, setTriggerDir] = useState<"left" | "right" | null>(null);
   const [apiPlayers, setApiPlayers] = useState<SwipeItem[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
     getDiscover(selectedCity === "All" ? undefined : selectedCity)
       .then((data) => {
         if (Array.isArray(data)) {
           setApiPlayers(data);
         }
       })
-      .catch(() => setApiPlayers([]))
-      .finally(() => setLoading(false));
+      .catch(() => setApiPlayers([]));
   }, [selectedCity]);
 
   // Build filtered deck based on tab + city

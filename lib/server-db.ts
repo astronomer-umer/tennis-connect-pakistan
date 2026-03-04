@@ -128,24 +128,24 @@ export function saveDb() {
   fs.writeFileSync(dbPath, buffer);
 }
 
-export async function runQuery(sql: string, params: any[] = []) {
+export async function runQuery<T = Record<string, unknown>>(sql: string, params: (string | number | null)[] = []): Promise<T[]> {
   const database = await getDb();
   const stmt = database.prepare(sql);
   stmt.bind(params);
-  const results: any[] = [];
+  const results: T[] = [];
   while (stmt.step()) {
     const columns = stmt.getColumnNames();
     const values = stmt.get();
-    results.push(columns.reduce((obj: any, col: string, i: number) => {
+    results.push(columns.reduce((obj: Record<string, unknown>, col: string, i: number) => {
       obj[col] = values[i];
       return obj;
-    }, {}));
+    }, {}) as T);
   }
   stmt.free();
   return results;
 }
 
-export async function runStatement(sql: string, params: any[] = []) {
+export async function runStatement(sql: string, params: (string | number | null)[] = []) {
   const database = await getDb();
   database.run(sql, params);
   saveDb();

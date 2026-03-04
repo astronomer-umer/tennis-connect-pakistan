@@ -1,6 +1,20 @@
 import { NextResponse } from "next/server";
-import { runQuery, runStatement } from "@/lib/server-db";
+import { runQuery } from "@/lib/server-db";
 import { auth } from "@/lib/auth";
+
+interface ProfileRow {
+  user_id: string;
+  name: string;
+  age: number;
+  gender: string;
+  city: string;
+  level: number;
+  photo_url: string;
+  bio: string;
+  play_type: string;
+  wins: number;
+  losses: number;
+}
 
 export async function GET(request: Request) {
   const session = await auth.api.getSession({
@@ -19,7 +33,7 @@ export async function GET(request: Request) {
   const playType = searchParams.get("playType");
 
   let sql = "SELECT * FROM user_profiles WHERE user_id != ?";
-  const params: any[] = [session.user.id];
+  const params: string[] = [session.user.id];
 
   if (city && city !== "All") {
     sql += " AND city = ?";
@@ -38,9 +52,9 @@ export async function GET(request: Request) {
 
   sql += " ORDER BY created_at DESC";
 
-  const players = await runQuery(sql, params);
+  const players = await runQuery<ProfileRow>(sql, params);
 
-  const result = players.map((p: any) => ({
+  const result = players.map((p) => ({
     id: p.user_id,
     kind: "player",
     name: p.name,

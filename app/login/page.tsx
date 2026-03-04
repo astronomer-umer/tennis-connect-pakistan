@@ -38,11 +38,16 @@ export default function LoginPage() {
           } else {
             router.push("/");
           }
-        } catch {
-          router.push("/onboarding");
+        } catch (err: unknown) {
+          const error = err as Error & { message?: string };
+          if (error.message === "No profile found" || error.message?.includes("404")) {
+            router.push("/onboarding");
+          } else {
+            router.push("/");
+          }
         }
       }
-    } catch (err) {
+    } catch {
       setError("Invalid email or password");
     } finally {
       setLoading(false);
@@ -102,7 +107,7 @@ export default function LoginPage() {
 
       <div className="p-6 text-center">
         <p className="text-muted-foreground text-base">
-          Don't have an account?{" "}
+          Do not have an account?{" "}
           <Link href="/signup" className="text-lime-500 font-semibold">
             Sign up
           </Link>

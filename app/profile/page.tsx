@@ -7,7 +7,6 @@ import {
   MapPin,
   Trophy,
   Calendar,
-  ChevronRight,
   Edit3,
   Check,
   LogOut,
@@ -15,7 +14,6 @@ import {
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cities } from "@/data";
-import type { City } from "@/data";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "@/lib/auth/client";
 import { getProfile, updateProfile, getBookings } from "@/lib/api";
@@ -84,7 +82,7 @@ export default function ProfilePage() {
     if (!session?.user) return;
     
     Promise.all([
-      getProfile().catch(() => profile),
+      getProfile().catch(() => null),
       getBookings().catch(() => [])
     ]).then(([profileData, bookingsData]) => {
       if (profileData) {
@@ -130,11 +128,11 @@ export default function ProfilePage() {
     setEditingName(false);
   };
 
-  const updateField = (field: keyof ProfileData, value: any) => {
+  const updateField = <K extends keyof ProfileData>(field: K, value: ProfileData[K]) => {
     setProfile({ ...profile, [field]: value });
   };
 
-  const handleFieldChange = (field: keyof ProfileData, value: any) => {
+  const handleFieldChange = <K extends keyof ProfileData>(field: K, value: ProfileData[K]) => {
     updateField(field, value);
   };
 

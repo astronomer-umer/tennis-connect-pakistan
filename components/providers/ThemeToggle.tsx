@@ -5,10 +5,15 @@ import { useTheme } from "./ThemeProvider";
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const [mounted] = useState(() => {
+    if (typeof window !== "undefined") {
+      return true;
+    }
+    return false;
+  });
 
   useEffect(() => {
-    setMounted(true);
+    // This effect is intentionally empty to trigger re-render after mount
   }, []);
 
   if (!mounted) {

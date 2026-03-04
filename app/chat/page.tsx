@@ -59,7 +59,7 @@ export default function ChatWithUsPage() {
         </div>
         <h1 className="text-2xl font-bold text-foreground mb-2">Message Sent!</h1>
         <p className="text-muted-foreground text-center mb-6">
-          Thank you for reaching out. We'll get back to you soon!
+          Thank you for reaching out. We will get back to you soon!
         </p>
         <button
           onClick={() => {

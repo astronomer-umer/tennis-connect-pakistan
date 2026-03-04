@@ -34,7 +34,7 @@ export default function SignupPage() {
       } else {
         router.push("/onboarding");
       }
-    } catch (err) {
+    } catch {
       setError("Failed to create account");
     } finally {
       setLoading(false);
@@ -49,7 +49,7 @@ export default function SignupPage() {
           <TennisRacketLogo size={48} className="text-black" />
         </div>
         <h1 className="text-3xl font-black text-foreground mb-2">Create Account</h1>
-        <p className="text-muted-foreground text-lg">Join Pakistan's tennis community</p>
+        <p className="text-muted-foreground text-lg">Join Pakistan tennis community</p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex-1 px-6 space-y-5">

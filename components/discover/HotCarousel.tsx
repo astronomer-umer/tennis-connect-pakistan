@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import type { Player } from "@/data";
-import { Star, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { getDiscover } from "@/lib/api";
 
 function HotCard({ item }: { item: Player }) {

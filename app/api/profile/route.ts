@@ -2,6 +2,20 @@ import { NextResponse } from "next/server";
 import { runQuery, runStatement } from "@/lib/server-db";
 import { auth } from "@/lib/auth";
 
+interface ProfileRow {
+  name: string;
+  city: string;
+  level: number;
+  play_type: string;
+  bio: string;
+  age: number;
+  gender: string;
+  wins: number;
+  losses: number;
+  golden_sets: number;
+  preferred_cities: string;
+}
+
 export async function GET(request: Request) {
   const session = await auth.api.getSession({
     headers: {
@@ -13,23 +27,11 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const profiles = await runQuery("SELECT * FROM user_profiles WHERE user_id = ?", [session.user.id]);
+  const profiles = await runQuery<ProfileRow>("SELECT * FROM user_profiles WHERE user_id = ?", [session.user.id]);
   const profile = profiles.length > 0 ? profiles[0] : null;
 
   if (!profile) {
-    return NextResponse.json({
-      name: session.user.name || session.user.email?.split("@")[0] || "Player",
-      email: session.user.email,
-      city: "Lahore",
-      level: 3.5,
-      playType: "Both",
-      bio: "",
-      age: null,
-      gender: null,
-      wins: 0,
-      losses: 0,
-      goldenSets: 0,
-    });
+    return NextResponse.json({ error: "No profile found" }, { status: 404 });
   }
 
   return NextResponse.json({

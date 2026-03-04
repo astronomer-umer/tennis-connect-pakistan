@@ -1,7 +1,7 @@
 "use client";
 
-// Main App Logo - Tennis Ball with Racket Background
-export function TennisBallLogo({ className = "", size = 40 }: { className?: string; size?: number }) {
+// Realistic Tennis Ball
+export function TennisBallLogo({ className = "", size = 80 }: { className?: string; size?: number }) {
   return (
     <svg 
       width={size} 
@@ -11,126 +11,97 @@ export function TennisBallLogo({ className = "", size = 40 }: { className?: stri
       className={className}
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* Racket - semi-transparent background */}
-      <g opacity="0.3">
-        {/* Racket handle */}
-        <rect x="48" y="45" width="6" height="28" rx="2" fill="currentColor" className="text-lime-400"/>
-        {/* Racket head */}
-        <ellipse cx="35" cy="28" rx="22" ry="20" fill="none" stroke="currentColor" strokeWidth="3" className="text-lime-400"/>
-        {/* Racket strings */}
-        <line x1="20" y1="14" x2="20" y2="42" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
-        <line x1="27" y1="12" x2="27" y2="44" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
-        <line x1="35" y1="11" x2="35" y2="45" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
-        <line x1="43" y1="12" x2="43" y2="44" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
-        <line x1="50" y1="14" x2="50" y2="42" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
-        <line x1="14" y1="20" x2="56" y2="20" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
-        <line x1="13" y1="28" x2="57" y2="28" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
-        <line x1="13" y1="36" x2="57" y2="36" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
-      </g>
+      <defs>
+        <radialGradient id="ballGrad" cx="35%" cy="35%" r="60%">
+          <stop offset="0%" stopColor="#D4FF4A" />
+          <stop offset="60%" stopColor="#ADFF2F" />
+          <stop offset="100%" stopColor="#7CB342" />
+        </radialGradient>
+      </defs>
       
-      {/* Tennis Ball - Main */}
-      <circle cx="30" cy="50" r="20" fill="currentColor" className="text-lime-400"/>
-      <path d="M16 50 Q30 32 44 50" stroke="#0a1628" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
-      <path d="M16 50 Q30 68 44 50" stroke="#0a1628" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      {/* Main ball */}
+      <circle cx="40" cy="40" r="36" fill="url(#ballGrad)" />
       
-      {/* Glow effect */}
-      <circle cx="30" cy="50" r="20" fill="none" stroke="currentColor" strokeWidth="1" className="text-lime-400/30"/>
+      {/* Curved lines */}
+      <path d="M16 40 Q40 8 64 40" stroke="#33691E" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.7"/>
+      <path d="M16 40 Q40 72 64 40" stroke="#33691E" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.7"/>
+      
+      {/* Highlight */}
+      <ellipse cx="28" cy="26" rx="14" ry="10" fill="#FFFFFF" opacity="0.3" />
     </svg>
   );
 }
 
-// Tennis Racket Logo Component
-export function TennisRacketLogo({ className = "", size = 40 }: { className?: string; size?: number }) {
+// Realistic Tennis Racket
+export function TennisRacketLogo({ className = "", size = 80 }: { className?: string; size?: number }) {
   return (
     <svg 
       width={size} 
       height={size} 
-      viewBox="0 0 64 64" 
+      viewBox="0 0 80 80" 
       fill="none" 
       className={className}
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* Racket handle */}
-      <rect x="28" y="38" width="8" height="22" rx="2" fill="currentColor" className="text-lime-400"/>
+      <defs>
+        <linearGradient id="handleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#2D2D2D" />
+          <stop offset="50%" stopColor="#1A1A1A" />
+          <stop offset="100%" stopColor="#0D0D0D" />
+        </linearGradient>
+      </defs>
+      
       {/* Racket head */}
-      <ellipse cx="32" cy="20" rx="20" ry="18" fill="none" stroke="currentColor" strokeWidth="4" className="text-lime-400"/>
-      {/* Racket strings vertical */}
-      <line x1="20" y1="8" x2="20" y2="32" stroke="currentColor" strokeWidth="1.5" className="text-lime-400/60"/>
-      <line x1="26" y1="6" x2="26" y2="34" stroke="currentColor" strokeWidth="1.5" className="text-lime-400/60"/>
-      <line x1="32" y1="5" x2="32" y2="35" stroke="currentColor" strokeWidth="1.5" className="text-lime-400/60"/>
-      <line x1="38" y1="6" x2="38" y2="34" stroke="currentColor" strokeWidth="1.5" className="text-lime-400/60"/>
-      <line x1="44" y1="8" x2="44" y2="32" stroke="currentColor" strokeWidth="1.5" className="text-lime-400/60"/>
-      {/* Racket strings horizontal */}
-      <line x1="14" y1="14" x2="50" y2="14" stroke="currentColor" strokeWidth="1.5" className="text-lime-400/60"/>
-      <line x1="12" y1="20" x2="52" y2="20" stroke="currentColor" strokeWidth="1.5" className="text-lime-400/60"/>
-      <line x1="12" y1="26" x2="52" y2="26" stroke="currentColor" strokeWidth="1.5" className="text-lime-400/60"/>
+      <ellipse cx="40" cy="28" rx="28" ry="22" fill="none" stroke="#C0C0C0" strokeWidth="4" />
+      
+      {/* Throat */}
+      <path d="M22 44 Q40 52 58 44" stroke="#A0A0A0" strokeWidth="3" fill="none" />
+      
+      {/* Handle */}
+      <rect x="35" y="52" width="10" height="22" rx="3" fill="url(#handleGrad)" />
+      
+      {/* Strings */}
+      <g stroke="#D0D0D0" strokeWidth="0.5" opacity="0.6">
+        {[16, 22, 28, 34, 40, 46, 52, 58, 64].map((x) => (
+          <line key={x} x1={x} y1="12" x2={x} y2="44" />
+        ))}
+        {[18, 26, 34, 42].map((y) => (
+          <line key={y} x1="18" y1={y} x2="62" y2={y} />
+        ))}
+      </g>
     </svg>
   );
 }
 
-// Tennis Ball Icon
+// Ball + Racket combo for background
+export function TennisBallWithRacket({ className = "", size = 200 }: { className?: string; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 200 200" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+      {/* Racket tilted */}
+      <g transform="rotate(-25, 100, 100)" opacity="0.5">
+        <ellipse cx="100" cy="70" rx="50" ry="38" fill="none" stroke="#B0B0B0" strokeWidth="5" />
+        <rect x="90" y="105" width="20" height="55" rx="4" fill="#1A1A1A" />
+        <g stroke="#D0D0D0" strokeWidth="0.5" opacity="0.4">
+          {[60, 70, 80, 90, 100, 110, 120, 130, 140].map((x) => (
+            <line key={x} x1={x} y1="40" x2={x} y2="100" />
+          ))}
+        </g>
+      </g>
+      {/* Ball */}
+      <circle cx="140" cy="140" r="28" fill="#ADFF2F" />
+      <path d="M120 140 Q140 118 160 140" stroke="#33691E" strokeWidth="2" fill="none" />
+      <path d="M120 140 Q140 162 160 140" stroke="#33691E" strokeWidth="2" fill="none" />
+    </svg>
+  );
+}
+
+// Small ball icon
 export function TennisBallIcon({ className = "", size = 24 }: { className?: string; size?: number }) {
   return (
-    <svg 
-      width={size} 
-      height={size} 
-      viewBox="0 0 40 40" 
-      fill="none" 
-      className={className}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* Ball */}
-      <circle cx="20" cy="20" r="18" fill="currentColor" className="text-lime-400"/>
-      {/* Curved lines on ball */}
-      <path d="M8 20 Q20 6 32 0a162820" stroke="#" strokeWidth="2" fill="none" strokeLinecap="round"/>
-      <path d="M8 20 Q20 34 32 20" stroke="#0a1628" strokeWidth="2" fill="none" strokeLinecap="round"/>
-    </svg>
-  );
-}
-
-// Tennis Court Icon
-export function TennisCourtIcon({ className = "", size = 24 }: { className?: string; size?: number }) {
-  return (
-    <svg 
-      width={size} 
-      height={size} 
-      viewBox="0 0 48 48" 
-      fill="none" 
-      className={className}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* Court outline */}
-      <rect x="4" y="8" width="40" height="32" rx="2" stroke="currentColor" strokeWidth="2" className="text-lime-400"/>
-      {/* Center line */}
-      <line x1="4" y1="24" x2="44" y2="24" stroke="currentColor" strokeWidth="1.5" className="text-lime-400"/>
-      {/* Service boxes */}
-      <line x1="24" y1="8" x2="24" y2="16" stroke="currentColor" strokeWidth="1.5" className="text-lime-400"/>
-      <line x1="24" y1="32" x2="24" y2="40" stroke="currentColor" strokeWidth="1.5" className="text-lime-400"/>
-      {/* Net */}
-      <line x1="4" y1="16" x2="44" y2="16" stroke="currentColor" strokeWidth="2" className="text-orange-500"/>
-      <line x1="4" y1="32" x2="44" y2="32" stroke="currentColor" strokeWidth="2" className="text-orange-500"/>
-    </svg>
-  );
-}
-
-// Combined Tennis Ball & Racket Icon
-export function TennisIcon({ className = "", size = 24 }: { className?: string; size?: number }) {
-  return (
-    <svg 
-      width={size} 
-      height={size} 
-      viewBox="0 0 48 48" 
-      fill="none" 
-      className={className}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* Ball */}
-      <circle cx="18" cy="18" r="12" fill="currentColor" className="text-lime-400"/>
-      <path d="M10 18 Q18 10 26 18" stroke="#0a1628" strokeWidth="1.5" fill="none"/>
-      <path d="M10 18 Q18 26 26 18" stroke="#0a1628" strokeWidth="1.5" fill="none"/>
-      {/* Racket */}
-      <rect x="30" y="28" width="4" height="14" rx="1" fill="currentColor" className="text-lime-400"/>
-      <ellipse cx="39" cy="18" rx="8" ry="10" fill="none" stroke="currentColor" strokeWidth="2" className="text-lime-400"/>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12" r="10" fill="#ADFF2F" />
+      <path d="M5 12 Q12 4 19 12" stroke="#33691E" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+      <path d="M5 12 Q12 20 19 12" stroke="#33691E" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
     </svg>
   );
 }

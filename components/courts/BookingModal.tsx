@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { format, addDays } from "date-fns";
 import { X, Calendar, Clock, Smartphone, CheckCircle, MessageCircle, Thermometer } from "lucide-react";
 import confetti from "canvas-confetti";

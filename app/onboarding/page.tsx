@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Save, ChevronRight, ChevronLeft, User, MapPin, Trophy, MessageCircle } from "lucide-react";
+import { Save, ChevronRight, ChevronLeft, User, Trophy, MessageCircle } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cities } from "@/data";
 import { useSession } from "@/lib/auth/client";
 import { updateProfile } from "@/lib/api";
+import { TennisBallLogo, TennisRacketLogo } from "@/components/providers/TennisIcons";
 
 const LEVEL_LABELS: Record<number, string> = {
   2.5: "Beginner",
@@ -80,8 +81,18 @@ export default function OnboardingPage() {
     <div className="min-h-dvh bg-background flex flex-col">
       {/* Header */}
       <div className="px-6 pt-8 pb-4">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-black text-foreground">Setup Profile</h1>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-lime-500 to-lime-600 flex items-center justify-center lime-glow">
+            <TennisBallLogo size={44} />
+          </div>
+          <div>
+            <h1 className="text-foreground font-black text-xl">Tennis Connect</h1>
+            <p className="text-orange-500 text-xs font-bold tracking-widest uppercase">Pakistan</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-2xl font-black text-foreground">Setup Profile</h2>
           <span className="text-sm text-muted-foreground">Step {step} of 3</span>
         </div>
         
@@ -112,8 +123,15 @@ export default function OnboardingPage() {
       {step === 1 && (
         <div className="px-6 flex-1">
           <div className="mb-6">
-            <h2 className="text-xl font-bold text-foreground mb-1">Welcome to Tennis Connect! 🎾</h2>
-            <p className="text-muted-foreground text-base">Let's set up your profile</p>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center orange-glow">
+                <TennisRacketLogo size={28} />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-foreground">Welcome!</h2>
+                <p className="text-muted-foreground text-base">Let us set up your profile</p>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-5">
@@ -231,7 +249,7 @@ export default function OnboardingPage() {
         <div className="px-6 flex-1">
           <div className="mb-6">
             <h2 className="text-xl font-bold text-foreground mb-1">About You</h2>
-            <p className="text-muted-foreground text-base">Tell others what you're looking for</p>
+            <p className="text-muted-foreground text-base">Tell others what you are looking for</p>
           </div>
 
           <div>

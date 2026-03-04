@@ -1,7 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Building2, Users, Calendar, TrendingUp } from "lucide-react";
+
+interface CourtData {
+  id: string;
+  name: string;
+}
+
+interface PlayerData {
+  id: string;
+  name: string;
+}
+
+interface BookingData {
+  id: string;
+  total_cost: number;
+}
 
 interface Stats {
   courts: number;
@@ -20,11 +36,14 @@ export default function AdminDashboard() {
       fetch("/api/admin/players").then(r => r.json()),
       fetch("/api/admin/bookings").then(r => r.json()),
     ]).then(([courts, players, bookings]) => {
-      const revenue = (bookings as any[]).reduce((sum: number, b: any) => sum + (b.total_cost || 0), 0);
+      const courtsData = courts as CourtData[];
+      const playersData = players as PlayerData[];
+      const bookingsData = bookings as BookingData[];
+      const revenue = bookingsData.reduce((sum: number, b: BookingData) => sum + (b.total_cost || 0), 0);
       setStats({
-        courts: (courts as any[]).length,
-        players: (players as any[]).length,
-        bookings: (bookings as any[]).length,
+        courts: courtsData.length,
+        players: playersData.length,
+        bookings: bookingsData.length,
         totalRevenue: revenue,
       });
       setLoading(false);
@@ -65,9 +84,9 @@ export default function AdminDashboard() {
       <div className="mt-8 bg-gray-800 rounded-xl p-6">
         <h3 className="text-lg font-bold mb-4">Quick Actions</h3>
         <div className="flex gap-4">
-          <a href="/admin/courts" className="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700">Manage Courts</a>
-          <a href="/admin/players" className="px-4 py-2 bg-green-600 rounded-lg hover:bg-green-700">Manage Players</a>
-          <a href="/admin/bookings" className="px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700">View Bookings</a>
+          <Link href="/admin/courts" className="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700">Manage Courts</Link>
+          <Link href="/admin/players" className="px-4 py-2 bg-green-600 rounded-lg hover:bg-green-700">Manage Players</Link>
+          <Link href="/admin/bookings" className="px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700">View Bookings</Link>
         </div>
       </div>
     </div>

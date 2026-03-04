@@ -42,16 +42,26 @@ export default function AdminCourts() {
     featured: false,
   });
 
-  useEffect(() => {
-    loadCourts();
-  }, []);
-
   const loadCourts = async () => {
     const res = await fetch("/api/admin/courts");
     const data = await res.json();
     setCourts(data);
     setLoading(false);
   };
+
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchData() {
+      const res = await fetch("/api/admin/courts");
+      const data = await res.json();
+      if (!cancelled) {
+        setCourts(data);
+        setLoading(false);
+      }
+    }
+    fetchData();
+    return () => { cancelled = true; };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { Player, Coach, Court, City } from "@/data";
+import type { Player, Coach, City } from "@/data";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 

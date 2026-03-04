@@ -1,17 +1,52 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { CitySelector } from "@/components/discover/CitySelector";
 import { HotCarousel } from "@/components/discover/HotCarousel";
 import { SwipeStack } from "@/components/discover/SwipeStack";
 import { TennisBallLogo } from "@/components/providers/TennisIcons";
+import { getProfile } from "@/lib/api";
 
 export default function DiscoverPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkProfile = async () => {
+      try {
+        const profile = await getProfile();
+        if (!profile || !profile.name) {
+          router.replace("/onboarding");
+        }
+      } catch (err: unknown) {
+        const error = err as Error & { message?: string };
+        if (error.message === "No profile found" || error.message?.includes("404")) {
+          router.replace("/onboarding");
+        } else {
+          router.replace("/login");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkProfile();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-dvh">
+        <div className="w-10 h-10 border-3 border-lime-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-dvh pb-tab relative">
       {/* Top Bar */}
       <header className="sticky top-0 z-30 glass border-b border-white/10 px-4 py-4">
         <div className="flex items-center gap-3">
-          {/* New Tennis Ball Logo */}
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-lime-500 to-lime-600 flex items-center justify-center lime-glow">
             <TennisBallLogo size={44} />
           </div>

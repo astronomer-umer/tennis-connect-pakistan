@@ -24,16 +24,26 @@ export default function AdminBookings() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadBookings();
-  }, []);
-
   const loadBookings = async () => {
     const res = await fetch("/api/admin/bookings");
     const data = await res.json();
     setBookings(data);
     setLoading(false);
   };
+
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchData() {
+      const res = await fetch("/api/admin/bookings");
+      const data = await res.json();
+      if (!cancelled) {
+        setBookings(data);
+        setLoading(false);
+      }
+    }
+    fetchData();
+    return () => { cancelled = true; };
+  }, []);
 
   const updateStatus = async (id: string, status: string) => {
     await fetch("/api/admin/bookings", {

@@ -1,29 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "@/lib/auth/client";
 import { getProfile } from "@/lib/api";
 
 export function OnboardingRedirect() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  const { data: session, isPending: sessionLoading } = useSession();
 
   useEffect(() => {
-    const checkProfile = async () => {
+    if (sessionLoading) return;
+
+    const checkAndRedirect = async () => {
+      if (!session) {
+        router.push("/onboarding");
+        return;
+      }
+
       try {
         const profile = await getProfile();
         if (!profile || !profile.name) {
           router.push("/onboarding");
         }
       } catch {
-        // Not logged in - stay on current page (login/signup)
-      } finally {
-        setLoading(false);
+        router.push("/onboarding");
       }
     };
 
-    checkProfile();
-  }, [router]);
+    checkAndRedirect();
+  }, [session, sessionLoading, router]);
 
   return null;
 }
