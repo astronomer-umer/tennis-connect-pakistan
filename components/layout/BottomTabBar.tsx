@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MapPin, Zap, User, MessageCircle } from "lucide-react";
-import { useAppStore } from "@/store/useAppStore";
 
 const TABS = [
   { href: "/", label: "Discover", Icon: Zap },
@@ -14,11 +13,10 @@ const TABS = [
 
 export function BottomTabBar() {
   const pathname = usePathname();
-  const matchCount = useAppStore((s) => s.matches.length);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-border/60 glass pb-safe">
-      <div className="flex items-center justify-around max-w-lg mx-auto px-2 h-14">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 glass pb-safe">
+      <div className="flex items-center justify-around max-w-lg mx-auto px-2 h-16">
         {TABS.map(({ href, label, Icon }) => {
           const active = pathname === href;
 
@@ -26,8 +24,8 @@ export function BottomTabBar() {
             <Link
               key={href}
               href={href}
-              className={`relative flex flex-col items-center gap-0.5 px-4 py-2 rounded-2xl transition-all duration-200 ${
-                active ? "text-lime-500" : "text-muted-foreground"
+              className={`relative flex flex-col items-center gap-1 px-4 py-1 rounded-2xl transition-all duration-200 ${
+                active ? "text-lime-500" : "text-white/50"
               }`}
             >
               {active && (
@@ -35,14 +33,13 @@ export function BottomTabBar() {
               )}
 
               <Icon
-                size={20}
+                size={26}
                 strokeWidth={active ? 2.5 : 1.8}
-                className={active ? "drop-shadow-[0_0_8px_#22c55e]" : ""}
               />
 
               <span
-                className={`text-[10px] font-semibold tracking-wide transition-colors ${
-                  active ? "text-lime-500" : "text-muted-foreground"
+                className={`text-[11px] font-semibold tracking-wide transition-colors ${
+                  active ? "text-lime-500" : "text-white/50"
                 }`}
               >
                 {label}

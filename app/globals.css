@@ -118,6 +118,32 @@
   50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.1); }
 }
 
+/* Ambient flow animation - smooth and buttery */
+@keyframes ambient-flow {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  25% { 
+    transform: translate(20px, -30px) scale(1.05);
+    opacity: 0.9;
+  }
+  50% { 
+    transform: translate(-10px, 20px) scale(1.02);
+    opacity: 1;
+  }
+  75% { 
+    transform: translate(-30px, -10px) scale(0.98);
+    opacity: 0.95;
+  }
+}
+
+/* Very subtle pulse */
+@keyframes subtle-glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+}
+
 /* ─── Base ────────────────────────────────────────────── */
 @layer base {
   * {
@@ -150,6 +176,8 @@
   .pulse-orange { animation: var(--animate-pulse-orange); }
   .animate-pulse-slow { animation: pulse-slow 8s ease-in-out infinite; }
   .animate-pulse-slow-delayed { animation: pulse-slow-delayed 10s ease-in-out infinite; }
+  .animate-ambient-flow { animation: ambient-flow 20s ease-in-out infinite; }
+  .animate-subtle-glow { animation: subtle-glow 6s ease-in-out infinite; }
 
   .glass {
     background: rgba(15, 39, 68, 0.85);
