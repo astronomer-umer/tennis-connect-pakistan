@@ -5,6 +5,7 @@ import { BottomTabBar } from "@/components/layout/BottomTabBar";
 import { ServiceWorkerRegistrar } from "@/components/layout/ServiceWorkerRegistrar";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { SplashScreen } from "@/components/providers/SplashScreen";
+import { AnimatedBackground } from "@/components/providers/AnimatedBackground";
 
 const geist = Geist({
   variable: "--font-geist-sans",
@@ -13,7 +14,7 @@ const geist = Geist({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#00ff9d",
+  themeColor: "#22c55e",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -45,10 +46,12 @@ export default function RootLayout({
         <ThemeProvider>
           <SplashScreen />
           <ServiceWorkerRegistrar />
-          <main className="lg:max-w-none lg:w-full max-w-lg mx-auto relative min-h-dvh bg-gradient-light dark:bg-gradient-dark transition-colors duration-300">
-            {children}
-          </main>
-          <BottomTabBar />
+          <AnimatedBackground>
+            <main className="lg:max-w-none lg:w-full max-w-lg mx-auto relative min-h-dvh">
+              {children}
+            </main>
+            <BottomTabBar />
+          </AnimatedBackground>
         </ThemeProvider>
       </body>
     </html>
