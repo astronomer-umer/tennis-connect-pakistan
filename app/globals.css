@@ -144,6 +144,55 @@
   50% { opacity: 0.8; }
 }
 
+/* Fluid buttery spotlight animations */
+@keyframes spotlight-1 {
+  0%, 100% { 
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  33% { 
+    transform: translate(-45%, -55%) scale(1.1) rotate(2deg);
+    opacity: 0.9;
+  }
+  66% { 
+    transform: translate(-55%, -45%) scale(0.95) rotate(-1deg);
+    opacity: 1;
+  }
+}
+
+@keyframes spotlight-2 {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+    opacity: 0.8;
+  }
+  50% { 
+    transform: translate(-50px, 30px) scale(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes spotlight-3 {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+  50% { 
+    transform: translate(40px, -20px) scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+@keyframes spotlight-4 {
+  0%, 100% { 
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.5;
+  }
+  50% { 
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.8;
+  }
+}
+
 /* ─── Base ────────────────────────────────────────────── */
 @layer base {
   * {
@@ -178,6 +227,12 @@
   .animate-pulse-slow-delayed { animation: pulse-slow-delayed 10s ease-in-out infinite; }
   .animate-ambient-flow { animation: ambient-flow 20s ease-in-out infinite; }
   .animate-subtle-glow { animation: subtle-glow 6s ease-in-out infinite; }
+  
+  /* Spotlight animations */
+  .animate-spotlight-1 { animation: spotlight-1 15s ease-in-out infinite; }
+  .animate-spotlight-2 { animation: spotlight-2 18s ease-in-out infinite; }
+  .animate-spotlight-3 { animation: spotlight-3 20s ease-in-out infinite; }
+  .animate-spotlight-4 { animation: spotlight-4 12s ease-in-out infinite; }
 
   .glass {
     background: rgba(15, 39, 68, 0.85);

@@ -1,5 +1,44 @@
 "use client";
 
+// Main App Logo - Tennis Ball with Racket Background
+export function TennisBallLogo({ className = "", size = 40 }: { className?: string; size?: number }) {
+  return (
+    <svg 
+      width={size} 
+      height={size} 
+      viewBox="0 0 80 80" 
+      fill="none" 
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Racket - semi-transparent background */}
+      <g opacity="0.3">
+        {/* Racket handle */}
+        <rect x="48" y="45" width="6" height="28" rx="2" fill="currentColor" className="text-lime-400"/>
+        {/* Racket head */}
+        <ellipse cx="35" cy="28" rx="22" ry="20" fill="none" stroke="currentColor" strokeWidth="3" className="text-lime-400"/>
+        {/* Racket strings */}
+        <line x1="20" y1="14" x2="20" y2="42" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
+        <line x1="27" y1="12" x2="27" y2="44" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
+        <line x1="35" y1="11" x2="35" y2="45" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
+        <line x1="43" y1="12" x2="43" y2="44" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
+        <line x1="50" y1="14" x2="50" y2="42" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
+        <line x1="14" y1="20" x2="56" y2="20" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
+        <line x1="13" y1="28" x2="57" y2="28" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
+        <line x1="13" y1="36" x2="57" y2="36" stroke="currentColor" strokeWidth="1" className="text-lime-400/50"/>
+      </g>
+      
+      {/* Tennis Ball - Main */}
+      <circle cx="30" cy="50" r="20" fill="currentColor" className="text-lime-400"/>
+      <path d="M16 50 Q30 32 44 50" stroke="#0a1628" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      <path d="M16 50 Q30 68 44 50" stroke="#0a1628" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      
+      {/* Glow effect */}
+      <circle cx="30" cy="50" r="20" fill="none" stroke="currentColor" strokeWidth="1" className="text-lime-400/30"/>
+    </svg>
+  );
+}
+
 // Tennis Racket Logo Component
 export function TennisRacketLogo({ className = "", size = 40 }: { className?: string; size?: number }) {
   return (
@@ -43,7 +82,7 @@ export function TennisBallIcon({ className = "", size = 24 }: { className?: stri
       {/* Ball */}
       <circle cx="20" cy="20" r="18" fill="currentColor" className="text-lime-400"/>
       {/* Curved lines on ball */}
-      <path d="M8 20 Q20 6 32 20" stroke="#0a1628" strokeWidth="2" fill="none" strokeLinecap="round"/>
+      <path d="M8 20 Q20 6 32 0a162820" stroke="#" strokeWidth="2" fill="none" strokeLinecap="round"/>
       <path d="M8 20 Q20 34 32 20" stroke="#0a1628" strokeWidth="2" fill="none" strokeLinecap="round"/>
     </svg>
   );

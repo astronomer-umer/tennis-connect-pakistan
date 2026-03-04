@@ -3,7 +3,7 @@
 import { CitySelector } from "@/components/discover/CitySelector";
 import { HotCarousel } from "@/components/discover/HotCarousel";
 import { SwipeStack } from "@/components/discover/SwipeStack";
-import { TennisRacketLogo } from "@/components/providers/TennisIcons";
+import { TennisBallLogo } from "@/components/providers/TennisIcons";
 
 export default function DiscoverPage() {
   return (
@@ -11,9 +11,9 @@ export default function DiscoverPage() {
       {/* Top Bar */}
       <header className="sticky top-0 z-30 glass border-b border-white/10 px-4 py-4">
         <div className="flex items-center gap-3">
-          {/* Racket Logo - Larger */}
+          {/* New Tennis Ball Logo */}
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-lime-500 to-lime-600 flex items-center justify-center lime-glow">
-            <TennisRacketLogo size={36} className="text-black" />
+            <TennisBallLogo size={44} />
           </div>
           <div>
             <h1 className="text-foreground font-bold text-xl leading-none">
