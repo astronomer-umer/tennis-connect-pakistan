@@ -3,8 +3,6 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import { BottomTabBar } from "@/components/layout/BottomTabBar";
 import { ServiceWorkerRegistrar } from "@/components/layout/ServiceWorkerRegistrar";
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { SplashScreen } from "@/components/providers/SplashScreen";
 import { AnimatedBackground } from "@/components/providers/AnimatedBackground";
 
 const geist = Geist({
@@ -43,16 +41,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geist.variable} antialiased min-h-dvh`}>
-        <ThemeProvider>
-          <SplashScreen />
-          <ServiceWorkerRegistrar />
-          <AnimatedBackground>
-            <main className="lg:max-w-none lg:w-full max-w-lg mx-auto relative min-h-dvh">
-              {children}
-            </main>
-            <BottomTabBar />
-          </AnimatedBackground>
-        </ThemeProvider>
+        <ServiceWorkerRegistrar />
+        <AnimatedBackground>
+          <main className="lg:max-w-none lg:w-full max-w-lg mx-auto relative min-h-dvh">
+            {children}
+          </main>
+          <BottomTabBar />
+        </AnimatedBackground>
       </body>
     </html>
   );

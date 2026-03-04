@@ -3,13 +3,12 @@
 import { CitySelector } from "@/components/discover/CitySelector";
 import { HotCarousel } from "@/components/discover/HotCarousel";
 import { SwipeStack } from "@/components/discover/SwipeStack";
-import { ThemeToggle } from "@/components/providers/ThemeToggle";
 import { TennisRacketLogo, TennisBallIcon } from "@/components/providers/TennisIcons";
 
 function FloatingTennisBall({ style, delay }: { style?: React.CSSProperties; delay?: string }) {
   return (
     <div 
-      className="absolute opacity-25 pointer-events-none" 
+      className="absolute opacity-20 pointer-events-none" 
       style={{ 
         ...style, 
         animationDelay: delay || '0s',
@@ -30,7 +29,7 @@ export default function DiscoverPage() {
       <FloatingTennisBall style={{ top: '40%', left: '5%', animationDelay: '1s' }} />
       
       {/* Top Bar */}
-      <header className="sticky top-0 z-30 glass dark:glass border-b border-white/10 px-4 py-3">
+      <header className="sticky top-0 z-30 glass border-b border-white/10 px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {/* Racket Logo */}
@@ -46,7 +45,6 @@ export default function DiscoverPage() {
               </p>
             </div>
           </div>
-          <ThemeToggle />
         </div>
       </header>
 
