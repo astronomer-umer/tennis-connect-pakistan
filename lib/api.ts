@@ -85,6 +85,7 @@ export async function updateProfile(profile: {
   age?: number;
   gender?: string;
   preferredCities?: string[];
+  photoUrl?: string | null;
 }) {
   return fetchWithAuth(`${API_BASE}/api/profile`, {
     method: "POST",

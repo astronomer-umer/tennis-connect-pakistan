@@ -1,38 +1,37 @@
 "server-only";
 
-import initSqlJs, { Database as SqlJsDatabase } from "sql.js";
-import fs from "fs";
-import path from "path";
+import { createClient, type Client } from "@libsql/client";
 
-let db: SqlJsDatabase | null = null;
-let dbPath: string;
+let client: Client | null = null;
 
-export async function getDb() {
-  if (db) return db;
+function getClient(): Client {
+  if (client) return client;
 
-  const SQL = await initSqlJs();
-  
-  // Use /tmp on Vercel (read-only filesystem), cwd locally
-  const isVercel = process.env.VERCEL === "1";
-  dbPath = isVercel
-    ? path.join("/tmp", "tennis-connect.db")
-    : path.join(process.cwd(), "tennis-connect.db");
+  const url = process.env.TURSO_DATABASE_URL;
+  const authToken = process.env.TURSO_AUTH_TOKEN;
 
-  if (fs.existsSync(dbPath)) {
-    const buffer = fs.readFileSync(dbPath);
-    db = new SQL.Database(buffer);
-  } else {
-    db = new SQL.Database();
+  if (!url) {
+    throw new Error(
+      "TURSO_DATABASE_URL is not set. Please create a Turso database and set the environment variable."
+    );
   }
 
-  initializeTables();
-  return db;
+  client = createClient({
+    url,
+    authToken,
+  });
+
+  return client;
 }
 
-function initializeTables() {
-  if (!db) return;
+let tablesInitialized = false;
 
-  db.run(`
+async function initializeTables() {
+  if (tablesInitialized) return;
+
+  const db = getClient();
+
+  await db.executeMultiple(`
     CREATE TABLE IF NOT EXISTS user_profiles (
       id TEXT PRIMARY KEY,
       user_id TEXT UNIQUE NOT NULL,
@@ -50,10 +49,8 @@ function initializeTables() {
       preferred_cities TEXT DEFAULT '[]',
       created_at INTEGER,
       updated_at INTEGER
-    )
-  `);
+    );
 
-  db.run(`
     CREATE TABLE IF NOT EXISTS courts (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -70,10 +67,8 @@ function initializeTables() {
       close_time TEXT,
       featured INTEGER DEFAULT 0,
       created_at INTEGER
-    )
-  `);
+    );
 
-  db.run(`
     CREATE TABLE IF NOT EXISTS bookings (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
@@ -88,20 +83,16 @@ function initializeTables() {
       total_cost INTEGER NOT NULL,
       status TEXT DEFAULT 'confirmed',
       booked_at INTEGER
-    )
-  `);
+    );
 
-  db.run(`
     CREATE TABLE IF NOT EXISTS matches (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
       profile_id TEXT NOT NULL,
       profile_type TEXT NOT NULL,
       matched_at INTEGER
-    )
-  `);
+    );
 
-  db.run(`
     CREATE TABLE IF NOT EXISTS messages (
       id TEXT PRIMARY KEY,
       match_id TEXT NOT NULL,
@@ -109,49 +100,36 @@ function initializeTables() {
       text TEXT NOT NULL,
       is_read INTEGER DEFAULT 0,
       sent_at INTEGER
-    )
-  `);
+    );
 
-  db.run(`
     CREATE TABLE IF NOT EXISTS swipes (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
       profile_id TEXT NOT NULL,
       direction TEXT NOT NULL,
       swiped_at INTEGER
-    )
+    );
   `);
 
-  saveDb();
-  console.log("Database initialized (empty - use admin panel to add data)");
+  tablesInitialized = true;
+  console.log("Database tables initialized on Turso");
 }
 
-export function saveDb() {
-  if (!db || !dbPath) return;
-  const data = db.export();
-  const buffer = Buffer.from(data);
-  fs.writeFileSync(dbPath, buffer);
+export async function runQuery<T = Record<string, unknown>>(
+  sql: string,
+  params: (string | number | null)[] = []
+): Promise<T[]> {
+  await initializeTables();
+  const db = getClient();
+  const result = await db.execute({ sql, args: params });
+  return result.rows as unknown as T[];
 }
 
-export async function runQuery<T = Record<string, unknown>>(sql: string, params: (string | number | null)[] = []): Promise<T[]> {
-  const database = await getDb();
-  const stmt = database.prepare(sql);
-  stmt.bind(params);
-  const results: T[] = [];
-  while (stmt.step()) {
-    const columns = stmt.getColumnNames();
-    const values = stmt.get();
-    results.push(columns.reduce((obj: Record<string, unknown>, col: string, i: number) => {
-      obj[col] = values[i];
-      return obj;
-    }, {}) as T);
-  }
-  stmt.free();
-  return results;
-}
-
-export async function runStatement(sql: string, params: (string | number | null)[] = []) {
-  const database = await getDb();
-  database.run(sql, params);
-  saveDb();
+export async function runStatement(
+  sql: string,
+  params: (string | number | null)[] = []
+) {
+  await initializeTables();
+  const db = getClient();
+  await db.execute({ sql, args: params });
 }

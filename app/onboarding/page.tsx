@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Save, ChevronRight, ChevronLeft, User, Trophy, MessageCircle, AlertCircle } from "lucide-react";
+import Image from "next/image";
+import { Save, ChevronRight, ChevronLeft, User, Trophy, MessageCircle, AlertCircle, Camera } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cities } from "@/data";
 import { useSession } from "@/lib/auth/client";
@@ -40,7 +41,9 @@ export default function OnboardingPage() {
     age: 25,
     gender: "M" as "M" | "F",
     preferredCities: ["Lahore"] as string[],
+    photoUrl: null as string | null,
   });
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Redirect to login if unauthenticated
   useEffect(() => {
@@ -73,6 +76,7 @@ export default function OnboardingPage() {
             preferredCities: existing.preferredCities?.length > 0
               ? existing.preferredCities
               : prev.preferredCities,
+            photoUrl: existing.photoUrl || prev.photoUrl,
           }));
           setLoaded(true);
           return;
@@ -104,6 +108,7 @@ export default function OnboardingPage() {
         age: profile.age,
         gender: profile.gender,
         preferredCities: profile.preferredCities,
+        photoUrl: profile.photoUrl,
       });
       router.push("/");
     } catch (err) {
@@ -183,6 +188,55 @@ export default function OnboardingPage() {
           </div>
 
           <div className="space-y-5">
+            {/* Photo Upload */}
+            <div className="flex flex-col items-center">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="relative group"
+              >
+                <div className="w-24 h-24 rounded-full overflow-hidden border-3 border-lime-400/60 bg-card flex items-center justify-center transition-all group-hover:border-lime-400">
+                  {profile.photoUrl ? (
+                    <Image
+                      src={profile.photoUrl}
+                      alt="Profile photo"
+                      width={96}
+                      height={96}
+                      className="w-full h-full object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <User size={36} className="text-muted-foreground" />
+                  )}
+                </div>
+                <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-lime-400 flex items-center justify-center border-2 border-background shadow-lg">
+                  <Camera size={14} className="text-black" />
+                </div>
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  // Limit to 500KB for base64 storage
+                  if (file.size > 500 * 1024) {
+                    setError("Photo must be under 500KB. Please choose a smaller image.");
+                    return;
+                  }
+                  const reader = new FileReader();
+                  reader.onloadend = () => {
+                    setProfile({ ...profile, photoUrl: reader.result as string });
+                    setError(null);
+                  };
+                  reader.readAsDataURL(file);
+                }}
+              />
+              <p className="text-muted-foreground text-xs mt-2">Tap to add photo</p>
+            </div>
+
             <div>
               <label className="text-base font-medium text-foreground mb-2 block">Your Name</label>
               <input

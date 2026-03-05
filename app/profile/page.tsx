@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { format } from "date-fns";
+import Image from "next/image";
 import {
   User,
   MapPin,
@@ -11,6 +12,7 @@ import {
   Check,
   LogOut,
   Save,
+  Camera,
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cities } from "@/data";
@@ -42,6 +44,7 @@ interface ProfileData {
   losses: number;
   goldenSets: number;
   preferredCities: string[];
+  photoUrl?: string | null;
 }
 
 interface Booking {
@@ -77,6 +80,7 @@ export default function ProfilePage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState("");
+  const photoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!session?.user) return;
@@ -111,6 +115,7 @@ export default function ProfilePage() {
         age: profile.age,
         gender: profile.gender,
         preferredCities: profile.preferredCities,
+        photoUrl: profile.photoUrl,
       });
       setEditingName(false);
     } catch (error) {
@@ -174,11 +179,63 @@ export default function ProfilePage() {
       <div className="px-4 mt-5 space-y-5 pb-6">
         {/* ── Avatar + Name ── */}
         <div className="flex items-center gap-4 bg-surface border border-line rounded-2xl p-4">
-          <div className="w-16 h-16 rounded-full bg-brand/15 border-2 border-brand/40 flex items-center justify-center shadow-[0_0_16px_#00ff9d25]">
-            <span className="text-brand text-2xl font-black">
-              {(profile.name || profile.email?.charAt(0) || "U").toUpperCase()}
-            </span>
-          </div>
+          <button
+            type="button"
+            onClick={() => photoInputRef.current?.click()}
+            className="relative group shrink-0"
+          >
+            <div className="w-16 h-16 rounded-full overflow-hidden bg-brand/15 border-2 border-brand/40 flex items-center justify-center shadow-[0_0_16px_#00ff9d25] transition-all group-hover:border-brand/70">
+              {profile.photoUrl ? (
+                <Image
+                  src={profile.photoUrl}
+                  alt="Profile"
+                  width={64}
+                  height={64}
+                  className="w-full h-full object-cover"
+                  unoptimized
+                />
+              ) : (
+                <span className="text-brand text-2xl font-black">
+                  {(profile.name || profile.email?.charAt(0) || "U").charAt(0).toUpperCase()}
+                </span>
+              )}
+            </div>
+            <div className="absolute -bottom-0.5 -right-0.5 w-6 h-6 rounded-full bg-brand flex items-center justify-center border-2 border-[var(--surface)] shadow">
+              <Camera size={10} className="text-pit" />
+            </div>
+          </button>
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              if (file.size > 500 * 1024) {
+                alert("Photo must be under 500KB.");
+                return;
+              }
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                const newProfile = { ...profile, photoUrl: reader.result as string };
+                setProfile(newProfile);
+                // Auto-save the photo
+                updateProfile({
+                  name: newProfile.name,
+                  city: newProfile.city,
+                  level: newProfile.level,
+                  playType: newProfile.playType,
+                  bio: newProfile.bio,
+                  age: newProfile.age,
+                  gender: newProfile.gender,
+                  preferredCities: newProfile.preferredCities,
+                  photoUrl: newProfile.photoUrl,
+                }).catch(console.error);
+              };
+              reader.readAsDataURL(file);
+            }}
+          />
           <div className="flex-1 min-w-0">
             {editingName ? (
               <div className="flex items-center gap-2">
