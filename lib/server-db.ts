@@ -10,16 +10,16 @@ function getClient(): Client {
   const url = process.env.TURSO_DATABASE_URL;
   const authToken = process.env.TURSO_AUTH_TOKEN;
 
-  if (!url) {
-    throw new Error(
-      "TURSO_DATABASE_URL is not set. Please create a Turso database and set the environment variable."
+  if (url) {
+    // Turso cloud or local file DB
+    client = createClient({ url, authToken });
+  } else {
+    // Fallback: in-memory SQLite (works on Vercel but data resets on cold start)
+    console.warn(
+      "TURSO_DATABASE_URL not set — using in-memory SQLite. Data will not persist between serverless invocations."
     );
+    client = createClient({ url: ":memory:" });
   }
-
-  client = createClient({
-    url,
-    authToken,
-  });
 
   return client;
 }
@@ -111,8 +111,62 @@ async function initializeTables() {
     );
   `);
 
+  // Seed courts if empty (for in-memory fallback or fresh DB)
+  const courtCount = await db.execute("SELECT COUNT(*) as cnt FROM courts");
+  const count = (courtCount.rows[0] as unknown as { cnt: number }).cnt;
+  if (count === 0) {
+    await seedCourts(db);
+  }
+
+  // Seed players if empty
+  const playerCount = await db.execute("SELECT COUNT(*) as cnt FROM user_profiles WHERE user_id LIKE 'seed-%'");
+  const pCount = (playerCount.rows[0] as unknown as { cnt: number }).cnt;
+  if (pCount === 0) {
+    await seedPlayers(db);
+  }
+
   tablesInitialized = true;
-  console.log("Database tables initialized on Turso");
+  console.log("Database tables initialized" + (process.env.TURSO_DATABASE_URL ? " on Turso" : " (in-memory)"));
+}
+
+async function seedCourts(db: Client) {
+  const courts = [
+    { id: "court-1", name: "Lahore Gymkhana Tennis Courts", city: "Lahore", surface: "Hard", surfaces: "Hard,Clay", price: 2500, photo: "https://picsum.photos/seed/court1/600/400", distance: "2.3 km", totalCourts: 4, amenities: '["Floodlights","Pro Shop","Changing Rooms"]', featured: 1 },
+    { id: "court-2", name: "Punjab Club Tennis Complex", city: "Lahore", surface: "Clay", surfaces: "Clay", price: 2000, photo: "https://picsum.photos/seed/court2/600/400", distance: "5.1 km", totalCourts: 3, amenities: '["Floodlights","Coaching"]', featured: 0 },
+    { id: "court-3", name: "Islamabad Tennis Complex", city: "Islamabad", surface: "Hard", surfaces: "Hard,Grass", price: 3000, photo: "https://picsum.photos/seed/court3/600/400", distance: "1.8 km", totalCourts: 6, amenities: '["Floodlights","Pro Shop","Gym","Cafe"]', featured: 1 },
+    { id: "court-4", name: "Karachi Sindh Sports Board", city: "Karachi", surface: "Hard", surfaces: "Hard", price: 1500, photo: "https://picsum.photos/seed/court4/600/400", distance: "3.7 km", totalCourts: 2, amenities: '["Floodlights"]', featured: 0 },
+    { id: "court-5", name: "Defence Raya Tennis Club", city: "Lahore", surface: "Grass", surfaces: "Grass,Hard", price: 3500, photo: "https://picsum.photos/seed/court5/600/400", distance: "8.2 km", totalCourts: 5, amenities: '["Floodlights","Pro Shop","Swimming Pool","Cafe"]', featured: 1 },
+    { id: "court-6", name: "Peshawar Services Club", city: "Peshawar", surface: "Clay", surfaces: "Clay", price: 1200, photo: "https://picsum.photos/seed/court6/600/400", distance: "4.5 km", totalCourts: 2, amenities: '["Floodlights","Coaching"]', featured: 0 },
+  ];
+
+  for (const c of courts) {
+    await db.execute({
+      sql: `INSERT INTO courts (id, name, city, surface, surfaces, price_per_hour, photo, distance, total_courts, amenities, featured, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [c.id, c.name, c.city, c.surface, c.surfaces, c.price, c.photo, c.distance, c.totalCourts, c.amenities, c.featured, Date.now()],
+    });
+  }
+  console.log(`Seeded ${courts.length} courts`);
+}
+
+async function seedPlayers(db: Client) {
+  const players = [
+    { id: "seed-1", name: "Ahmed Khan", age: 28, gender: "M", city: "Lahore", level: 4.0, playType: "Singles", bio: "Competitive player looking for tough matches" },
+    { id: "seed-2", name: "Sara Ali", age: 24, gender: "F", city: "Islamabad", level: 3.5, playType: "Both", bio: "Love playing tennis on weekends" },
+    { id: "seed-3", name: "Omar Farooq", age: 32, gender: "M", city: "Karachi", level: 4.5, playType: "Singles", bio: "Former national junior player" },
+    { id: "seed-4", name: "Fatima Zahra", age: 22, gender: "F", city: "Lahore", level: 3.0, playType: "Doubles", bio: "New to tennis, eager to learn and play" },
+    { id: "seed-5", name: "Bilal Hussain", age: 35, gender: "M", city: "Islamabad", level: 4.0, playType: "Both", bio: "Weekend warrior, always up for a game" },
+    { id: "seed-6", name: "Ayesha Malik", age: 27, gender: "F", city: "Lahore", level: 3.5, playType: "Singles", bio: "Training for upcoming tournament" },
+    { id: "seed-7", name: "Hassan Raza", age: 30, gender: "M", city: "Karachi", level: 5.0, playType: "Singles", bio: "Coach and competitive player" },
+    { id: "seed-8", name: "Zainab Qureshi", age: 26, gender: "F", city: "Peshawar", level: 3.0, playType: "Doubles", bio: "Looking for doubles partners in Peshawar" },
+  ];
+
+  for (const p of players) {
+    await db.execute({
+      sql: `INSERT INTO user_profiles (id, user_id, name, age, gender, city, level, play_type, bio, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [p.id, p.id, p.name, p.age, p.gender, p.city, p.level, p.playType, p.bio, Date.now(), Date.now()],
+    });
+  }
+  console.log(`Seeded ${players.length} players`);
 }
 
 export async function runQuery<T = Record<string, unknown>>(
