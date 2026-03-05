@@ -11,8 +11,13 @@ const TABS = [
   { href: "/profile", label: "Profile", Icon: User },
 ];
 
+const HIDDEN_PATHS = ["/onboarding", "/login", "/signup", "/admin-login", "/admin"];
+
 export function BottomTabBar() {
   const pathname = usePathname();
+
+  // Hide tab bar on auth, onboarding, and admin pages
+  if (HIDDEN_PATHS.some((p) => pathname.startsWith(p))) return null;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 glass pb-safe">

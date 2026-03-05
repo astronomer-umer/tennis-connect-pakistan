@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Save, ChevronRight, ChevronLeft, User, Trophy, MessageCircle } from "lucide-react";
+import { Save, ChevronRight, ChevronLeft, User, Trophy, MessageCircle, AlertCircle } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cities } from "@/data";
 import { useSession } from "@/lib/auth/client";
-import { updateProfile } from "@/lib/api";
+import { updateProfile, getProfile } from "@/lib/api";
 import { TennisBallLogo, TennisRacketLogo } from "@/components/providers/TennisIcons";
 
 const LEVEL_LABELS: Record<number, string> = {
@@ -29,6 +29,8 @@ export default function OnboardingPage() {
   const { data: session, isPending } = useSession();
   const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
   const [profile, setProfile] = useState({
     name: "",
     city: "Lahore",
@@ -40,13 +42,57 @@ export default function OnboardingPage() {
     preferredCities: ["Lahore"] as string[],
   });
 
+  // Redirect to login if unauthenticated
   useEffect(() => {
     if (!isPending && !session) {
       router.push("/login");
     }
   }, [session, isPending, router]);
 
+  // Pre-fill from session name + existing profile (if editing)
+  useEffect(() => {
+    if (!session || loaded) return;
+
+    const prefill = async () => {
+      // Start with session name
+      const prefillName = session.user?.name || "";
+
+      try {
+        // Try loading existing profile (user may be re-onboarding)
+        const existing = await getProfile();
+        if (existing && existing.name) {
+          setProfile((prev) => ({
+            ...prev,
+            name: existing.name || prev.name,
+            city: existing.city || prev.city,
+            level: existing.level ?? prev.level,
+            playType: existing.playType || prev.playType,
+            bio: existing.bio || prev.bio,
+            age: existing.age ?? prev.age,
+            gender: existing.gender || prev.gender,
+            preferredCities: existing.preferredCities?.length > 0
+              ? existing.preferredCities
+              : prev.preferredCities,
+          }));
+          setLoaded(true);
+          return;
+        }
+      } catch {
+        // No profile exists yet — that's fine
+      }
+
+      // Fallback: use session name if available
+      if (prefillName) {
+        setProfile((prev) => ({ ...prev, name: prefillName }));
+      }
+      setLoaded(true);
+    };
+
+    prefill();
+  }, [session, loaded]);
+
   const handleSave = async () => {
+    setError(null);
     setSaving(true);
     try {
       await updateProfile({
@@ -60,8 +106,10 @@ export default function OnboardingPage() {
         preferredCities: profile.preferredCities,
       });
       router.push("/");
-    } catch (error) {
-      console.error("Failed to save profile:", error);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to save profile. Please try again.";
+      setError(message);
+      console.error("Failed to save profile:", err);
     } finally {
       setSaving(false);
     }
@@ -121,7 +169,7 @@ export default function OnboardingPage() {
 
       {/* Step 1: Basic Info */}
       {step === 1 && (
-        <div className="px-6 flex-1">
+        <div className="px-6 flex-1 overflow-y-auto">
           <div className="mb-6">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center orange-glow">
@@ -144,6 +192,21 @@ export default function OnboardingPage() {
                 className="w-full h-14 px-5 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-lime-400 text-lg"
                 placeholder="Enter your name"
               />
+            </div>
+
+            <div>
+              <label className="text-base font-medium text-foreground mb-2 block">Age</label>
+              <div className="flex items-center gap-4">
+                <input
+                  type="number"
+                  min={13}
+                  max={80}
+                  value={profile.age}
+                  onChange={(e) => setProfile({ ...profile, age: Math.max(13, Math.min(80, parseInt(e.target.value) || 13)) })}
+                  className="w-28 h-14 px-5 rounded-2xl bg-card border border-border text-foreground text-center text-lg font-bold focus:outline-none focus:border-lime-400"
+                />
+                <span className="text-muted-foreground text-sm">years old</span>
+              </div>
             </div>
 
             <div>
@@ -178,7 +241,7 @@ export default function OnboardingPage() {
                         : "bg-card border-border text-muted-foreground hover:border-lime-400/50"
                     }`}
                   >
-                    {g === "M" ? "👨 Male" : "👩 Female"}
+                    {g === "M" ? "Male" : "Female"}
                   </button>
                 ))}
               </div>
@@ -262,8 +325,16 @@ export default function OnboardingPage() {
             />
           </div>
 
-          <div className="mt-6 p-5 bg-lime-400/10 border-2 border-lime-400/30 rounded-2xl">
-            <p className="text-lime-400 text-base font-semibold">🎾 Ready to connect!</p>
+          {/* Error message */}
+          {error && (
+            <div className="mt-4 flex items-start gap-3 bg-red-500/10 border-2 border-red-500/30 rounded-2xl px-4 py-3">
+              <AlertCircle size={18} className="text-red-400 shrink-0 mt-0.5" />
+              <p className="text-red-300 text-sm">{error}</p>
+            </div>
+          )}
+
+          <div className="mt-4 p-5 bg-lime-400/10 border-2 border-lime-400/30 rounded-2xl">
+            <p className="text-lime-400 text-base font-semibold">Ready to connect!</p>
             <p className="text-muted-foreground text-sm mt-1">
               Complete your profile to start discovering players and courts near you.
             </p>
@@ -276,7 +347,7 @@ export default function OnboardingPage() {
         <div className="flex gap-4">
           {step > 1 && (
             <button
-              onClick={() => setStep(step - 1)}
+              onClick={() => { setError(null); setStep(step - 1); }}
               className="flex items-center justify-center gap-2 flex-1 py-5 border-2 border-border text-foreground font-bold rounded-2xl hover:bg-card transition-colors"
             >
               <ChevronLeft size={20} /> Back
