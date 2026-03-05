@@ -16,9 +16,11 @@ import {
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cities } from "@/data";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "@/lib/auth/client";
 import { getProfile, updateProfile, getBookings } from "@/lib/api";
+import { TennisBallLogo } from "@/components/providers/TennisIcons";
 
 const LEVEL_LABELS: Record<number, string> = {
   2.5: "Beginner",
@@ -156,6 +158,35 @@ export default function ProfilePage() {
 
   const levelValue = [profile.level];
   const levelLabel = LEVEL_LABELS[profile.level] ?? "Intermediate";
+
+  // Unauthenticated users: show sign-up prompt
+  if (!session?.user) {
+    return (
+      <div className="flex flex-col min-h-dvh bg-background pb-tab items-center justify-center px-6">
+        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-lime-500 to-lime-600 flex items-center justify-center mb-6 lime-glow">
+          <TennisBallLogo size={52} />
+        </div>
+        <h2 className="text-2xl font-black text-foreground mb-2 text-center">Your Profile</h2>
+        <p className="text-muted-foreground text-center mb-8 max-w-xs">
+          Sign up to create your tennis profile, track your stats, and connect with other players.
+        </p>
+        <div className="flex gap-4 w-full max-w-xs">
+          <Link
+            href="/signup"
+            className="flex-1 py-4 bg-lime-400 text-black font-bold rounded-2xl text-center text-lg"
+          >
+            Sign Up
+          </Link>
+          <Link
+            href="/login"
+            className="flex-1 py-4 border-2 border-border text-foreground font-bold rounded-2xl text-center text-lg hover:bg-card transition-colors"
+          >
+            Log In
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/lib/auth/client";
-import { getProfile } from "@/lib/api";
+import { getProfile, updateProfile } from "@/lib/api";
 import { TennisRacketLogo } from "@/components/providers/TennisIcons";
 
 export const dynamic = "force-dynamic";
+
+const ONBOARDING_DATA_KEY = "onboarding_data";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -30,23 +32,51 @@ export default function LoginPage() {
 
       if (result.error) {
         setError(result.error.message || "Invalid email or password");
-      } else {
-        try {
-          const profile = await getProfile();
-          if (!profile || !profile.name) {
-            router.push("/onboarding");
-          } else {
-            router.push("/");
-          }
-        } catch (err: unknown) {
-          const error = err as Error & { message?: string };
-          if (error.message === "No profile found" || error.message?.includes("404")) {
-            router.push("/onboarding");
-          } else {
-            router.push("/");
-          }
-        }
+        setLoading(false);
+        return;
       }
+
+      // Check if user already has a DB profile
+      let hasProfile = false;
+      try {
+        const profile = await getProfile();
+        hasProfile = !!(profile && profile.name);
+      } catch {
+        // No profile
+      }
+
+      if (hasProfile) {
+        // Existing user with profile — go home
+        router.push("/");
+        return;
+      }
+
+      // No DB profile — check if there's localStorage onboarding data to sync
+      try {
+        const raw = localStorage.getItem(ONBOARDING_DATA_KEY);
+        if (raw) {
+          const onboardingData = JSON.parse(raw);
+          await updateProfile({
+            name: onboardingData.name || "",
+            city: onboardingData.city || "Lahore",
+            level: onboardingData.level ?? 3.5,
+            playType: onboardingData.playType || "Both",
+            bio: onboardingData.bio || "",
+            age: onboardingData.age ?? 25,
+            gender: onboardingData.gender || "M",
+            preferredCities: onboardingData.preferredCities || ["Lahore"],
+            photoUrl: onboardingData.photoUrl || null,
+          });
+          localStorage.removeItem(ONBOARDING_DATA_KEY);
+          router.push("/");
+          return;
+        }
+      } catch {
+        console.error("Failed to sync onboarding data from localStorage");
+      }
+
+      // No localStorage data either — send to onboarding
+      router.push("/onboarding");
     } catch {
       setError("Invalid email or password");
     } finally {

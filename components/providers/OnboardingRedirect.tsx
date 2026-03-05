@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useSession } from "@/lib/auth/client";
 import { getProfile } from "@/lib/api";
 
-// Pages that should NOT be redirected (auth pages + onboarding itself)
+// Pages that should NOT trigger any redirect
 const EXCLUDED_PATHS = ["/onboarding", "/login", "/signup", "/admin-login"];
 
 export function OnboardingRedirect() {
@@ -23,20 +23,26 @@ export function OnboardingRedirect() {
     if (pathname.startsWith("/admin")) return;
 
     const checkAndRedirect = async () => {
-      // Unauthenticated users go to login, not onboarding
       if (!session) {
-        router.push("/login");
+        // Unauthenticated user: check localStorage for onboarding completion
+        const completed = localStorage.getItem("onboarding_completed");
+        if (!completed) {
+          router.push("/onboarding");
+        }
+        // If completed, let them browse freely (no redirect)
         return;
       }
 
-      // Authenticated users without a profile go to onboarding
+      // Authenticated user: check DB profile
       try {
         const profile = await getProfile();
         if (!profile || !profile.name) {
           router.push("/onboarding");
         }
       } catch {
-        // 404 or error means no profile exists
+        // 404 or error means no profile exists — check if localStorage has data
+        // If they completed onboarding while unauthenticated, the signup/login
+        // page will sync that data. For now, send them to onboarding.
         router.push("/onboarding");
       }
     };

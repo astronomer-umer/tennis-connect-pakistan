@@ -25,6 +25,35 @@ const STEPS = [
   { id: 3, title: "About", icon: MessageCircle, description: "Bio" },
 ];
 
+// localStorage key for storing onboarding data
+const ONBOARDING_DATA_KEY = "onboarding_data";
+const ONBOARDING_COMPLETED_KEY = "onboarding_completed";
+
+interface OnboardingProfile {
+  name: string;
+  city: string;
+  level: number;
+  playType: "Singles" | "Doubles" | "Both";
+  bio: string;
+  age: number;
+  gender: "M" | "F";
+  preferredCities: string[];
+  photoUrl: string | null;
+}
+
+function getLocalOnboardingData(): OnboardingProfile | null {
+  try {
+    const raw = localStorage.getItem(ONBOARDING_DATA_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch { /* ignore */ }
+  return null;
+}
+
+function saveLocalOnboardingData(data: OnboardingProfile) {
+  localStorage.setItem(ONBOARDING_DATA_KEY, JSON.stringify(data));
+  localStorage.setItem(ONBOARDING_COMPLETED_KEY, "true");
+}
+
 export default function OnboardingPage() {
   const router = useRouter();
   const { data: session, isPending } = useSession();
@@ -32,84 +61,104 @@ export default function OnboardingPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
-  const [profile, setProfile] = useState({
+  const [profile, setProfile] = useState<OnboardingProfile>({
     name: "",
     city: "Lahore",
     level: 3.5,
-    playType: "Both" as "Singles" | "Doubles" | "Both",
+    playType: "Both",
     bio: "",
     age: 25,
-    gender: "M" as "M" | "F",
-    preferredCities: ["Lahore"] as string[],
-    photoUrl: null as string | null,
+    gender: "M",
+    preferredCities: ["Lahore"],
+    photoUrl: null,
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Redirect to login if unauthenticated
+  // Pre-fill from localStorage (unauth) or DB profile (auth)
   useEffect(() => {
-    if (!isPending && !session) {
-      router.push("/login");
-    }
-  }, [session, isPending, router]);
-
-  // Pre-fill from session name + existing profile (if editing)
-  useEffect(() => {
-    if (!session || loaded) return;
+    if (isPending || loaded) return;
 
     const prefill = async () => {
-      // Start with session name
-      const prefillName = session.user?.name || "";
+      if (session) {
+        // Authenticated: try loading existing profile from DB
+        const prefillName = session.user?.name || "";
+        try {
+          const existing = await getProfile();
+          if (existing && existing.name) {
+            setProfile((prev) => ({
+              ...prev,
+              name: existing.name || prev.name,
+              city: existing.city || prev.city,
+              level: existing.level ?? prev.level,
+              playType: existing.playType || prev.playType,
+              bio: existing.bio || prev.bio,
+              age: existing.age ?? prev.age,
+              gender: existing.gender || prev.gender,
+              preferredCities: existing.preferredCities?.length > 0
+                ? existing.preferredCities
+                : prev.preferredCities,
+              photoUrl: existing.photoUrl || prev.photoUrl,
+            }));
+            setLoaded(true);
+            return;
+          }
+        } catch {
+          // No profile exists yet — check localStorage for data from pre-signup onboarding
+        }
 
-      try {
-        // Try loading existing profile (user may be re-onboarding)
-        const existing = await getProfile();
-        if (existing && existing.name) {
+        // Check localStorage for pre-signup onboarding data
+        const localData = getLocalOnboardingData();
+        if (localData) {
           setProfile((prev) => ({
             ...prev,
-            name: existing.name || prev.name,
-            city: existing.city || prev.city,
-            level: existing.level ?? prev.level,
-            playType: existing.playType || prev.playType,
-            bio: existing.bio || prev.bio,
-            age: existing.age ?? prev.age,
-            gender: existing.gender || prev.gender,
-            preferredCities: existing.preferredCities?.length > 0
-              ? existing.preferredCities
-              : prev.preferredCities,
-            photoUrl: existing.photoUrl || prev.photoUrl,
+            ...localData,
+            name: localData.name || prefillName || prev.name,
           }));
           setLoaded(true);
           return;
         }
-      } catch {
-        // No profile exists yet — that's fine
-      }
 
-      // Fallback: use session name if available
-      if (prefillName) {
-        setProfile((prev) => ({ ...prev, name: prefillName }));
+        // Fallback: use session name
+        if (prefillName) {
+          setProfile((prev) => ({ ...prev, name: prefillName }));
+        }
+      } else {
+        // Unauthenticated: check localStorage for existing onboarding data
+        const localData = getLocalOnboardingData();
+        if (localData) {
+          setProfile((prev) => ({ ...prev, ...localData }));
+        }
       }
       setLoaded(true);
     };
 
     prefill();
-  }, [session, loaded]);
+  }, [session, isPending, loaded]);
 
   const handleSave = async () => {
     setError(null);
     setSaving(true);
     try {
-      await updateProfile({
-        name: profile.name,
-        city: profile.city,
-        level: profile.level,
-        playType: profile.playType,
-        bio: profile.bio,
-        age: profile.age,
-        gender: profile.gender,
-        preferredCities: profile.preferredCities,
-        photoUrl: profile.photoUrl,
-      });
+      if (session) {
+        // Authenticated: save to DB
+        await updateProfile({
+          name: profile.name,
+          city: profile.city,
+          level: profile.level,
+          playType: profile.playType,
+          bio: profile.bio,
+          age: profile.age,
+          gender: profile.gender,
+          preferredCities: profile.preferredCities,
+          photoUrl: profile.photoUrl,
+        });
+        // Clear localStorage data since it's now in DB
+        localStorage.removeItem(ONBOARDING_DATA_KEY);
+        localStorage.setItem(ONBOARDING_COMPLETED_KEY, "true");
+      } else {
+        // Unauthenticated: save to localStorage
+        saveLocalOnboardingData(profile);
+      }
       router.push("/");
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to save profile. Please try again.";
@@ -127,8 +176,6 @@ export default function OnboardingPage() {
       </div>
     );
   }
-
-  if (!session) return null;
 
   return (
     <div className="min-h-dvh bg-background flex flex-col">
@@ -390,7 +437,9 @@ export default function OnboardingPage() {
           <div className="mt-4 p-5 bg-lime-400/10 border-2 border-lime-400/30 rounded-2xl">
             <p className="text-lime-400 text-base font-semibold">Ready to connect!</p>
             <p className="text-muted-foreground text-sm mt-1">
-              Complete your profile to start discovering players and courts near you.
+              {session
+                ? "Complete your profile to start discovering players and courts near you."
+                : "Complete setup to explore players and courts. Sign up later to save your profile and unlock all features!"}
             </p>
           </div>
         </div>
@@ -429,7 +478,7 @@ export default function OnboardingPage() {
               ) : (
                 <>
                   <Save size={22} />
-                  Get Started
+                  {session ? "Get Started" : "Explore Now"}
                 </>
               )}
             </button>

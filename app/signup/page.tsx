@@ -5,9 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { signUp } from "@/lib/auth/client";
+import { updateProfile } from "@/lib/api";
 import { TennisRacketLogo } from "@/components/providers/TennisIcons";
 
 export const dynamic = "force-dynamic";
+
+const ONBOARDING_DATA_KEY = "onboarding_data";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -31,9 +34,39 @@ export default function SignupPage() {
 
       if (result.error) {
         setError(result.error.message || "Failed to create account");
-      } else {
-        router.push("/onboarding");
+        setLoading(false);
+        return;
       }
+
+      // Check if there's onboarding data in localStorage to sync to DB
+      try {
+        const raw = localStorage.getItem(ONBOARDING_DATA_KEY);
+        if (raw) {
+          const onboardingData = JSON.parse(raw);
+          await updateProfile({
+            name: onboardingData.name || name,
+            city: onboardingData.city || "Lahore",
+            level: onboardingData.level ?? 3.5,
+            playType: onboardingData.playType || "Both",
+            bio: onboardingData.bio || "",
+            age: onboardingData.age ?? 25,
+            gender: onboardingData.gender || "M",
+            preferredCities: onboardingData.preferredCities || ["Lahore"],
+            photoUrl: onboardingData.photoUrl || null,
+          });
+          // Clear localStorage since data is now in DB
+          localStorage.removeItem(ONBOARDING_DATA_KEY);
+          // Profile synced — go straight to home
+          router.push("/");
+          return;
+        }
+      } catch {
+        // If sync fails, no big deal — they can still complete onboarding
+        console.error("Failed to sync onboarding data from localStorage");
+      }
+
+      // No localStorage data — send to onboarding
+      router.push("/onboarding");
     } catch {
       setError("Failed to create account");
     } finally {
