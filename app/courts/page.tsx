@@ -22,7 +22,7 @@ function CourtListCard({
   onBook: () => void;
 }) {
   return (
-    <div className="bg-surface border border-line rounded-2xl overflow-hidden fade-in">
+    <div className="bg-surface tennis-card rounded-2xl overflow-hidden fade-in court-surface">
       {/* Photo */}
       <div className="relative h-44 w-full">
         <Image src={court.photo} alt={court.name} fill className="object-cover" unoptimized />

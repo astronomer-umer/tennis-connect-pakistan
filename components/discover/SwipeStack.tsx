@@ -130,9 +130,11 @@ function SwipeCardWrapper({
 
 function PlayerCard({ p }: { p: Player }) {
   return (
-    <div className="absolute inset-0 rounded-3xl overflow-hidden">
+    <div className="absolute inset-0 rounded-3xl overflow-hidden tennis-card">
       <Image src={p.photo} alt={p.name} fill className="object-cover" unoptimized />
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
+      {/* Court-line accent along top edge */}
+      <div className="absolute top-0 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-lime-500/30 to-transparent" />
       {/* Level badge */}
       <div className="absolute top-5 right-5 bg-brand text-pit font-black text-base px-3 py-1.5 rounded-2xl shadow-[0_0_16px_#00ff9d60]">
         {p.level}
@@ -202,12 +204,15 @@ function MatchOverlay({
 
 function EmptyStack({ onReset }: { onReset: () => void }) {
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center p-8">
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center p-8 court-surface rounded-3xl border border-lime-500/10">
+      {/* Net pattern divider */}
+      <div className="net-divider w-24 mb-2" />
       <Trophy size={48} className="text-brand opacity-60" />
       <h3 className="text-white text-xl font-bold">You&apos;ve seen everyone!</h3>
       <p className="text-muted-foreground text-sm">
         Switch city or reset to discover more players & coaches.
       </p>
+      <div className="net-divider w-24 mt-1" />
       <button
         onClick={onReset}
         className="flex items-center gap-2 bg-brand text-pit font-bold px-6 py-3 rounded-2xl active:scale-95 transition-transform"

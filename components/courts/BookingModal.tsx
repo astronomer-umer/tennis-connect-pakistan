@@ -86,10 +86,10 @@ export function BookingModal({ court, onClose }: BookingModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm">
-      <div
-        className="w-full max-w-lg bg-surface border border-line rounded-t-3xl overflow-hidden slide-up"
-        style={{ maxHeight: "92dvh", overflowY: "auto" }}
-      >
+        <div
+          className="w-full max-w-lg bg-surface border border-line rounded-t-3xl overflow-hidden slide-up court-surface"
+          style={{ maxHeight: "92dvh", overflowY: "auto" }}
+        >
         {/* Header */}
         <div className="sticky top-0 z-10 bg-surface border-b border-line px-5 py-4 flex items-center justify-between">
           <div>

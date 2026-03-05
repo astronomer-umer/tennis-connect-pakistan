@@ -20,7 +20,9 @@ export function BottomTabBar() {
   if (HIDDEN_PATHS.some((p) => pathname.startsWith(p))) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 glass pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 glass pb-safe">
+      {/* Court-line top accent */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-lime-500/20 to-transparent" />
       <div className="flex items-center justify-around max-w-lg mx-auto px-2 h-16">
         {TABS.map(({ href, label, Icon }) => {
           const active = pathname === href;

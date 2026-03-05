@@ -193,6 +193,48 @@
   }
 }
 
+/* Floating tennis ball particle animations */
+@keyframes ball-float-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
+  25% { transform: translate(40px, -60px) scale(1.2); opacity: 0.25; }
+  50% { transform: translate(-20px, -100px) scale(0.9); opacity: 0.1; }
+  75% { transform: translate(30px, -40px) scale(1.1); opacity: 0.2; }
+}
+
+@keyframes ball-float-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.1; }
+  33% { transform: translate(-50px, 30px) scale(1.3); opacity: 0.2; }
+  66% { transform: translate(20px, -50px) scale(0.8); opacity: 0.08; }
+}
+
+@keyframes ball-float-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.1; }
+  40% { transform: translate(60px, -20px) scale(1.15); opacity: 0.18; }
+  80% { transform: translate(-30px, 40px) scale(0.85); opacity: 0.06; }
+}
+
+/* Tennis ball bounce for loading/transition states */
+@keyframes ball-bounce {
+  0%, 100% { transform: translateY(0) scaleY(1) scaleX(1); }
+  15% { transform: translateY(-30px) scaleY(1.1) scaleX(0.95); }
+  30% { transform: translateY(0) scaleY(0.85) scaleX(1.1); }
+  45% { transform: translateY(-15px) scaleY(1.05) scaleX(0.97); }
+  60% { transform: translateY(0) scaleY(0.92) scaleX(1.05); }
+  75% { transform: translateY(-5px) scaleY(1.02) scaleX(0.99); }
+}
+
+/* 3D mesh shimmer — subtle light sweep across icons */
+@keyframes mesh-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Racket swing animation */
+@keyframes racket-swing {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(8deg); }
+}
+
 /* ─── Base ────────────────────────────────────────────── */
 @layer base {
   * {
@@ -253,5 +295,64 @@
   }
   .orange-glow {
     box-shadow: 0 0 15px #f9731650, 0 0 30px #f9731625;
+  }
+
+  /* Floating ball particles */
+  .animate-ball-float-1 { animation: ball-float-1 25s ease-in-out infinite; }
+  .animate-ball-float-2 { animation: ball-float-2 30s ease-in-out infinite; }
+  .animate-ball-float-3 { animation: ball-float-3 22s ease-in-out infinite; }
+
+  /* Tennis ball bounce */
+  .animate-ball-bounce { animation: ball-bounce 1.2s ease-in-out; }
+
+  /* Mesh shimmer on 3D icons */
+  .mesh-shimmer {
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: mesh-shimmer 4s linear infinite;
+  }
+
+  /* Racket swing */
+  .animate-racket-swing { animation: racket-swing 3s ease-in-out infinite; }
+
+  /* Tennis card frame — subtle court-line border */
+  .tennis-card {
+    border: 1px solid rgba(34, 197, 94, 0.15);
+    box-shadow: 
+      inset 0 1px 0 rgba(34, 197, 94, 0.08),
+      0 4px 20px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(34, 197, 94, 0.05);
+  }
+
+  /* Net pattern divider */
+  .net-divider {
+    background-image: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 8px,
+      rgba(255, 255, 255, 0.06) 8px,
+      rgba(255, 255, 255, 0.06) 9px
+    );
+    height: 1px;
+    position: relative;
+  }
+  .net-divider::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 4px,
+      rgba(255, 255, 255, 0.04) 4px,
+      rgba(255, 255, 255, 0.04) 5px
+    );
+  }
+
+  /* Court surface texture for card backgrounds */
+  .court-surface {
+    background: 
+      linear-gradient(135deg, rgba(34, 197, 94, 0.03) 0%, transparent 50%),
+      linear-gradient(315deg, rgba(249, 115, 22, 0.02) 0%, transparent 50%);
   }
 }

@@ -32,13 +32,22 @@ export function SplashScreen() {
 
   return (
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gradient-to-b from-[#0a1628] to-[#1e3a5f]">
+      {/* Court line decorations */}
+      <div className="absolute inset-0 opacity-[0.04] pointer-events-none">
+        <div className="absolute top-[20%] left-[15%] right-[15%] h-[1px] bg-lime-500" />
+        <div className="absolute bottom-[20%] left-[15%] right-[15%] h-[1px] bg-lime-500" />
+        <div className="absolute top-[20%] bottom-[20%] left-[15%] w-[1px] bg-lime-500" />
+        <div className="absolute top-[20%] bottom-[20%] right-[15%] w-[1px] bg-lime-500" />
+        <div className="absolute top-[20%] bottom-[20%] left-1/2 w-[1px] bg-lime-500" />
+      </div>
+
       {/* Animated logo */}
       <div className="relative mb-10">
-        <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-lime-500 to-lime-600 flex items-center justify-center lime-glow animate-pulse">
-          <TennisRacketLogo size={64} className="text-black" />
+        <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-lime-500 to-lime-600 flex items-center justify-center lime-glow animate-pulse mesh-shimmer">
+          <TennisRacketLogo size={64} className="text-black animate-racket-swing" />
         </div>
-        {/* Floating ball */}
-        <div className="absolute -top-4 -right-4 animate-bounce">
+        {/* Floating ball with bounce */}
+        <div className="absolute -top-4 -right-4 animate-ball-bounce">
           <TennisBallIcon size={28} />
         </div>
       </div>

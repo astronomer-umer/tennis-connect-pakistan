@@ -8,9 +8,11 @@ import { getDiscover } from "@/lib/api";
 
 function HotCard({ item }: { item: Player }) {
   return (
-    <div className="relative shrink-0 w-36 h-44 rounded-2xl overflow-hidden border border-line">
+    <div className="relative shrink-0 w-36 h-44 rounded-2xl overflow-hidden tennis-card">
       <Image src={item.photo} alt={item.name} fill className="object-cover" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+      {/* Court-line accent */}
+      <div className="absolute top-0 left-3 right-3 h-[1px] bg-gradient-to-r from-transparent via-lime-500/25 to-transparent" />
       <div className="absolute top-2 right-2 bg-brand text-pit text-[10px] font-black px-2 py-0.5 rounded-lg">
         {item.level}
       </div>

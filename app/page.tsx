@@ -30,9 +30,9 @@ export default function DiscoverPage() {
       <HotCarousel />
 
       <div className="mx-4 my-3 flex items-center gap-3">
-        <div className="flex-1 h-px bg-white/10" />
+        <div className="flex-1 net-divider" />
         <span className="text-white/50 text-sm font-medium tracking-wide uppercase">Discover</span>
-        <div className="flex-1 h-px bg-white/10" />
+        <div className="flex-1 net-divider" />
       </div>
 
       <SwipeStack />

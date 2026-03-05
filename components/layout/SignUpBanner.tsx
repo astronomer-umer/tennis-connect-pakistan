@@ -19,6 +19,8 @@ export function SignUpBanner() {
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-lime-500 to-lime-600 text-black px-4 py-2.5 flex items-center justify-between gap-3 shadow-lg">
+      {/* Court-line bottom accent */}
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-lime-700/50 via-lime-800/30 to-lime-700/50" />
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <UserPlus size={18} className="shrink-0" />
         <p className="text-sm font-semibold truncate">
