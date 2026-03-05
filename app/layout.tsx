@@ -5,7 +5,6 @@ import { BottomTabBar } from "@/components/layout/BottomTabBar";
 import { SignUpBanner } from "@/components/layout/SignUpBanner";
 import { ServiceWorkerRegistrar } from "@/components/layout/ServiceWorkerRegistrar";
 import { AnimatedBackground } from "@/components/providers/AnimatedBackground";
-import { OnboardingRedirect } from "@/components/providers/OnboardingRedirect";
 
 const geist = Geist({
   variable: "--font-geist-sans",
@@ -45,7 +44,6 @@ export default function RootLayout({
       <body className={`${geist.variable} antialiased min-h-dvh`}>
         <ServiceWorkerRegistrar />
         <AnimatedBackground>
-          <OnboardingRedirect />
           <SignUpBanner />
           <main className="lg:max-w-none lg:w-full max-w-lg mx-auto relative min-h-dvh">
             {children}

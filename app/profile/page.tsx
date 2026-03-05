@@ -102,7 +102,7 @@ export default function ProfilePage() {
 
   const handleSignOut = async () => {
     await signOut();
-    router.push("/login");
+    router.push("/");
   };
 
   const saveProfile = async () => {

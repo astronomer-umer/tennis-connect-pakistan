@@ -1,15 +1,11 @@
 // Tennis Connect Pakistan — Service Worker
-// Cache-first strategy with offline fallback
+// Network-first strategy with offline fallback
 
-const CACHE_VERSION = "tcp-v1";
+const CACHE_VERSION = "tcp-v3";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
 const STATIC_ASSETS = [
-  "/",
-  "/courts",
-  "/matches",
-  "/profile",
   "/offline",
   "/icons/icon-192.svg",
   "/icons/icon-512.svg",
@@ -49,8 +45,9 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-GET and cross-origin (except images)
+  // Skip non-GET and API requests entirely — never cache them
   if (request.method !== "GET") return;
+  if (url.pathname.startsWith("/api/")) return;
 
   // Image caching (picsum, randomuser)
   if (
@@ -62,7 +59,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // App shell: try network first, fall back to cache
+  // For same-origin requests: always network first
   if (url.origin === self.location.origin) {
     event.respondWith(networkFirstWithOfflineFallback(request));
     return;
