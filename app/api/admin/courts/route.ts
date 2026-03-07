@@ -1,12 +1,19 @@
 import { NextResponse } from "next/server";
 import { runQuery, runStatement } from "@/lib/server-db";
+import { adminGuard } from "@/lib/admin-auth";
 
 export async function GET() {
+  const guard = await adminGuard();
+  if (guard) return guard;
+  
   const courts = await runQuery("SELECT * FROM courts ORDER BY featured DESC, name ASC");
   return NextResponse.json(courts);
 }
 
 export async function POST(request: Request) {
+  const guard = await adminGuard();
+  if (guard) return guard;
+  
   const body = await request.json();
   const { name, city, surface, surfaces, pricePerHour, photo, distance, totalCourts, amenities, isOpen, openTime, closeTime, featured } = body;
   
@@ -22,6 +29,9 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  const guard = await adminGuard();
+  if (guard) return guard;
+  
   const body = await request.json();
   const { id, name, city, surface, surfaces, pricePerHour, photo, distance, totalCourts, amenities, isOpen, openTime, closeTime, featured } = body;
   
@@ -34,6 +44,9 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const guard = await adminGuard();
+  if (guard) return guard;
+  
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
   

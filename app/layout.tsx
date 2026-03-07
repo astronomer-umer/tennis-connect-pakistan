@@ -21,7 +21,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Tennis Connect Pakistan",
+  title: "Tennis Connect Pakistan | Find Courts & Players",
   description:
     "Connect with Pakistani tennis players, book premium courts & find elite coaches. The sleekest tennis community app in Pakistan.",
   applicationName: "Tennis Connect Pakistan",
@@ -32,6 +32,23 @@ export const metadata: Metadata = {
   },
   formatDetection: { telephone: false },
   keywords: ["tennis", "pakistan", "courts", "players", "coaches", "lahore", "karachi", "islamabad"],
+  openGraph: {
+    title: "Tennis Connect Pakistan",
+    description: "Connect with Pakistani tennis players, book premium courts & find elite coaches.",
+    url: "https://tennis-connect-pakistan.vercel.app",
+    siteName: "Tennis Connect Pakistan",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tennis Connect Pakistan",
+    description: "Connect with Pakistani tennis players, book premium courts & find elite coaches.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

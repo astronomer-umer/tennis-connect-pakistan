@@ -109,6 +109,17 @@ async function initializeTables() {
       direction TEXT NOT NULL,
       swiped_at INTEGER
     );
+
+    CREATE TABLE IF NOT EXISTS contacts (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      phone TEXT,
+      city TEXT NOT NULL,
+      professional_status TEXT,
+      age_group TEXT,
+      message TEXT,
+      created_at INTEGER
+    );
   `);
 
   // Seed courts if empty (for in-memory fallback or fresh DB)

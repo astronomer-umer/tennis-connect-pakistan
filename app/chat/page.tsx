@@ -44,8 +44,17 @@ export default function ChatWithUsPage() {
 
     setSending(true);
     
-    // Simulate sending - in production this would save to database
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      
+      if (!res.ok) throw new Error("Failed");
+    } catch (e) {
+      console.error(e);
+    }
     
     setSending(false);
     setSent(true);

@@ -39,23 +39,33 @@ export async function GET(request: Request) {
 
   const courts = await runQuery<CourtRow>(sql, params);
 
-  const result = courts.map((c) => ({
-    id: c.id,
-    kind: "court",
-    name: c.name,
-    city: c.city,
-    surface: c.surface,
-    surfaces: c.surfaces ? c.surfaces.split(",") : [c.surface],
-    pricePerHour: c.price_per_hour,
-    photo: c.photo || `https://picsum.photos/seed/${c.id}/600/400`,
-    distance: c.distance || "0 km",
-    totalCourts: c.total_courts,
-    amenities: c.amenities ? c.amenities.split(",") : [],
-    isOpen: c.is_open === 1,
-    openTime: c.open_time,
-    closeTime: c.close_time,
-    featured: c.featured === 1,
-  }));
+  const result = courts.map((c) => {
+    let amenitiesArray: string[] = [];
+    try {
+      const parsed = JSON.parse(c.amenities || "[]");
+      amenitiesArray = Array.isArray(parsed) ? parsed : [];
+    } catch {
+      amenitiesArray = [];
+    }
+    
+    return {
+      id: c.id,
+      kind: "court",
+      name: c.name,
+      city: c.city,
+      surface: c.surface,
+      surfaces: c.surfaces ? c.surfaces.split(",") : [c.surface],
+      pricePerHour: c.price_per_hour,
+      photo: c.photo || `https://picsum.photos/seed/${c.id}/600/400`,
+      distance: c.distance || "0 km",
+      totalCourts: c.total_courts,
+      amenities: amenitiesArray,
+      isOpen: c.is_open === 1,
+      openTime: c.open_time,
+      closeTime: c.close_time,
+      featured: c.featured === 1,
+    };
+  });
 
   return NextResponse.json(result);
 }

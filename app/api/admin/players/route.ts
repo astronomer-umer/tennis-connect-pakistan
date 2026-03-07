@@ -1,12 +1,19 @@
 import { NextResponse } from "next/server";
 import { runQuery, runStatement } from "@/lib/server-db";
+import { adminGuard } from "@/lib/admin-auth";
 
 export async function GET() {
+  const guard = await adminGuard();
+  if (guard) return guard;
+  
   const players = await runQuery("SELECT * FROM user_profiles ORDER BY created_at DESC");
   return NextResponse.json(players);
 }
 
 export async function POST(request: Request) {
+  const guard = await adminGuard();
+  if (guard) return guard;
+  
   const body = await request.json();
   const { name, city, level, playType, bio, age, gender, wins, losses } = body;
   
@@ -23,6 +30,9 @@ export async function POST(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  const guard = await adminGuard();
+  if (guard) return guard;
+  
   const body = await request.json();
   const { id, name, city, level, playType, bio, age, gender, wins, losses } = body;
   
@@ -35,6 +45,9 @@ export async function PUT(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const guard = await adminGuard();
+  if (guard) return guard;
+  
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
   

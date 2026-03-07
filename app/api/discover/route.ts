@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { runQuery } from "@/lib/server-db";
+import { auth } from "@/lib/auth";
 
 interface ProfileRow {
   user_id: string;
@@ -19,8 +20,16 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const city = searchParams.get("city");
 
+  const session = await auth.api.getSession({ headers: request.headers });
+  const currentUserId = session?.session?.userId;
+
   let sql = "SELECT * FROM user_profiles WHERE 1=1";
   const params: string[] = [];
+
+  if (currentUserId) {
+    sql += " AND user_id != ?";
+    params.push(currentUserId);
+  }
 
   if (city && city !== "All") {
     sql += " AND city = ?";
