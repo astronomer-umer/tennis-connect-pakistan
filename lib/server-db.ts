@@ -40,7 +40,6 @@ async function initializeTables() {
       gender TEXT,
       city TEXT,
       level REAL DEFAULT 3.5,
-      playing_style TEXT DEFAULT 'all-court',
       play_type TEXT DEFAULT 'Both',
       bio TEXT,
       photo_url TEXT,

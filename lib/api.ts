@@ -80,7 +80,6 @@ export async function updateProfile(profile: {
   name: string;
   city: string;
   level: number;
-  playingStyle?: string;
   playType: string;
   bio: string;
   age?: number;

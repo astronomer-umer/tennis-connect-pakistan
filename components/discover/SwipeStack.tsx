@@ -5,7 +5,6 @@ import Image from "next/image";
 import { MapPin, RefreshCw, Heart, X, Trophy, Users } from "lucide-react";
 import confetti from "canvas-confetti";
 import type { Player, Coach, SwipeItem } from "@/data";
-import { PLAYING_STYLES } from "@/data";
 import { useAppStore } from "@/store/useAppStore";
 import { getDiscover } from "@/lib/api";
 
@@ -130,35 +129,21 @@ function SwipeCardWrapper({
 // ─── Card Content renderers ───────────────────────────────────────────────────
 
 function PlayerCard({ p }: { p: Player }) {
-  const styleInfo = PLAYING_STYLES.find(s => s.id === p.playingStyle) || PLAYING_STYLES[4];
-  
   return (
     <div className="absolute inset-0 rounded-3xl overflow-hidden tennis-card">
       <Image src={p.photo} alt={p.name} fill className="object-cover" unoptimized />
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
       {/* Court-line accent along top edge */}
       <div className="absolute top-0 left-6 right-6 h-[1px] bg-gradient-to-r from-transparent via-lime-500/30 to-transparent" />
-      
-      {/* Top badges row */}
-      <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-        {/* Playing Style badge */}
-        <div className="bg-blue-600/80 backdrop-blur-sm text-white font-bold text-xs px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 shadow-lg">
-          <span>{styleInfo.icon}</span>
-          <span>{styleInfo.name}</span>
-        </div>
-        
-        {/* Level badge */}
-        <div className="bg-brand text-pit font-black text-base px-3 py-1.5 rounded-2xl shadow-[0_0_16px_#00ff9d60]">
-          {p.level}
-        </div>
+      {/* Level badge */}
+      <div className="absolute top-5 right-5 bg-brand text-pit font-black text-base px-3 py-1.5 rounded-2xl shadow-[0_0_16px_#00ff9d60]">
+        {p.level}
       </div>
-      
       {/* W/L */}
-      <div className="absolute top-16 left-5 bg-black/60 backdrop-blur-sm rounded-xl px-2.5 py-1.5">
+      <div className="absolute top-5 left-5 bg-black/60 backdrop-blur-sm rounded-xl px-2.5 py-1.5">
         <span className="text-brand text-xs font-bold">{p.wins}W </span>
         <span className="text-zinc-400 text-xs">{p.losses}L</span>
       </div>
-      
       <div className="absolute bottom-0 left-0 right-0 p-5 pb-6">
         <div className="flex items-end justify-between">
           <div>
@@ -173,15 +158,6 @@ function PlayerCard({ p }: { p: Player }) {
           </span>
         </div>
         <p className="text-white/75 text-sm mt-2 leading-snug">{p.status}</p>
-        
-        {/* Style strengths */}
-        <div className="flex flex-wrap gap-1.5 mt-3">
-          {styleInfo.strengths.slice(0, 3).map((strength) => (
-            <span key={strength} className="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full">
-              {strength}
-            </span>
-          ))}
-        </div>
       </div>
     </div>
   );

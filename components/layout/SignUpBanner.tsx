@@ -36,15 +36,15 @@ export function SignUpBanner() {
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <UserPlus size={18} className="shrink-0" />
         <p className="text-sm font-semibold truncate">
-          Sign up to save your profile and unlock all features!
+          Complete your profile to connect with players!
         </p>
       </div>
       <div className="flex items-center gap-2 shrink-0">
         <Link
-          href="/signup"
+          href="/onboarding"
           className="px-4 py-1.5 bg-black text-lime-400 font-bold text-sm rounded-xl hover:bg-black/80 transition-colors"
         >
-          Sign Up
+          Get Started
         </Link>
         <button
           onClick={dismiss}

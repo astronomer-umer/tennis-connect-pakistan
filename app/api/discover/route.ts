@@ -9,7 +9,6 @@ interface ProfileRow {
   gender: string;
   city: string;
   level: number;
-  playing_style: string;
   photo_url: string;
   bio: string;
   play_type: string;
@@ -49,7 +48,6 @@ export async function GET(request: Request) {
     gender: p.gender || "M",
     city: p.city || "Lahore",
     level: p.level || 3.5,
-    playingStyle: p.playing_style || "all-court",
     photo: p.photo_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.user_id}`,
     status: p.bio || "Looking to play tennis!",
     playType: p.play_type || "Both",
