@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Save, ChevronRight, ChevronLeft, User, Camera, AlertCircle } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
-import { cities } from "@/data";
+import { cities, PLAYING_STYLES, type PlayingStyle } from "@/data";
 import { useSession } from "@/lib/auth/client";
 import { updateProfile, getProfile } from "@/lib/api";
 
@@ -26,6 +26,7 @@ interface OnboardingProfile {
   name: string;
   city: string;
   level: number;
+  playingStyle: PlayingStyle;
   playType: "Singles" | "Doubles" | "Both";
   bio: string;
   age: number;
@@ -163,6 +164,7 @@ export default function OnboardingPage() {
     name: "",
     city: "Lahore",
     level: 3.5,
+    playingStyle: "all-court",
     playType: "Both",
     bio: "",
     age: 25,
@@ -200,6 +202,7 @@ export default function OnboardingPage() {
               name: existing.name || prev.name,
               city: existing.city || prev.city,
               level: existing.level ?? prev.level,
+              playingStyle: (existing.playingStyle as PlayingStyle) || prev.playingStyle,
               playType: existing.playType || prev.playType,
               bio: existing.bio || prev.bio,
               age: existing.age ?? prev.age,
@@ -251,6 +254,7 @@ export default function OnboardingPage() {
           name: profile.name,
           city: profile.city,
           level: profile.level,
+          playingStyle: profile.playingStyle,
           playType: profile.playType,
           bio: profile.bio,
           age: profile.age,
@@ -474,7 +478,7 @@ export default function OnboardingPage() {
         </div>
       )}
 
-      {/* ═══ Step 2: Skill Level ═══ */}
+      {/* ═══ Step 2: Skill Level + Playing Style ═══ */}
       {step === 2 && (
         <div className={`flex-1 px-6 pt-4 overflow-y-auto transition-all duration-500 ease-out relative z-10 ${fadeClass}`}>
           {/* Court decoration */}
@@ -485,13 +489,13 @@ export default function OnboardingPage() {
           <h2 className="text-4xl font-black text-white mb-1 leading-tight">
             Your<br /><span className="text-lime-400">level?</span>
           </h2>
-          <p className="text-white/50 text-lg mb-8">We&apos;ll match you with the right players</p>
+          <p className="text-white/50 text-lg mb-6">We&apos;ll match you with the right players</p>
 
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-8 mb-8">
-            <div className="flex items-center justify-between mb-8">
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 mb-6">
+            <div className="flex items-center justify-between mb-6">
               <span className="text-white/50 text-lg font-medium">NTRP Rating</span>
               <div className="text-right">
-                <span className="text-lime-400 font-black text-6xl leading-none">{profile.level}</span>
+                <span className="text-lime-400 font-black text-5xl leading-none">{profile.level}</span>
               </div>
             </div>
 
@@ -504,7 +508,7 @@ export default function OnboardingPage() {
               className="w-full"
             />
 
-            <div className="flex justify-between mt-4">
+            <div className="flex justify-between mt-3">
               {[2.5, 3.0, 3.5, 4.0, 4.5, 5.0].map((l) => (
                 <span key={l} className={`text-sm font-bold transition-colors ${l === profile.level ? "text-lime-400" : "text-white/20"}`}>
                   {l}
@@ -512,26 +516,54 @@ export default function OnboardingPage() {
               ))}
             </div>
 
-            <div className="mt-8 text-center">
-              <div className="inline-block px-8 py-3 bg-lime-400/10 border border-lime-400/30 rounded-2xl">
-                <p className="text-lime-400 text-2xl font-black">
+            <div className="mt-5 text-center">
+              <div className="inline-block px-6 py-2.5 bg-lime-400/10 border border-lime-400/30 rounded-xl">
+                <p className="text-lime-400 text-xl font-black">
                   {LEVEL_LABELS[profile.level]}
                 </p>
               </div>
             </div>
           </div>
 
+          {/* Playing Style Selection */}
           <div>
-            <label className="text-lg font-bold text-white mb-4 block">Play Style</label>
+            <label className="text-lg font-bold text-white mb-3 block">Your Playing Style</label>
+            <p className="text-white/40 text-sm mb-4">How do you like to play?</p>
+            
+            <div className="grid grid-cols-2 gap-3 max-h-[320px] overflow-y-auto pr-1">
+              {PLAYING_STYLES.map((style) => (
+                <button
+                  key={style.id}
+                  onClick={() => setProfile({ ...profile, playingStyle: style.id })}
+                  className={`p-4 rounded-2xl border-2 text-left transition-all duration-200 ${
+                    profile.playingStyle === style.id
+                      ? "bg-lime-400/10 border-lime-400 shadow-[0_0_15px_#22c55e30]"
+                      : "bg-white/5 border-white/10 hover:border-lime-400/40"
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-xl">{style.icon}</span>
+                    <span className={`font-bold text-sm ${profile.playingStyle === style.id ? "text-lime-400" : "text-white"}`}>
+                      {style.name}
+                    </span>
+                  </div>
+                  <p className="text-white/40 text-xs leading-tight">{style.description}</p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <label className="text-lg font-bold text-white mb-3 block">Preferred Format</label>
             <div className="flex gap-3">
               {(["Singles", "Doubles", "Both"] as const).map((pt) => (
                 <button
                   key={pt}
                   onClick={() => setProfile({ ...profile, playType: pt })}
-                  className={`flex-1 py-5 rounded-xl text-lg font-bold border-2 transition-all duration-200 ${
+                  className={`flex-1 py-4 rounded-xl text-base font-bold border-2 transition-all duration-200 ${
                     profile.playType === pt
-                      ? "bg-lime-400 text-black border-lime-400 shadow-[0_0_15px_#22c55e40]"
-                      : "bg-white/5 border-white/10 text-white/60 hover:border-lime-400/40"
+                      ? "bg-orange-400 text-black border-orange-400 shadow-[0_0_15px_#f9731630]"
+                      : "bg-white/5 border-white/10 text-white/60 hover:border-orange-400/40"
                   }`}
                 >
                   {pt}
@@ -587,15 +619,21 @@ export default function OnboardingPage() {
                 <p className="text-white/40 text-sm">{profile.city} · {profile.age} yrs · {profile.gender === "M" ? "Male" : "Female"}</p>
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-2 mb-3">
               <span className="px-3 py-1 bg-lime-400/10 border border-lime-400/20 rounded-lg text-lime-400 text-sm font-bold">
                 Level {profile.level}
+              </span>
+              <span className="px-3 py-1 bg-blue-400/10 border border-blue-400/20 rounded-lg text-blue-400 text-sm font-bold">
+                {PLAYING_STYLES.find(s => s.id === profile.playingStyle)?.icon} {PLAYING_STYLES.find(s => s.id === profile.playingStyle)?.name}
               </span>
               <span className="px-3 py-1 bg-orange-400/10 border border-orange-400/20 rounded-lg text-orange-400 text-sm font-bold">
                 {profile.playType}
               </span>
             </div>
-            <p className="text-white/40 text-sm mt-3">
+            {profile.bio && (
+              <p className="text-white/50 text-sm mb-3 italic">&quot;{profile.bio}&quot;</p>
+            )}
+            <p className="text-white/40 text-sm">
               {session
                 ? "Your profile will be saved to your account."
                 : "Sign up later to save your profile permanently!"}
