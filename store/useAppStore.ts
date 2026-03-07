@@ -67,7 +67,6 @@ interface AppStore {
   lastMatchedProfile: (Player | Coach) | null;
   triggerMatch: (profile: Player | Coach) => void;
   dismissMatchOverlay: () => void;
-  addSeedMatches: () => void;
 
   // ── Chat
   activeChatMatchId: string | null;
@@ -83,81 +82,11 @@ interface AppStore {
   updateProfile: (partial: Partial<UserProfile>) => void;
 }
 
-// ─── Seed demo matches (pre-populated so Matches tab isn't empty) ──────────────
-
-const SEED_MATCHES: Match[] = [
-  {
-    id: "seed-m1",
-    profile: {
-      id: "p6",
-      kind: "player",
-      name: "Zara Ahmed",
-      age: 29,
-      gender: "F",
-      city: "Islamabad",
-      level: 4.0,
-      photo: "https://randomuser.me/api/portraits/women/28.jpg",
-      status: "Smash queen 👑 looking for mixed doubles",
-      playType: "Doubles",
-      wins: 31,
-      losses: 11,
-    },
-    matchedAt: Date.now() - 3600000 * 2,
-    messages: [
-      {
-        id: "msg-1",
-        text: "Yo! Doubles on Sunday evening? 🎾",
-        isMe: false,
-        sentAt: Date.now() - 3600000 * 2,
-      },
-      {
-        id: "msg-2",
-        text: "Absolutely! Which court — DHA or PTF?",
-        isMe: true,
-        sentAt: Date.now() - 3600000,
-      },
-      {
-        id: "msg-3",
-        text: "DHA works! Book for 6 PM, I'll bring rackets 🙌",
-        isMe: false,
-        sentAt: Date.now() - 1800000,
-      },
-    ],
-  },
-  {
-    id: "seed-m2",
-    profile: {
-      id: "co1",
-      kind: "coach",
-      name: "Coach Tariq Ahmed",
-      age: 42,
-      gender: "M",
-      city: "Lahore",
-      specialization: "Serve & Volley",
-      ratePerHour: 2500,
-      photo: "https://randomuser.me/api/portraits/men/90.jpg",
-      rating: 4.9,
-      yearsExperience: 15,
-      students: 85,
-      bio: "Pakistan Under-18 coach 2016-2020.",
-    },
-    matchedAt: Date.now() - 3600000 * 24,
-    messages: [
-      {
-        id: "msg-4",
-        text: "Salam! Ready to take your serve to the next level?",
-        isMe: false,
-        sentAt: Date.now() - 3600000 * 24,
-      },
-    ],
-  },
-];
-
 // ─── Store ─────────────────────────────────────────────────────────────────────
 
 export const useAppStore = create<AppStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       // City
       selectedCity: "All",
       setSelectedCity: (city) => set({ selectedCity: city }),
@@ -171,12 +100,11 @@ export const useAppStore = create<AppStore>()(
         set((s) => ({ swipedLeftIds: [...s.swipedLeftIds, id] })),
       resetDeck: () => set({ swipedRightIds: [], swipedLeftIds: [] }),
 
-      // Matches
-      matches: SEED_MATCHES,
+      // Matches — starts empty, populated by swiping right
+      matches: [],
       showMatchOverlay: false,
       lastMatchedProfile: null,
       triggerMatch: (profile) => {
-        // Add to swiped right
         set((s) => ({
           swipedRightIds: [...s.swipedRightIds, profile.id],
           showMatchOverlay: true,
@@ -190,7 +118,7 @@ export const useAppStore = create<AppStore>()(
               messages: [
                 {
                   id: `seed-${Date.now()}`,
-                  text: `Hey! Looking forward to playing with you 🎾`,
+                  text: `Hey! Looking forward to playing with you`,
                   isMe: false,
                   sentAt: Date.now(),
                 },
@@ -202,10 +130,6 @@ export const useAppStore = create<AppStore>()(
         setTimeout(() => set({ showMatchOverlay: false }), 3000);
       },
       dismissMatchOverlay: () => set({ showMatchOverlay: false }),
-      addSeedMatches: () => {
-        const current = get().matches;
-        if (current.length === 0) set({ matches: SEED_MATCHES });
-      },
 
       // Chat
       activeChatMatchId: null,
@@ -235,15 +159,15 @@ export const useAppStore = create<AppStore>()(
       addBooking: (booking) =>
         set((s) => ({ bookings: [booking, ...s.bookings] })),
 
-      // Profile
+      // Profile — clean defaults
       userProfile: {
-        name: "Your Name",
+        name: "",
         city: "Lahore",
         level: 3.5,
         preferredCities: ["Lahore"],
         playType: "Both",
-        goldenSets: 2,
-        bio: "Tennis addict 🎾 | Weekend warrior | DHA Lahore",
+        goldenSets: 0,
+        bio: "",
       },
       updateProfile: (partial) =>
         set((s) => ({ userProfile: { ...s.userProfile, ...partial } })),

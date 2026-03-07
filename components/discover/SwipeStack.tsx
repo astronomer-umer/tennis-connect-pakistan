@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
-import { MapPin, RefreshCw, Heart, X, Trophy } from "lucide-react";
+import { MapPin, RefreshCw, Heart, X, Trophy, Users } from "lucide-react";
 import confetti from "canvas-confetti";
 import type { Player, Coach, SwipeItem } from "@/data";
 import { useAppStore } from "@/store/useAppStore";
@@ -202,24 +202,38 @@ function MatchOverlay({
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
 
-function EmptyStack({ onReset }: { onReset: () => void }) {
+function EmptyStack({ onReset, hasPlayers }: { onReset: () => void; hasPlayers: boolean }) {
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center p-8 court-surface rounded-3xl border border-lime-500/10">
       {/* Net pattern divider */}
       <div className="net-divider w-24 mb-2" />
-      <Trophy size={48} className="text-brand opacity-60" />
-      <h3 className="text-white text-xl font-bold">You&apos;ve seen everyone!</h3>
-      <p className="text-muted-foreground text-sm">
-        Switch city or reset to discover more players & coaches.
-      </p>
-      <div className="net-divider w-24 mt-1" />
-      <button
-        onClick={onReset}
-        className="flex items-center gap-2 bg-brand text-pit font-bold px-6 py-3 rounded-2xl active:scale-95 transition-transform"
-      >
-        <RefreshCw size={16} />
-        Reset Deck
-      </button>
+      {hasPlayers ? (
+        <>
+          <Trophy size={48} className="text-brand opacity-60" />
+          <h3 className="text-white text-xl font-bold">You&apos;ve seen everyone!</h3>
+          <p className="text-muted-foreground text-sm">
+            Switch city or reset to discover more players.
+          </p>
+          <div className="net-divider w-24 mt-1" />
+          <button
+            onClick={onReset}
+            className="flex items-center gap-2 bg-brand text-pit font-bold px-6 py-3 rounded-2xl active:scale-95 transition-transform"
+          >
+            <RefreshCw size={16} />
+            Reset Deck
+          </button>
+        </>
+      ) : (
+        <>
+          <div className="w-20 h-20 rounded-full bg-lime-500/10 flex items-center justify-center mb-2">
+            <Heart size={36} className="text-lime-500/50" />
+          </div>
+          <h3 className="text-white text-xl font-bold">No Players Yet</h3>
+          <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
+            Be the first to join! Sign up and complete your profile to appear here and connect with other tennis players.
+          </p>
+        </>
+      )}
     </div>
   );
 }
@@ -309,7 +323,7 @@ export function SwipeStack() {
         {/* Card stack area */}
         <div className="relative" style={{ height: "calc(100dvh - 360px)", minHeight: "340px" }}>
           {remaining.length === 0 ? (
-            <EmptyStack onReset={handleReset} />
+            <EmptyStack onReset={handleReset} hasPlayers={deck.length > 0} />
           ) : (
             visible.map((item, i, arr) => {
               const fromTop = arr.length - 1 - i; // 0=top

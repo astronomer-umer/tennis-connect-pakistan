@@ -41,7 +41,20 @@ export function HotCarousel() {
       .catch(() => setPlayers([]));
   }, []);
 
-  if (players.length === 0) return null;
+  if (players.length === 0) {
+    return (
+      <div className="px-4 py-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-bold text-foreground tracking-tight">
+            Players Near You
+          </h2>
+        </div>
+        <div className="flex items-center justify-center py-8 rounded-2xl border border-dashed border-white/10">
+          <p className="text-muted-foreground text-sm">Sign up to be the first player in your city!</p>
+        </div>
+      </div>
+    );
+  }
 
   const doubled = [...players, ...players];
 

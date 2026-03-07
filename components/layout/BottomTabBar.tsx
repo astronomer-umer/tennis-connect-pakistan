@@ -7,7 +7,7 @@ import { MapPin, Zap, User, MessageCircle } from "lucide-react";
 const TABS = [
   { href: "/", label: "Discover", Icon: Zap },
   { href: "/courts", label: "Courts", Icon: MapPin },
-  { href: "/chat", label: "Chat", Icon: MessageCircle },
+  { href: "/matches", label: "Matches", Icon: MessageCircle },
   { href: "/profile", label: "Profile", Icon: User },
 ];
 

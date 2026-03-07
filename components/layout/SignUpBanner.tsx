@@ -1,17 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { X, UserPlus } from "lucide-react";
 import { useSession } from "@/lib/auth/client";
 
 const HIDDEN_PATHS = ["/onboarding", "/login", "/signup", "/admin-login", "/admin"];
+const DISMISS_KEY = "tcp-banner-dismissed";
 
 export function SignUpBanner() {
   const { data: session, isPending } = useSession();
   const pathname = usePathname();
-  const [dismissed, setDismissed] = useState(false);
+  const [dismissed, setDismissed] = useState(true); // default hidden until hydrated
+
+  useEffect(() => {
+    // Check sessionStorage on mount
+    const wasDismissed = sessionStorage.getItem(DISMISS_KEY) === "1";
+    setDismissed(wasDismissed);
+  }, []);
+
+  const dismiss = () => {
+    setDismissed(true);
+    sessionStorage.setItem(DISMISS_KEY, "1");
+  };
 
   // Don't show while loading, if user is authenticated, if dismissed, or on auth pages
   if (isPending || session || dismissed) return null;
@@ -35,7 +47,7 @@ export function SignUpBanner() {
           Sign Up
         </Link>
         <button
-          onClick={() => setDismissed(true)}
+          onClick={dismiss}
           className="p-1 hover:bg-black/10 rounded-lg transition-colors"
           aria-label="Dismiss"
         >

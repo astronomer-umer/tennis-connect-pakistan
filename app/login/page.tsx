@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { signIn } from "@/lib/auth/client";
+import { signIn, useSession } from "@/lib/auth/client";
 import { getProfile, updateProfile } from "@/lib/api";
 import { TennisRacketLogo } from "@/components/providers/TennisIcons";
 
@@ -14,10 +14,18 @@ const ONBOARDING_DATA_KEY = "onboarding_data";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { data: session, isPending } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Redirect authenticated users away from login
+  useEffect(() => {
+    if (!isPending && session) {
+      router.replace("/");
+    }
+  }, [session, isPending, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
