@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { createAdminToken, ADMIN_TOKEN_COOKIE } from "@/lib/admin-auth";
 
 export async function POST(request: Request) {
   const { password } = await request.json();
@@ -9,12 +10,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }
 
+  const token = createAdminToken();
   const cookieStore = await cookies();
-  cookieStore.set("admin-auth", password, {
+  cookieStore.set(ADMIN_TOKEN_COOKIE, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: 60 * 60 * 24, // 24 hours
+    maxAge: 60 * 60 * 24,
   });
 
   return NextResponse.json({ success: true });

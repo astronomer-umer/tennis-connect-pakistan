@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Plus, Edit, Trash2, X } from "lucide-react";
+import { useEffect, useState, useMemo } from "react";
+import { Plus, Edit, Trash2, X, Search, Filter } from "lucide-react";
 import { cities } from "@/data";
 
 interface Player {
@@ -23,6 +23,9 @@ export default function AdminPlayers() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [cityFilter, setCityFilter] = useState<string>("All");
+  const [levelFilter, setLevelFilter] = useState<string>("All");
   const [formData, setFormData] = useState({
     name: "",
     city: "Lahore",
@@ -43,18 +46,19 @@ export default function AdminPlayers() {
   };
 
   useEffect(() => {
-    let cancelled = false;
-    async function fetchData() {
-      const res = await fetch("/api/admin/players");
-      const data = await res.json();
-      if (!cancelled) {
-        setPlayers(data);
-        setLoading(false);
-      }
-    }
-    fetchData();
-    return () => { cancelled = true; };
+    loadPlayers();
   }, []);
+
+  const filteredPlayers = useMemo(() => {
+    return players.filter((player) => {
+      const matchesSearch = searchQuery === "" || 
+        player.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        player.city.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCity = cityFilter === "All" || player.city === cityFilter;
+      const matchesLevel = levelFilter === "All" || player.level.toString() === levelFilter;
+      return matchesSearch && matchesCity && matchesLevel;
+    });
+  }, [players, searchQuery, cityFilter, levelFilter]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,6 +127,39 @@ export default function AdminPlayers() {
         </button>
       </div>
 
+      <div className="flex flex-wrap gap-3 mb-6">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search players..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder:text-gray-400 focus:outline-none focus:border-brand"
+          />
+        </div>
+        <select
+          value={cityFilter}
+          onChange={(e) => setCityFilter(e.target.value)}
+          className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-brand"
+        >
+          <option value="All">All Cities</option>
+          {cities.map((c) => <option key={c} value={c}>{c}</option>)}
+        </select>
+        <select
+          value={levelFilter}
+          onChange={(e) => setLevelFilter(e.target.value)}
+          className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-brand"
+        >
+          <option value="All">All Levels</option>
+          {[2.5, 3.0, 3.5, 4.0, 4.5, 5.0].map((l) => <option key={l} value={l}>{l}</option>)}
+        </select>
+        <span className="flex items-center gap-2 text-gray-400 text-sm">
+          <Filter className="w-4 h-4" />
+          {filteredPlayers.length} of {players.length}
+        </span>
+      </div>
+
       <div className="bg-gray-800 rounded-xl overflow-hidden">
         <table className="w-full">
           <thead className="bg-gray-700">
@@ -136,7 +173,7 @@ export default function AdminPlayers() {
             </tr>
           </thead>
           <tbody>
-            {players.map((player) => (
+            {filteredPlayers.map((player) => (
               <tr key={player.id} className="border-t border-gray-700">
                 <td className="px-4 py-3">{player.name}</td>
                 <td className="px-4 py-3">{player.city}</td>
@@ -151,6 +188,11 @@ export default function AdminPlayers() {
             ))}
           </tbody>
         </table>
+        {filteredPlayers.length === 0 && (
+          <div className="text-center py-12 text-gray-400">
+            No players found matching your filters
+          </div>
+        )}
       </div>
 
       {/* Modal */}

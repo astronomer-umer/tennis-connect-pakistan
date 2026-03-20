@@ -21,34 +21,87 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Tennis Connect Pakistan | Find Courts & Players",
+  metadataBase: new URL("https://tennis-connect-pakistan.vercel.app"),
+  title: {
+    default: "Tennis Connect Pakistan | Find Courts & Players",
+    template: "%s | Tennis Connect Pakistan",
+  },
   description:
-    "Connect with Pakistani tennis players, book premium courts & find elite coaches. The sleekest tennis community app in Pakistan.",
+    "Pakistan's premier tennis networking app. Find players, book courts, and grow the tennis community. Swipe-based matching, real-time chat, and seamless court booking.",
   applicationName: "Tennis Connect Pakistan",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "TCP",
+    startupImage: [
+      {
+        url: "/icons/icon-512.svg",
+        media: "(device-width: 768px) and (device-height: 1024px)",
+      },
+    ],
   },
   formatDetection: { telephone: false },
-  keywords: ["tennis", "pakistan", "courts", "players", "coaches", "lahore", "karachi", "islamabad"],
+  keywords: [
+    "tennis",
+    "pakistan",
+    "courts",
+    "players",
+    "coaches",
+    "lahore",
+    "karachi",
+    "islamabad",
+    "tennis app",
+    "book court",
+    "find tennis partner",
+    "sports networking",
+  ],
+  authors: [{ name: "Tennis Connect Pakistan" }],
+  creator: "Tennis Connect Pakistan",
+  publisher: "Tennis Connect Pakistan",
   openGraph: {
-    title: "Tennis Connect Pakistan",
-    description: "Connect with Pakistani tennis players, book premium courts & find elite coaches.",
-    url: "https://tennis-connect-pakistan.vercel.app",
-    siteName: "Tennis Connect Pakistan",
-    locale: "en_US",
     type: "website",
+    locale: "en_US",
+    url: "/",
+    siteName: "Tennis Connect Pakistan",
+    title: "Tennis Connect Pakistan | Find Courts & Players",
+    description: "Pakistan's premier tennis networking app. Find players, book courts, and grow the tennis community.",
+    images: [
+      {
+        url: "/icons/icon-512.svg",
+        width: 512,
+        height: 512,
+        alt: "Tennis Connect Pakistan",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Tennis Connect Pakistan",
-    description: "Connect with Pakistani tennis players, book premium courts & find elite coaches.",
+    description: "Pakistan's premier tennis networking app. Find players, book courts, and grow the tennis community.",
+    images: ["/icons/icon-512.svg"],
+    creator: "@tennisconnectpk",
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/icons/icon-192.svg", sizes: "192x192", type: "image/svg+xml" },
+      { url: "/icons/icon-512.svg", sizes: "512x512", type: "image/svg+xml" },
+    ],
+  },
+  manifest: "/manifest.ts",
 };
 
 export default function RootLayout({

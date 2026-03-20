@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Users, Building2, Calendar, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, Building2, Calendar, Table2, MessageSquare, UserCog, LogOut } from "lucide-react";
+import { requireAdminAuth } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -10,11 +11,9 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const adminAuth = cookieStore.get("admin-auth")?.value;
-  const adminPassword = process.env.ADMIN_PASSWORD;
+  const isAuthorized = await requireAdminAuth();
 
-  if (!adminAuth || adminAuth !== adminPassword) {
+  if (!isAuthorized) {
     redirect("/admin-login");
   }
 
@@ -44,6 +43,18 @@ export default async function AdminLayout({
             <Link href="/admin/bookings" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700">
               <Calendar size={20} />
               Bookings
+            </Link>
+            <Link href="/admin/tables" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700">
+              <Table2 size={20} />
+              Table Showcase
+            </Link>
+            <Link href="/admin/contacts" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700">
+              <MessageSquare size={20} />
+              Contacts
+            </Link>
+            <Link href="/admin/users" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700">
+              <UserCog size={20} />
+              Users
             </Link>
           </nav>
 

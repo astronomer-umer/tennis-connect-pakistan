@@ -439,9 +439,19 @@ export default function OnboardingPage() {
                 {cities.map((city) => (
                   <button
                     key={city}
-                    onClick={() => setProfile({ ...profile, city, preferredCities: [city] })}
+                    onClick={() => {
+                      const isSelected = profile.preferredCities.includes(city);
+                      const newPreferred = isSelected
+                        ? profile.preferredCities.filter((c) => c !== city)
+                        : [...profile.preferredCities, city];
+                      setProfile({ 
+                        ...profile, 
+                        city, 
+                        preferredCities: newPreferred.length > 0 ? newPreferred : [city] 
+                      });
+                    }}
                     className={`px-5 py-3.5 rounded-xl text-base font-bold border-2 transition-all duration-200 ${
-                      profile.city === city
+                      profile.preferredCities.includes(city)
                         ? "bg-lime-400 text-black border-lime-400 shadow-[0_0_15px_#22c55e40]"
                         : "bg-white/5 border-white/10 text-white/60 hover:border-lime-400/40"
                     }`}
@@ -450,6 +460,7 @@ export default function OnboardingPage() {
                   </button>
                 ))}
               </div>
+              <p className="text-white/30 text-xs mt-2">Select one or more cities where you play</p>
             </div>
 
             <div>

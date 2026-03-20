@@ -13,6 +13,7 @@ import {
   LogOut,
   Save,
   Camera,
+  X,
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { cities } from "@/data";
@@ -154,6 +155,25 @@ export default function ProfilePage() {
       : [...current, city];
     updateField("preferredCities", next.length ? next : [city]);
     saveProfile();
+  };
+
+  const cancelBooking = async (bookingId: string) => {
+    if (!confirm("Are you sure you want to cancel this booking?")) return;
+    
+    try {
+      const res = await fetch(`/api/bookings?id=${bookingId}`, { method: "DELETE" });
+      if (res.ok) {
+        setBookings(bookings.map(b => 
+          b.id === bookingId ? { ...b, status: "cancelled" } : b
+        ));
+      } else {
+        const data = await res.json();
+        alert(data.error || "Failed to cancel booking");
+      }
+    } catch (error) {
+      console.error("Failed to cancel booking:", error);
+      alert("Failed to cancel booking. Please try again.");
+    }
   };
 
   const levelValue = [profile.level];
@@ -413,11 +433,28 @@ export default function ProfilePage() {
                     {booking.payment} · {booking.durationHours}h
                   </p>
                 </div>
-                <div className="text-right">
-                  <p className="text-brand font-black text-sm">
-                    Rs.{booking.totalCost.toLocaleString()}
-                  </p>
-                  <span className="text-brand text-[10px] font-bold">✓ Confirmed</span>
+                <div className="text-right flex items-center gap-2">
+                  {booking.status === "cancelled" ? (
+                    <div className="text-right">
+                      <p className="text-red-400 text-sm font-semibold">Cancelled</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="text-right">
+                        <p className="text-brand font-black text-sm">
+                          Rs.{booking.totalCost.toLocaleString()}
+                        </p>
+                        <span className="text-brand text-[10px] font-bold">✓ Confirmed</span>
+                      </div>
+                      <button
+                        onClick={() => cancelBooking(booking.id)}
+                        className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 hover:bg-red-500/30 transition-colors"
+                        title="Cancel booking"
+                      >
+                        <X size={14} />
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             ))

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Plus, Edit, Trash2, X } from "lucide-react";
+import { useEffect, useState, useMemo } from "react";
+import { Plus, Edit, Trash2, X, Search, Filter } from "lucide-react";
 import { cities } from "@/data";
 
 interface Court {
@@ -26,6 +26,9 @@ export default function AdminCourts() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingCourt, setEditingCourt] = useState<Court | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [cityFilter, setCityFilter] = useState<string>("All");
+  const [surfaceFilter, setSurfaceFilter] = useState<string>("All");
   const [formData, setFormData] = useState({
     name: "",
     city: "Lahore",
@@ -50,18 +53,19 @@ export default function AdminCourts() {
   };
 
   useEffect(() => {
-    let cancelled = false;
-    async function fetchData() {
-      const res = await fetch("/api/admin/courts");
-      const data = await res.json();
-      if (!cancelled) {
-        setCourts(data);
-        setLoading(false);
-      }
-    }
-    fetchData();
-    return () => { cancelled = true; };
+    loadCourts();
   }, []);
+
+  const filteredCourts = useMemo(() => {
+    return courts.filter((court) => {
+      const matchesSearch = searchQuery === "" || 
+        court.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        court.city.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCity = cityFilter === "All" || court.city === cityFilter;
+      const matchesSurface = surfaceFilter === "All" || court.surface === surfaceFilter;
+      return matchesSearch && matchesCity && matchesSurface;
+    });
+  }, [courts, searchQuery, cityFilter, surfaceFilter]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,6 +142,41 @@ export default function AdminCourts() {
         </button>
       </div>
 
+      <div className="flex flex-wrap gap-3 mb-6">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search courts..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder:text-gray-400 focus:outline-none focus:border-brand"
+          />
+        </div>
+        <select
+          value={cityFilter}
+          onChange={(e) => setCityFilter(e.target.value)}
+          className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-brand"
+        >
+          <option value="All">All Cities</option>
+          {cities.map((c) => <option key={c} value={c}>{c}</option>)}
+        </select>
+        <select
+          value={surfaceFilter}
+          onChange={(e) => setSurfaceFilter(e.target.value)}
+          className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-brand"
+        >
+          <option value="All">All Surfaces</option>
+          <option value="Hard">Hard</option>
+          <option value="Clay">Clay</option>
+          <option value="Grass">Grass</option>
+        </select>
+        <span className="flex items-center gap-2 text-gray-400 text-sm">
+          <Filter className="w-4 h-4" />
+          {filteredCourts.length} of {courts.length}
+        </span>
+      </div>
+
       <div className="bg-gray-800 rounded-xl overflow-hidden">
         <table className="w-full">
           <thead className="bg-gray-700">
@@ -151,7 +190,7 @@ export default function AdminCourts() {
             </tr>
           </thead>
           <tbody>
-            {courts.map((court) => (
+            {filteredCourts.map((court) => (
               <tr key={court.id} className="border-t border-gray-700">
                 <td className="px-4 py-3">{court.name}</td>
                 <td className="px-4 py-3">{court.city}</td>
@@ -168,6 +207,11 @@ export default function AdminCourts() {
             ))}
           </tbody>
         </table>
+        {filteredCourts.length === 0 && (
+          <div className="text-center py-12 text-gray-400">
+            No courts found matching your filters
+          </div>
+        )}
       </div>
 
       {/* Modal */}
