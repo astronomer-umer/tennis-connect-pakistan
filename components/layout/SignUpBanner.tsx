@@ -1,82 +1,119 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UserPlus, X } from "lucide-react";
+import { UserPlus, X, Sparkles } from "lucide-react";
 import { useSession } from "@/lib/auth/client";
 
-const HIDDEN_PATHS = ["/onboarding", "/login", "/signup", "/admin-login", "/admin", "/docs"];
-const DISMISS_KEY = "tcp-banner-dismissed";
+const HIDDEN_PATHS = ["/onboarding", "/login", "/signup", "/admin-login", "/admin", "/docs", "/forgot-password", "/profile", "/matches", "/courts", "/chat"];
+const DISMISS_KEY = "tcp_banner_dismissed";
+const DISMISSED_AT_KEY = "tcp_banner_dismissed_at";
 
 export function SignUpBanner() {
   const { data: session, isPending } = useSession();
   const pathname = usePathname();
-  const [dismissed, setDismissed] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const bannerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const wasDismissed = sessionStorage.getItem(DISMISS_KEY) === "1";
-    setDismissed(wasDismissed);
-    if (!wasDismissed) {
-      const timer = setTimeout(() => setIsVisible(true), 1500);
-      return () => clearTimeout(timer);
+    if (isPending || session) return;
+    
+    const dismissedAt = sessionStorage.getItem(DISMISSED_AT_KEY);
+    if (dismissedAt) {
+      const daysSinceDismissed = (Date.now() - parseInt(dismissedAt)) / (1000 * 60 * 60 * 24);
+      if (daysSinceDismissed < 7) return;
     }
-  }, []);
+    
+    const timer = setTimeout(() => setIsVisible(true), 2000);
+    return () => clearTimeout(timer);
+  }, [isPending, session]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (bannerRef.current && !bannerRef.current.contains(event.target as Node)) {
+        setIsExpanded(false);
+      }
+    }
+    if (isExpanded) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isExpanded]);
 
   const dismiss = () => {
-    setIsVisible(false);
     sessionStorage.setItem(DISMISS_KEY, "1");
-    setTimeout(() => setDismissed(true), 400);
+    sessionStorage.setItem(DISMISSED_AT_KEY, Date.now().toString());
+    setIsExpanded(false);
+    setTimeout(() => setIsVisible(false), 300);
   };
 
-  if (isPending || session || dismissed) return null;
+  if (isPending || session) return null;
   if (HIDDEN_PATHS.some((p) => pathname.startsWith(p))) return null;
 
   return (
     <div
-      className={`fixed bottom-20 right-4 left-4 sm:left-auto sm:w-auto sm:max-w-sm z-50 transition-all duration-500 ease-out ${
-        isVisible ? "translate-y-0 opacity-100 scale-100" : "translate-y-8 opacity-0 scale-90 pointer-events-none"
+      ref={bannerRef}
+      className={`fixed bottom-24 right-4 z-40 transition-all duration-300 ease-out ${
+        isVisible 
+          ? "translate-x-0 opacity-100" 
+          : "translate-x-full opacity-0 pointer-events-none"
       }`}
     >
-      <div className="relative group">
-        <div className="absolute -inset-1 bg-gradient-to-r from-lime-400 to-lime-500 rounded-2xl blur-lg opacity-40 group-hover:opacity-60 transition-opacity animate-pulse" />
-        
-        <div className="relative bg-gradient-to-br from-lime-400 to-lime-600 rounded-2xl shadow-2xl overflow-hidden">
-          <div className="flex items-center gap-3 px-4 py-3">
-            <div className="w-12 h-12 bg-black/20 rounded-xl flex items-center justify-center backdrop-blur-sm shrink-0">
-              <UserPlus size={24} className="text-black" />
+      {isExpanded ? (
+        <div className="bg-gradient-to-br from-[#0f2744] to-[#0a1628] border border-lime-500/30 rounded-2xl shadow-2xl w-72 overflow-hidden animate-fade-in">
+          <div className="p-4">
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-lime-400" />
+                <span className="font-bold text-white">Complete Your Profile</span>
+              </div>
+              <button
+                onClick={dismiss}
+                className="text-gray-500 hover:text-white transition-colors p-1"
+                aria-label="Dismiss"
+              >
+                <X size={16} />
+              </button>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-black font-bold text-sm leading-tight">
-                Complete your profile
-              </p>
-              <p className="text-black/70 text-xs">
-                Connect with players
-              </p>
+            <p className="text-gray-400 text-sm mb-4">
+              Set up your profile to connect with tennis players and book courts near you.
+            </p>
+            <div className="space-y-2">
+              <Link
+                href="/onboarding"
+                onClick={dismiss}
+                className="flex items-center justify-center gap-2 w-full py-2.5 bg-lime-500 hover:bg-lime-400 text-black font-bold rounded-xl transition-colors"
+              >
+                <UserPlus size={18} />
+                Set Up Profile
+              </Link>
+              <button
+                onClick={dismiss}
+                className="w-full py-2 text-gray-500 hover:text-gray-300 text-sm transition-colors"
+              >
+                Maybe Later
+              </button>
             </div>
           </div>
-          
-          <div className="flex border-t border-black/10">
-            <Link
-              href="/onboarding"
-              className="flex-1 px-4 py-2.5 bg-black text-lime-400 font-bold text-sm text-center hover:bg-black/90 transition-colors"
-              onClick={dismiss}
-            >
-              Get Started
-            </Link>
-            <button
-              onClick={dismiss}
-              className="px-4 py-2.5 bg-black/10 text-black/60 hover:bg-black/20 transition-colors"
-              aria-label="Dismiss"
-            >
-              <X size={18} />
-            </button>
-          </div>
+          <div className="h-1 bg-gradient-to-r from-lime-500 to-lime-400" />
         </div>
-        
-        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-lime-500 rotate-45 hidden sm:block" />
-      </div>
+      ) : (
+        <button
+          onClick={() => setIsExpanded(true)}
+          className="group relative"
+          aria-label="Complete your profile"
+        >
+          <div className="absolute -inset-2 bg-lime-500/20 rounded-full blur-md group-hover:bg-lime-500/30 transition-colors animate-pulse" />
+          <div className="relative w-14 h-14 bg-gradient-to-br from-lime-400 to-lime-500 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+            <UserPlus size={24} className="text-black" />
+          </div>
+          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center animate-bounce">
+            <Sparkles size={12} className="text-white" />
+          </div>
+        </button>
+      )}
     </div>
   );
 }
