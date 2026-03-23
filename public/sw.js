@@ -1,7 +1,7 @@
 // Tennis Connect Pakistan — Service Worker
 // Network-first strategy with offline fallback
 
-const CACHE_VERSION = "tcp-v3";
+const CACHE_VERSION = "tcp-v4";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
