@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import { BottomTabBar } from "@/components/layout/BottomTabBar";
-import { SignUpBanner } from "@/components/layout/SignUpBanner";
 import { ServiceWorkerRegistrar } from "@/components/layout/ServiceWorkerRegistrar";
 import { AnimatedBackground } from "@/components/providers/AnimatedBackground";
 
@@ -114,7 +113,6 @@ export default function RootLayout({
       <body className={`${geist.variable} antialiased min-h-dvh`}>
         <ServiceWorkerRegistrar />
         <AnimatedBackground>
-          <SignUpBanner />
           <main className="lg:max-w-none lg:w-full max-w-lg mx-auto relative min-h-dvh">
             {children}
           </main>
