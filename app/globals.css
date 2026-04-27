@@ -288,6 +288,8 @@
   }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  
+  html, body { overflow-x: hidden; overscroll-behavior: none; }
 
   .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0.5rem); }
   .pb-tab { padding-bottom: max(calc(env(safe-area-inset-bottom) + 5rem), 5rem); }

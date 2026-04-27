@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Tennis Connect Pakistan",
-    short_name: "TCP",
-    description: "Pakistan's premier tennis networking app. Find players, book courts, and grow the tennis community.",
+    name: "Vibe Up | Pakistan",
+    short_name: "Vibe Up",
+    description: "Find tennis players & book courts in Pakistan. Let's play!",
     start_url: "/",
     scope: "/",
     id: "/",
@@ -38,23 +38,23 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     shortcuts: [
       {
-        name: "Discover Players",
-        short_name: "Discover",
-        description: "Find tennis players in your area",
+        name: "Find Players",
+        short_name: "Players",
+        description: "Discover tennis players near you",
         url: "/",
         icons: [{ src: "/icons/icon-192.svg", sizes: "192x192" }],
       },
       {
         name: "Book Courts",
         short_name: "Courts",
-        description: "Browse and book tennis courts",
+        description: "Browse & book tennis courts",
         url: "/courts",
         icons: [{ src: "/icons/icon-192.svg", sizes: "192x192" }],
       },
       {
-        name: "View Matches",
+        name: "Matches",
         short_name: "Matches",
-        description: "See your matches and chats",
+        description: "View your matches",
         url: "/matches",
         icons: [{ src: "/icons/icon-192.svg", sizes: "192x192" }],
       },

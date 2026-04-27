@@ -4,6 +4,8 @@ import "./globals.css";
 import { BottomTabBar } from "@/components/layout/BottomTabBar";
 import { ServiceWorkerRegistrar } from "@/components/layout/ServiceWorkerRegistrar";
 import { AnimatedBackground } from "@/components/providers/AnimatedBackground";
+import { DebugPanel } from "@/components/DebugPanel";
+import { SoundProvider } from "@/components/providers/SoundProvider";
 
 const geist = Geist({
   variable: "--font-geist-sans",
@@ -20,14 +22,14 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://tennis-connect-pakistan.vercel.app"),
+  metadataBase: new URL("https://lezzplay.pk"),
   title: {
-    default: "Tennis Connect Pakistan | Find Courts & Players",
-    template: "%s | Tennis Connect Pakistan",
+    default: "Vibe Up | Find Tennis Players & Courts",
+    template: "%s | Vibe Up",
   },
   description:
-    "Pakistan's premier tennis networking app. Find players, book courts, and grow the tennis community. Swipe-based matching, real-time chat, and seamless court booking.",
-  applicationName: "Tennis Connect Pakistan",
+    "Pakistan's tennis app. Find players, book courts, and vibe! Swipe to connect with players in your city.",
+  applicationName: "Vibe Up",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -54,31 +56,31 @@ export const metadata: Metadata = {
     "find tennis partner",
     "sports networking",
   ],
-  authors: [{ name: "Tennis Connect Pakistan" }],
-  creator: "Tennis Connect Pakistan",
-  publisher: "Tennis Connect Pakistan",
+  authors: [{ name: "Vibe Up" }],
+  creator: "Vibe Up",
+  publisher: "Vibe Up",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "/",
-    siteName: "Tennis Connect Pakistan",
-    title: "Tennis Connect Pakistan | Find Courts & Players",
-    description: "Pakistan's premier tennis networking app. Find players, book courts, and grow the tennis community.",
+    siteName: "Vibe Up",
+    title: "Vibe Up | Find Tennis Players & Courts",
+    description: "Pakistan's tennis app. Find players, book courts, and vibe!",
     images: [
       {
         url: "/icons/icon-512.svg",
         width: 512,
         height: 512,
-        alt: "Tennis Connect Pakistan",
+        alt: "Vibe Up",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tennis Connect Pakistan",
-    description: "Pakistan's premier tennis networking app. Find players, book courts, and grow the tennis community.",
+    title: "Vibe Up",
+    description: "Pakistan's tennis app. Find players, book courts, and vibe!",
     images: ["/icons/icon-512.svg"],
-    creator: "@tennisconnectpk",
+    creator: "@lezzplay_pk",
   },
   robots: {
     index: true,
@@ -110,14 +112,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geist.variable} antialiased min-h-dvh`}>
+      <body className={`${geist.variable} antialiased overflow-x-hidden overscroll-none`}>
         <ServiceWorkerRegistrar />
         <AnimatedBackground>
-          <main className="lg:max-w-none lg:w-full max-w-lg mx-auto relative min-h-dvh">
-            {children}
-          </main>
-          <BottomTabBar />
+          <SoundProvider>
+            <main className="lg:max-w-none lg:w-full max-w-lg mx-auto relative overflow-x-hidden">
+              {children}
+            </main>
+            <BottomTabBar />
+          </SoundProvider>
         </AnimatedBackground>
+        <DebugPanel />
       </body>
     </html>
   );

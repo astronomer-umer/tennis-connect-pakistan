@@ -1,13 +1,26 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { CitySelector } from "@/components/discover/CitySelector";
 import { HotCarousel } from "@/components/discover/HotCarousel";
 import { SwipeStack } from "@/components/discover/SwipeStack";
 import { TennisBallLogo } from "@/components/providers/TennisIcons";
 
+const ONBOARDING_COMPLETED_KEY = "onboarding_completed";
+
 export default function DiscoverPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const completed = localStorage.getItem(ONBOARDING_COMPLETED_KEY);
+    if (!completed) {
+      router.replace("/onboarding");
+    }
+  }, [router]);
+
   return (
-    <div className="flex flex-col min-h-dvh pb-tab relative">
+    <div className="flex flex-col min-h-dvh pb-tab relative overflow-hidden">
       {/* Top Bar */}
       <header className="sticky top-0 z-30 glass border-b border-white/10 px-4 py-4">
         <div className="flex items-center gap-3">
@@ -16,7 +29,7 @@ export default function DiscoverPage() {
           </div>
           <div>
             <h1 className="text-foreground font-bold text-xl leading-none">
-              Tennis Connect
+              Vibe Up
             </h1>
             <p className="text-orange-500 text-xs font-bold tracking-widest uppercase">
               Pakistan

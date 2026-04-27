@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Privacy Policy | Tennis Connect Pakistan",
-  description: "Privacy Policy for Tennis Connect Pakistan",
+  title: "Privacy Policy | Vibe Up",
+  description: "Privacy Policy for Vibe Up",
 };
 
 export default function PrivacyPolicy() {

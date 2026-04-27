@@ -7,6 +7,7 @@ import confetti from "canvas-confetti";
 import type { Player, Coach, SwipeItem } from "@/data";
 import { useAppStore } from "@/store/useAppStore";
 import { getDiscover } from "@/lib/api";
+import { useSoundContext } from "@/components/providers/SoundProvider";
 
 // ─── Swipe Card (draggable wrapper) ──────────────────────────────────────────
 
@@ -163,6 +164,42 @@ function PlayerCard({ p }: { p: Player }) {
   );
 }
 
+function CoachCard({ c }: { c: typeof DEMO_COACHES[0] }) {
+  return (
+    <div className="absolute inset-0 rounded-3xl overflow-hidden tennis-card">
+      <Image src={c.photo} alt={c.name} fill className="object-cover" unoptimized />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
+      {/* Coach badge */}
+      <div className="absolute top-5 right-5 bg-orange-500 text-white font-black text-xs px-3 py-1.5 rounded-2xl shadow-[0_0_16px_#f9731660]">
+        COACH
+      </div>
+      {/* Experience */}
+      <div className="absolute top-5 left-5 bg-black/60 backdrop-blur-sm rounded-xl px-2.5 py-1.5">
+        <span className="text-orange-400 text-xs font-bold">{c.yearsExperience}yr </span>
+        <span className="text-zinc-400 text-xs">{c.students} students</span>
+      </div>
+      <div className="absolute bottom-0 left-0 right-0 p-5 pb-6">
+        <div className="flex items-end justify-between">
+          <div>
+            <h2 className="text-white text-2xl font-extrabold leading-tight">{c.name}</h2>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <MapPin size={12} className="text-brand" />
+              <span className="text-zinc-300 text-sm">{c.city}</span>
+            </div>
+          </div>
+          <span className="text-brand font-black text-lg">Rs.{c.ratePerHour}/hr</span>
+        </div>
+        <p className="text-white/75 text-sm mt-2 leading-snug">{c.bio}</p>
+        <div className="flex gap-2 mt-3">
+          <span className="text-xs bg-orange-500/20 border border-orange-500/30 text-orange-300 px-2 py-1 rounded-lg">
+            {c.specialization}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Match Overlay ─────────────────────────────────────────────────────────────
 
 function MatchOverlay({
@@ -230,8 +267,14 @@ function EmptyStack({ onReset, hasPlayers }: { onReset: () => void; hasPlayers: 
           </div>
           <h3 className="text-white text-xl font-bold">No Players Yet</h3>
           <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
-            Be the first to join! Sign up and complete your profile to appear here and connect with other tennis players.
+            Be the first to join! Complete your profile to appear here and connect with other tennis players.
           </p>
+          <a
+            href="/onboarding"
+            className="mt-2 flex items-center gap-2 bg-lime-400 text-black font-bold px-6 py-3 rounded-2xl active:scale-95 transition-transform shadow-[0_0_15px_#22c55e40]"
+          >
+            Complete Profile
+          </a>
         </>
       )}
     </div>
@@ -240,11 +283,19 @@ function EmptyStack({ onReset, hasPlayers }: { onReset: () => void; hasPlayers: 
 
 // ─── Main SwipeStack ──────────────────────────────────────────────────────────
 
-type TabType = "players";
+type TabType = "players" | "coaches";
+
+const DEMO_COACHES = [
+  { id: "coach-1", name: "Kashif Ali", city: "Lahore", level: 4.5, photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=coach1", status: "Former National Champion. 15 years coaching experience.", age: 35, gender: "M" as const, specialization: "All Levels", ratePerHour: 5000, yearsExperience: 15, students: 200, bio: "Former National Champion with 15 years of coaching experience. Specializing in technical development and match strategy.", wins: 45, losses: 12, playType: "Both" as const },
+  { id: "coach-2", name: "Sara Malik", city: "Karachi", level: 4.0, photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=coach2", status: "PSA Certified Coach. Expert in junior development.", age: 28, gender: "F" as const, specialization: "Juniors", ratePerHour: 3500, yearsExperience: 8, students: 80, bio: "PSA certified coach specializing in junior development and fitness training.", wins: 25, losses: 10, playType: "Singles" as const },
+  { id: "coach-3", name: "Imran Nazir", city: "Islamabad", level: 5.0, photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=coach3", status: "ATP Tour Player. Available for elite training.", age: 32, gender: "M" as const, specialization: "Elite", ratePerHour: 10000, yearsExperience: 5, students: 30, bio: "Former ATP player offering elite training and match analysis.", wins: 120, losses: 45, playType: "Both" as const },
+  { id: "coach-4", name: "Fatima Khan", city: "Lahore", level: 3.5, photo: "https://api.dicebear.com/7.x/avataaars/svg?seed=coach4", status: "Friendly coach for beginners. Great with kids!", age: 25, gender: "F" as const, specialization: "Beginners", ratePerHour: 2500, yearsExperience: 3, students: 45, bio: "Patient andfriendly coach who makes learning fun. Perfect for beginners and children.", wins: 15, losses: 8, playType: "Doubles" as const },
+];
 
 export function SwipeStack() {
   const { selectedCity, swipedRightIds, swipedLeftIds, swipeLeft, triggerMatch, resetDeck,
     showMatchOverlay, lastMatchedProfile, dismissMatchOverlay } = useAppStore();
+  const { playSound } = useSoundContext();
 
   const [tab, setTab] = useState<TabType>("players");
   const [triggerDir, setTriggerDir] = useState<"left" | "right" | null>(null);
@@ -261,7 +312,9 @@ export function SwipeStack() {
   }, [selectedCity]);
 
   // Build filtered deck based on tab + city
-  const deck = apiPlayers.filter((p) => selectedCity === "All" || p.city === selectedCity);
+  const deck = tab === "coaches" 
+    ? DEMO_COACHES.filter(c => selectedCity === "All" || c.city === selectedCity)
+    : apiPlayers.filter((p) => selectedCity === "All" || p.city === selectedCity);
 
   const swipedIds = new Set([...swipedRightIds, ...swipedLeftIds]);
   const remaining = deck.filter((item) => !swipedIds.has(item.id));
@@ -276,14 +329,17 @@ export function SwipeStack() {
       colors: ["#00ff9d", "#ffffff", "#00cc7a", "#b3ffe0"],
       gravity: 0.9,
     });
+    playSound("match");
   };
 
   const handleSwipeRight = (item: SwipeItem) => {
+    playSound("swipe");
     fireConfetti();
     triggerMatch(item as Player);
   };
 
   const handleSwipeLeft = (item: SwipeItem) => {
+    playSound("tap");
     swipeLeft(item.id);
   };
 
@@ -291,8 +347,9 @@ export function SwipeStack() {
     resetDeck();
   };
 
-  const TABS: { id: TabType; label: string }[] = [
-    { id: "players", label: "Players" },
+  const TABS: { id: TabType; label: string; icon: string }[] = [
+    { id: "players", label: "Players", icon: "🎾" },
+    { id: "coaches", label: "Coaches", icon: "🏐" },
   ];
 
   return (
@@ -305,16 +362,17 @@ export function SwipeStack() {
       <div className="flex flex-col gap-3 px-4">
         {/* Tab switcher */}
         <div className="flex bg-surface rounded-2xl p-1 border border-line">
-          {TABS.map(({ id, label }) => (
+          {TABS.map(({ id, label, icon }) => (
             <button
               key={id}
               onClick={() => setTab(id)}
-              className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all duration-200 ${
+              className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 ${
                 tab === id
                   ? "bg-brand text-pit shadow-[0_0_12px_#00ff9d40]"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
+              <span>{icon}</span>
               {label}
             </button>
           ))}
@@ -328,6 +386,7 @@ export function SwipeStack() {
             visible.map((item, i, arr) => {
               const fromTop = arr.length - 1 - i; // 0=top
               const isTop = fromTop === 0;
+              const isCoach = tab === "coaches";
 
               return (
                 <div
@@ -343,16 +402,35 @@ export function SwipeStack() {
                 >
                   {isTop ? (
                     <SwipeCardWrapper
-                      onSwipeRight={() => handleSwipeRight(item)}
-                      onSwipeLeft={() => handleSwipeLeft(item)}
+                      onSwipeRight={() => { 
+                        if (tab === "coaches") {
+                          playSound("swipe");
+                          fireConfetti();
+                          // For coaches, just show confetti
+                        } else {
+                          const matchItem = item as unknown as Player;
+                          playSound("swipe"); 
+                          fireConfetti(); 
+                          triggerMatch({ ...matchItem, kind: "player", gender: "M", wins: 0, losses: 0, playType: "Both" }); 
+                        }
+                      }}
+                      onSwipeLeft={() => swipeLeft(item.id)}
                       triggerDir={triggerDir}
                       onTriggerDone={() => setTriggerDir(null)}
                     >
-                      <PlayerCard p={item as Player} />
+                      {isCoach ? (
+                        <CoachCard c={item as unknown as typeof DEMO_COACHES[0]} />
+                      ) : (
+                        <PlayerCard p={item as Player} />
+                      )}
                     </SwipeCardWrapper>
                   ) : (
                     <div className="absolute inset-0 rounded-3xl overflow-hidden">
-                      <PlayerCard p={item as Player} />
+                      {isCoach ? (
+                        <CoachCard c={item as unknown as typeof DEMO_COACHES[0]} />
+                      ) : (
+                        <PlayerCard p={item as Player} />
+                      )}
                     </div>
                   )}
                 </div>

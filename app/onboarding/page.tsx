@@ -8,6 +8,12 @@ import { Slider } from "@/components/ui/slider";
 import { cities } from "@/data";
 import { useSession } from "@/lib/auth/client";
 import { updateProfile, getProfile } from "@/lib/api";
+import { logger } from "@/lib/logger";
+
+logger.info("Onboarding", "Onboarding page loaded", {
+  userAgent: navigator.userAgent,
+  timestamp: new Date().toISOString(),
+});
 
 const LEVEL_LABELS: Record<number, string> = {
   2.5: "Beginner",
@@ -190,10 +196,13 @@ export default function OnboardingPage() {
     if (isPending || loaded) return;
 
     const prefill = async () => {
+      logger.info("Onboarding", "Prefilling profile data", { session: !!session, isPending });
       if (session) {
         const prefillName = session.user?.name || "";
         try {
+          logger.debug("Onboarding", "Fetching profile from API");
           const existing = await getProfile();
+          logger.info("Onboarding", "Profile fetched", { existing });
           if (existing && existing.name) {
             setProfile((prev) => ({
               ...prev,
@@ -212,8 +221,8 @@ export default function OnboardingPage() {
             setLoaded(true);
             return;
           }
-        } catch {
-          // No profile exists yet
+        } catch (err) {
+          logger.warn("Onboarding", "Failed to fetch profile, using localStorage", { error: err });
         }
 
         const localData = getLocalOnboardingData();
@@ -245,8 +254,10 @@ export default function OnboardingPage() {
   const handleSave = async () => {
     setError(null);
     setSaving(true);
+    logger.info("Onboarding", "Saving profile", { profile });
     try {
       if (session) {
+        logger.debug("Onboarding", "Updating profile via API");
         await updateProfile({
           name: profile.name,
           city: profile.city,
@@ -258,14 +269,17 @@ export default function OnboardingPage() {
           preferredCities: profile.preferredCities,
           photoUrl: profile.photoUrl,
         });
+        logger.info("Onboarding", "Profile saved successfully");
         localStorage.removeItem(ONBOARDING_DATA_KEY);
         localStorage.setItem(ONBOARDING_COMPLETED_KEY, "true");
       } else {
+        logger.info("Onboarding", "Saving to localStorage (not authenticated)");
         saveLocalOnboardingData(profile);
       }
       router.push("/");
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to save profile. Please try again.";
+      logger.error("Onboarding", "Failed to save profile", { error: err, message });
       setError(message);
     } finally {
       setSaving(false);
@@ -325,13 +339,13 @@ export default function OnboardingPage() {
           </div>
 
           <h1 className="text-5xl font-black text-white mb-3 tracking-tight leading-tight">
-            Tennis<br />
-            <span className="text-lime-400">Connect</span>
+            Vibe<br />
+            <span className="text-lime-400">Up</span>
           </h1>
           <p className="text-orange-400 text-lg font-bold tracking-widest uppercase mb-8">Pakistan</p>
 
           <p className="text-white/60 text-lg leading-relaxed max-w-sm mb-12">
-            Find players, book courts, and grow the tennis community in your city.
+            Find players, book courts, and vibe! 🎾
           </p>
 
           <button

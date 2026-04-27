@@ -1,25 +1,37 @@
+"use client";
+
+import { logger } from "./logger";
+
 const API_BASE = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
+logger.info("API", `API initialized with base: ${API_BASE}`);
+logger.info("API", `Environment: ${process.env.NODE_ENV}`);
+logger.info("API", `App URL: ${process.env.NEXT_PUBLIC_APP_URL || "localhost:3000"}`);
+
 async function fetchWithAuth(url: string, options?: RequestInit) {
-  const res = await fetch(url, {
-    ...options,
-    credentials: "include",
-  });
-  
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ error: "Request failed" }));
-    throw new Error(error.error || "Request failed");
+  logger.debug("API", `Fetching: ${url}`, { options });
+  try {
+    const res = await fetch(url, {
+      ...options,
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ error: `HTTP ${res.status}: Request failed` }));
+      logger.error("API", `Request failed: ${url}`, { status: res.status, error });
+      throw new Error(error.error || "Request failed");
+    }
+
+    logger.info("API", `Success: ${url}`);
+    return res.json();
+  } catch (err) {
+    logger.error("API", `Exception: ${url}`, { error: err instanceof Error ? err.message : err });
+    throw err;
   }
-  
-  return res.json();
 }
 
-export async function getCourts(city?: string, featured?: boolean) {
-  const params = new URLSearchParams();
-  if (city && city !== "All") params.set("city", city);
-  if (featured) params.set("featured", "true");
-  
-  const res = await fetch(`${API_BASE}/api/courts?${params}`, {
+export async function getCourts(queryString?: string) {
+  const res = await fetch(`${API_BASE}/api/courts${queryString || ""}`, {
     credentials: "include",
   });
   return res.json();

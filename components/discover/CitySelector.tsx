@@ -10,13 +10,15 @@ const OPTIONS: { label: string; value: CityFilter }[] = [
   { label: "Islamabad", value: "Islamabad" },
   { label: "Rawalpindi", value: "Rawalpindi" },
   { label: "Faisalabad", value: "Faisalabad" },
+  { label: "Multan", value: "Multan" },
+  { label: "Peshawar", value: "Peshawar" },
 ];
 
 export function CitySelector() {
   const { selectedCity, setSelectedCity } = useAppStore();
 
   return (
-    <div className="flex gap-2 overflow-x-auto no-scrollbar px-4 py-2">
+    <div className="flex gap-2 overflow-x-auto no-scrollbar px-4 py-2 w-full max-w-lg">
       {OPTIONS.map(({ label, value }) => {
         const active = selectedCity === value;
         return (

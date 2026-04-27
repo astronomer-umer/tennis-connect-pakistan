@@ -7,7 +7,9 @@ import { cities } from "@/data";
 interface Court {
   id: string;
   name: string;
+  area: string;
   city: string;
+  sport_type: string;
   surface: string;
   surfaces: string;
   price_per_hour: number;
@@ -15,10 +17,14 @@ interface Court {
   distance: string;
   total_courts: number;
   amenities: string;
+  court_type: string;
   is_open: number;
   open_time: string;
   close_time: string;
   featured: number;
+  phone: string;
+  whatsapp: string;
+  location_url: string;
 }
 
 export default function AdminCourts() {

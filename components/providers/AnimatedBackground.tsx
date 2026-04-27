@@ -1,12 +1,27 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { TennisBallWithRacket } from "./TennisIcons";
 
 export function AnimatedBackground({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="relative h-dvh overflow-hidden bg-[#0a1628]">
+        <div className="relative z-10 h-full">{children}</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="relative min-h-dvh overflow-hidden">
+    <div className="relative h-dvh overflow-hidden">
       {/* Dark background */}
-      <div className="absolute inset-0 bg-[#0a1628]">
+      <div className="absolute inset-0 bg-[#0a1628] overflow-hidden">
 
         {/* Animated fluid spotlights */}
         <div className="absolute inset-0">

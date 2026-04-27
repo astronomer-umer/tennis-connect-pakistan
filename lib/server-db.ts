@@ -54,7 +54,9 @@ async function initializeTables() {
     CREATE TABLE IF NOT EXISTS courts (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
+      area TEXT,
       city TEXT NOT NULL,
+      sport_type TEXT NOT NULL DEFAULT 'tennis',
       surface TEXT NOT NULL,
       surfaces TEXT,
       price_per_hour INTEGER NOT NULL,
@@ -62,10 +64,14 @@ async function initializeTables() {
       distance TEXT,
       total_courts INTEGER DEFAULT 1,
       amenities TEXT DEFAULT '[]',
+      court_type TEXT DEFAULT 'public',
       is_open INTEGER DEFAULT 1,
       open_time TEXT,
       close_time TEXT,
       featured INTEGER DEFAULT 0,
+      phone TEXT,
+      whatsapp TEXT,
+      location_url TEXT,
       created_at INTEGER
     );
 
@@ -120,6 +126,28 @@ async function initializeTables() {
       message TEXT,
       created_at INTEGER
     );
+
+    CREATE TABLE IF NOT EXISTS password_resets (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      token TEXT UNIQUE NOT NULL,
+      expires_at INTEGER NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS reports (
+      id TEXT PRIMARY KEY,
+      reporter_id TEXT NOT NULL,
+      reported_user_id TEXT NOT NULL,
+      reason TEXT NOT NULL,
+      created_at INTEGER
+    );
+
+    CREATE TABLE IF NOT EXISTS blocks (
+      id TEXT PRIMARY KEY,
+      blocker_id TEXT NOT NULL,
+      blocked_id TEXT NOT NULL,
+      created_at INTEGER
+    );
   `);
 
   // Seed courts if empty (for in-memory fallback or fresh DB)
@@ -134,39 +162,89 @@ async function initializeTables() {
 }
 
 async function seedCourts(db: Client) {
-  const courts = [
-    // Lahore
-    { id: "court-1", name: "Lahore Gymkhana Tennis Courts", city: "Lahore", surface: "Hard", surfaces: "Hard,Clay", price: 2500, photo: "https://picsum.photos/seed/lhr-gymkhana/600/400", distance: "2.3 km", totalCourts: 4, amenities: '["Floodlights","Pro Shop","Changing Rooms"]', featured: 1, open: "06:00", close: "22:00" },
-    { id: "court-2", name: "Punjab Club Tennis Complex", city: "Lahore", surface: "Clay", surfaces: "Clay", price: 2000, photo: "https://picsum.photos/seed/lhr-punjab/600/400", distance: "5.1 km", totalCourts: 3, amenities: '["Floodlights","Coaching"]', featured: 0, open: "07:00", close: "21:00" },
-    { id: "court-3", name: "Defence Raya Tennis Club", city: "Lahore", surface: "Grass", surfaces: "Grass,Hard", price: 3500, photo: "https://picsum.photos/seed/lhr-raya/600/400", distance: "8.2 km", totalCourts: 5, amenities: '["Floodlights","Pro Shop","Swimming Pool","Cafe"]', featured: 1, open: "06:00", close: "22:00" },
-    { id: "court-4", name: "LCCA Tennis Academy", city: "Lahore", surface: "Hard", surfaces: "Hard", price: 1800, photo: "https://picsum.photos/seed/lhr-lcca/600/400", distance: "3.5 km", totalCourts: 2, amenities: '["Coaching","Floodlights"]', featured: 0, open: "07:00", close: "20:00" },
-    { id: "court-5", name: "Model Town Club Courts", city: "Lahore", surface: "Hard", surfaces: "Hard,Clay", price: 2200, photo: "https://picsum.photos/seed/lhr-model/600/400", distance: "6.0 km", totalCourts: 3, amenities: '["Floodlights","Changing Rooms","Parking"]', featured: 0, open: "06:00", close: "21:00" },
-    // Karachi
-    { id: "court-6", name: "Karachi Gymkhana Tennis Courts", city: "Karachi", surface: "Hard", surfaces: "Hard,Clay", price: 2800, photo: "https://picsum.photos/seed/khi-gymkhana/600/400", distance: "1.5 km", totalCourts: 6, amenities: '["Floodlights","Pro Shop","Coaching","Cafe"]', featured: 1, open: "06:00", close: "22:00" },
-    { id: "court-7", name: "Creek Club Tennis Complex", city: "Karachi", surface: "Hard", surfaces: "Hard", price: 3000, photo: "https://picsum.photos/seed/khi-creek/600/400", distance: "4.2 km", totalCourts: 4, amenities: '["Floodlights","Gym","Swimming Pool"]', featured: 1, open: "06:00", close: "23:00" },
-    { id: "court-8", name: "Sindh Sports Board Courts", city: "Karachi", surface: "Hard", surfaces: "Hard", price: 1500, photo: "https://picsum.photos/seed/khi-ssb/600/400", distance: "3.7 km", totalCourts: 2, amenities: '["Floodlights"]', featured: 0, open: "08:00", close: "20:00" },
-    { id: "court-9", name: "DHA Tennis Club Karachi", city: "Karachi", surface: "Clay", surfaces: "Clay,Hard", price: 2500, photo: "https://picsum.photos/seed/khi-dha/600/400", distance: "7.0 km", totalCourts: 3, amenities: '["Floodlights","Coaching","Changing Rooms"]', featured: 0, open: "06:00", close: "21:00" },
-    // Islamabad
-    { id: "court-10", name: "Islamabad Tennis Complex", city: "Islamabad", surface: "Hard", surfaces: "Hard,Grass", price: 3000, photo: "https://picsum.photos/seed/isb-itc/600/400", distance: "1.8 km", totalCourts: 6, amenities: '["Floodlights","Pro Shop","Gym","Cafe"]', featured: 1, open: "06:00", close: "22:00" },
-    { id: "court-11", name: "Islamabad Club Tennis Courts", city: "Islamabad", surface: "Clay", surfaces: "Clay,Hard", price: 2800, photo: "https://picsum.photos/seed/isb-club/600/400", distance: "3.2 km", totalCourts: 4, amenities: '["Floodlights","Coaching","Pro Shop"]', featured: 1, open: "06:00", close: "21:00" },
-    { id: "court-12", name: "F-6 Markaz Sports Complex", city: "Islamabad", surface: "Hard", surfaces: "Hard", price: 1800, photo: "https://picsum.photos/seed/isb-f6/600/400", distance: "2.5 km", totalCourts: 2, amenities: '["Floodlights","Parking"]', featured: 0, open: "07:00", close: "20:00" },
-    // Rawalpindi
-    { id: "court-13", name: "Rawalpindi Club Tennis Courts", city: "Rawalpindi", surface: "Hard", surfaces: "Hard,Clay", price: 2000, photo: "https://picsum.photos/seed/rwp-club/600/400", distance: "2.0 km", totalCourts: 3, amenities: '["Floodlights","Coaching","Changing Rooms"]', featured: 1, open: "06:00", close: "21:00" },
-    { id: "court-14", name: "Ayub Park Tennis Facility", city: "Rawalpindi", surface: "Hard", surfaces: "Hard", price: 1200, photo: "https://picsum.photos/seed/rwp-ayub/600/400", distance: "5.0 km", totalCourts: 2, amenities: '["Parking","Floodlights"]', featured: 0, open: "07:00", close: "19:00" },
-    { id: "court-15", name: "Punjab Tennis Academy Rawalpindi", city: "Rawalpindi", surface: "Clay", surfaces: "Clay", price: 1600, photo: "https://picsum.photos/seed/rwp-pta/600/400", distance: "4.3 km", totalCourts: 2, amenities: '["Coaching","Floodlights"]', featured: 0, open: "06:00", close: "20:00" },
-    // Faisalabad
-    { id: "court-16", name: "Faisalabad Gymkhana Tennis Courts", city: "Faisalabad", surface: "Hard", surfaces: "Hard", price: 1500, photo: "https://picsum.photos/seed/fsd-gymkhana/600/400", distance: "1.5 km", totalCourts: 3, amenities: '["Floodlights","Coaching"]', featured: 1, open: "06:00", close: "21:00" },
-    { id: "court-17", name: "Chenab Club Tennis Complex", city: "Faisalabad", surface: "Hard", surfaces: "Hard,Clay", price: 1800, photo: "https://picsum.photos/seed/fsd-chenab/600/400", distance: "3.8 km", totalCourts: 2, amenities: '["Floodlights","Changing Rooms","Parking"]', featured: 0, open: "07:00", close: "20:00" },
-    { id: "court-18", name: "Lyallpur Tennis Academy", city: "Faisalabad", surface: "Clay", surfaces: "Clay", price: 1200, photo: "https://picsum.photos/seed/fsd-lyallpur/600/400", distance: "5.5 km", totalCourts: 2, amenities: '["Coaching"]', featured: 0, open: "07:00", close: "19:00" },
-  ];
+  const now = Date.now();
+  
+  const tennisCourts = {
+    // Lahore Tennis
+    "lhr-tennis-1": { name: "Lahore Gymkhana Club", area: "Mall Road", city: "Lahore", sport: "tennis", surface: "Hard", price: 2500, total: 4, type: "private", amenities: "Floodlights,Pro Shop,Changing Rooms", featured: 1, open: "06:00", close: "22:00" },
+    "lhr-tennis-2": { name: "Punjab Lawn Tennis Association (PLTA)", area: "Bagh-e-Jinnah", city: "Lahore", sport: "tennis", surface: "Clay", price: 1500, total: 3, type: "public", amenities: "Floodlights,Coaching", featured: 1, open: "07:00", close: "21:00" },
+    "lhr-tennis-3": { name: "DHA Sports Complex", area: "DHA Phase 5", city: "Lahore", sport: "tennis", surface: "Hard", price: 2800, total: 4, type: "semi-private", amenities: "Floodlights,Gym,Parking", featured: 1, open: "06:00", close: "22:00" },
+    "lhr-tennis-4": { name: "Lahore Garrison Club", area: "Cantt", city: "Lahore", sport: "tennis", surface: "Hard", price: 3000, total: 3, type: "private", amenities: "Floodlights,Changing Rooms,Cafe", featured: 0, open: "06:00", close: "21:00" },
+    "lhr-tennis-5": { name: "Model Town Club", area: "Model Town", city: "Lahore", sport: "tennis", surface: "Hard", price: 2200, total: 2, type: "private", amenities: "Floodlights,Parking", featured: 0, open: "06:00", close: "21:00" },
+    "lhr-tennis-6": { name: "Valencia Town Sports Complex", area: "Valencia", city: "Lahore", sport: "tennis", surface: "Hard", price: 1800, total: 2, type: "semi-private", amenities: "Floodlights,Parking", featured: 0, open: "07:00", close: "20:00" },
+    "lhr-tennis-7": { name: "Samanabad Sports Arena", area: "Samanabad", city: "Lahore", sport: "tennis", surface: "Hard", price: 1200, total: 2, type: "public", amenities: "Floodlights", featured: 0, open: "07:00", close: "19:00" },
+    "lhr-tennis-8": { name: "Jallo Park Tennis Courts", area: "Jallo", city: "Lahore", sport: "tennis", surface: "Hard", price: 800, total: 2, type: "public", amenities: "Parking", featured: 0, open: "07:00", close: "18:00" },
+    "lhr-tennis-9": { name: "University of Lahore Courts", area: "UOL", city: "Lahore", sport: "tennis", surface: "Hard", price: 1500, total: 3, type: "semi-private", amenities: "Floodlights,Changing Rooms", featured: 0, open: "06:00", close: "20:00" },
+    "lhr-tennis-10": { name: "Packages Mall Club Courts", area: "Gulberg", city: "Lahore", sport: "tennis", surface: "Hard", price: 2500, total: 2, type: "private", amenities: "Floodlights,Parking,Cafe", featured: 0, open: "06:00", close: "21:00" },
+    // Karachi Tennis
+    "khi-tennis-1": { name: "Karachi Gymkhana", area: "Saddar", city: "Karachi", sport: "tennis", surface: "Hard", price: 3000, total: 4, type: "private", amenities: "Floodlights,Pro Shop,Cafe", featured: 1, open: "06:00", close: "22:00" },
+    "khi-tennis-2": { name: "Sindh Tennis Association Complex", area: "Clifton", city: "Karachi", sport: "tennis", surface: "Hard", price: 1800, total: 3, type: "public", amenities: "Floodlights,Coaching", featured: 1, open: "07:00", close: "21:00" },
+    "khi-tennis-3": { name: "KMC Sports Complex", area: "Kashmir Road", city: "Karachi", sport: "tennis", surface: "Hard", price: 1200, total: 2, type: "public", amenities: "Floodlights", featured: 0, open: "08:00", close: "20:00" },
+    "khi-tennis-4": { name: "DA Creek Club", area: "Defence", city: "Karachi", sport: "tennis", surface: "Hard", price: 3500, total: 4, type: "private", amenities: "Floodlights,Gym,Swimming Pool,Cafe", featured: 1, open: "06:00", close: "23:00" },
+    "khi-tennis-5": { name: "Arabian Sea Country Club", area: "Gadap", city: "Karachi", sport: "tennis", surface: "Hard", price: 2800, total: 3, type: "private", amenities: "Floodlights,Parking,Cafe", featured: 0, open: "06:00", close: "21:00" },
+    "khi-tennis-6": { name: "Modern Club", area: "PECHS", city: "Karachi", sport: "tennis", surface: "Clay", price: 2200, total: 2, type: "private", amenities: "Floodlights,Changing Rooms", featured: 0, open: "06:00", close: "21:00" },
+    "khi-tennis-7": { name: "Hill Park Sports Complex", area: "PECHS", city: "Karachi", sport: "tennis", surface: "Hard", price: 1000, total: 2, type: "public", amenities: "Parking", featured: 0, open: "08:00", close: "20:00" },
+    "khi-tennis-8": { name: "Karachi Club", area: "Civil Lines", city: "Karachi", sport: "tennis", surface: "Hard", price: 2500, total: 3, type: "private", amenities: "Floodlights,Changing Rooms", featured: 0, open: "06:00", close: "21:00" },
+    "khi-tennis-9": { name: "KDA Sports Complex", area: "KDA", city: "Karachi", sport: "tennis", surface: "Hard", price: 1500, total: 2, type: "public", amenities: "Floodlights", featured: 0, open: "08:00", close: "20:00" },
+    "khi-tennis-10": { name: "Navy Sports Complex", area: "Karsaz", city: "Karachi", sport: "tennis", surface: "Hard", price: 1800, total: 3, type: "restricted", amenities: "Floodlights,Gym", featured: 0, open: "06:00", close: "20:00" },
+    // Islamabad Tennis
+    "isb-tennis-1": { name: "Islamabad Club", area: "Sector F-6", city: "Islamabad", sport: "tennis", surface: "Hard", price: 3500, total: 4, type: "private", amenities: "Floodlights,Pro Shop,Gym,Cafe", featured: 1, open: "06:00", close: "22:00" },
+    "isb-tennis-2": { name: "PST Tennis Complex", area: "Islamabad", city: "Islamabad", sport: "tennis", surface: "Hard", price: 1800, total: 4, type: "public", amenities: "Floodlights,Coaching", featured: 1, open: "07:00", close: "21:00" },
+    "isb-tennis-3": { name: "DHA Islamabad Sports Complex", area: "DHA", city: "Islamabad", sport: "tennis", surface: "Hard", price: 2800, total: 3, type: "private", amenities: "Floodlights,Gym,Parking", featured: 1, open: "06:00", close: "22:00" },
+    "isb-tennis-4": { name: "Naval Complex Islamabad", area: "E-8", city: "Islamabad", sport: "tennis", surface: "Hard", price: 2000, total: 2, type: "restricted", amenities: "Floodlights", featured: 0, open: "06:00", close: "20:00" },
+    "isb-tennis-5": { name: "Bahria Sports Complex", area: "Bahria Town", city: "Islamabad", sport: "tennis", surface: "Hard", price: 2200, total: 3, type: "private", amenities: "Floodlights,Parking,Gym", featured: 0, open: "06:00", close: "21:00" },
+    "isb-tennis-6": { name: "Margalla Sports Complex", area: "Islamabad", city: "Islamabad", sport: "tennis", surface: "Hard", price: 1200, total: 2, type: "public", amenities: "Floodlights,Parking", featured: 0, open: "07:00", close: "20:00" },
+    "isb-tennis-7": { name: "F-9 Park Tennis Courts", area: "F-9", city: "Islamabad", sport: "tennis", surface: "Hard", price: 800, total: 2, type: "public", amenities: "Parking", featured: 0, open: "07:00", close: "19:00" },
+    "isb-tennis-8": { name: "Islamabad Tennis Academy", area: "Islamabad", city: "Islamabad", sport: "tennis", surface: "Clay", price: 2000, total: 3, type: "semi-private", amenities: "Floodlights,Coaching", featured: 0, open: "06:00", close: "21:00" },
+    "isb-tennis-9": { name: "Army Sports Complex", area: "Rawalpindi", city: "Islamabad", sport: "tennis", surface: "Hard", price: 1800, total: 3, type: "restricted", amenities: "Floodlights,Gym", featured: 0, open: "06:00", close: "20:00" },
+    "isb-tennis-10": { name: "G-5 Sports Complex", area: "G-5", city: "Islamabad", sport: "tennis", surface: "Hard", price: 1000, total: 2, type: "public", amenities: "Floodlights", featured: 0, open: "07:00", close: "20:00" },
+  };
 
-  for (const c of courts) {
+  const padelCourts = {
+    // Lahore Padel
+    "lhr-padel-1": { name: "Padel Cafe Lahore", area: "DHA Phase 6", city: "Lahore", sport: "padel", surface: "Artificial Grass", price: 4500, total: 2, type: "private", amenities: "Cafe,Parking,AC", featured: 1, open: "10:00", close: "23:00" },
+    "lhr-padel-2": { name: "Club Padel Lahore", area: "DHA / Goldcrest", city: "Lahore", sport: "padel", surface: "Artificial Grass", price: 5000, total: 2, type: "private", amenities: "Cafe,Pro Shop,AC", featured: 1, open: "10:00", close: "23:00" },
+    "lhr-padel-3": { name: "The Courts", area: "Gulberg", city: "Lahore", sport: "padel", surface: "Artificial Grass", price: 6000, total: 2, type: "premium", amenities: "Cafe,Gym,Pro Shop,AC", featured: 1, open: "10:00", close: "23:00" },
+    "lhr-padel-4": { name: "Padel Park Lahore", area: "DHA", city: "Lahore", sport: "padel", surface: "Artificial Grass", price: 4000, total: 2, type: "private", amenities: "Parking,Cafe", featured: 0, open: "12:00", close: "22:00" },
+    "lhr-padel-5": { name: "The Padel Club", area: "DHA", city: "Lahore", sport: "padel", surface: "Artificial Grass", price: 4500, total: 2, type: "private", amenities: "Cafe,AC", featured: 0, open: "10:00", close: "23:00" },
+    "lhr-padel-6": { name: "Padel Arena (K21)", area: "Model Town", city: "Lahore", sport: "padel", surface: "Artificial Grass", price: 3500, total: 1, type: "semi-private", amenities: "Parking", featured: 0, open: "12:00", close: "22:00" },
+    "lhr-padel-7": { name: "Padel Zone (JumpZone)", area: "Gulberg", city: "Lahore", sport: "padel", surface: "Artificial Grass", price: 3000, total: 1, type: "commercial", amenities: "Arcade,Food Court", featured: 0, open: "12:00", close: "23:00" },
+    "lhr-padel-8": { name: "Padel Plus", area: "EME", city: "Lahore", sport: "padel", surface: "Artificial Grass", price: 4000, total: 2, type: "private", amenities: "Parking,Cafe", featured: 0, open: "10:00", close: "22:00" },
+    "lhr-padel-9": { name: "Padel Land", area: "Johar Town", city: "Lahore", sport: "padel", surface: "Artificial Grass", price: 3500, total: 2, type: "private", amenities: "Parking", featured: 0, open: "12:00", close: "22:00" },
+    "lhr-padel-10": { name: "DHA Raya Padel Courts", area: "DHA Raya", city: "Lahore", sport: "padel", surface: "Artificial Grass", price: 4500, total: 2, type: "private", amenities: "Cafe,AC", featured: 0, open: "10:00", close: "23:00" },
+    // Karachi Padel
+    "khi-padel-1": { name: "Padel Factory Karachi", area: "DHA", city: "Karachi", sport: "padel", surface: "Artificial Grass", price: 6000, total: 2, type: "premium", amenities: "Cafe,Gym,Pro Shop,AC", featured: 1, open: "10:00", close: "23:00" },
+    "khi-padel-2": { name: "Vamos Padel Club", area: "Clifton", city: "Karachi", sport: "padel", surface: "Artificial Grass", price: 5000, total: 2, type: "private", amenities: "Cafe,AC", featured: 1, open: "10:00", close: "23:00" },
+    "khi-padel-3": { name: "Champions Club Padel", area: "Karachi", city: "Karachi", sport: "padel", surface: "Artificial Grass", price: 4500, total: 2, type: "private", amenities: "Cafe,Parking", featured: 0, open: "12:00", close: "22:00" },
+    "khi-padel-4": { name: "House of Padel", area: "Karachi", city: "Karachi", sport: "padel", surface: "Artificial Grass", price: 4000, total: 2, type: "private", amenities: "Cafe", featured: 0, open: "10:00", close: "22:00" },
+    "khi-padel-5": { name: "Matchbox Padel", area: "Karachi", city: "Karachi", sport: "padel", surface: "Artificial Grass", price: 3500, total: 1, type: "private", amenities: "Arcade", featured: 0, open: "12:00", close: "22:00" },
+    "khi-padel-6": { name: "Sport On Padel", area: "Karachi", city: "Karachi", sport: "padel", surface: "Artificial Grass", price: 3000, total: 1, type: "commercial", amenities: "Food Court", featured: 0, open: "12:00", close: "23:00" },
+    "khi-padel-7": { name: "Clifton Courtyard Padel", area: "Clifton", city: "Karachi", sport: "padel", surface: "Artificial Grass", price: 4500, total: 2, type: "private", amenities: "Cafe,AC", featured: 0, open: "10:00", close: "22:00" },
+    "khi-padel-8": { name: "Smash X Padel (KDA)", area: "KDA", city: "Karachi", sport: "padel", surface: "Artificial Grass", price: 5500, total: 2, type: "premium", amenities: "Pro Shop,Cafe,AC", featured: 1, open: "10:00", close: "23:00" },
+    "khi-padel-9": { name: "Smash X Padel (Gulshan)", area: "Gulshan", city: "Karachi", sport: "padel", surface: "Artificial Grass", price: 5000, total: 2, type: "premium", amenities: "Cafe,AC", featured: 0, open: "10:00", close: "22:00" },
+    "khi-padel-10": { name: "Karachi Padel Complex", area: "Karachi", city: "Karachi", sport: "padel", surface: "Artificial Grass", price: 3500, total: 3, type: "semi-private", amenities: "Parking,Cafe", featured: 0, open: "10:00", close: "22:00" },
+    // Islamabad Padel
+    "isb-padel-1": { name: "Legends Arena Padel", area: "Islamabad", city: "Islamabad", sport: "padel", surface: "Artificial Grass", price: 6000, total: 2, type: "premium", amenities: "Cafe,Gym,AC", featured: 1, open: "10:00", close: "23:00" },
+    "isb-padel-2": { name: "Shamsi Padel Academy", area: "Islamabad", city: "Islamabad", sport: "padel", surface: "Artificial Grass", price: 5500, total: 2, type: "premium", amenities: "Coaching,Cafe,AC", featured: 1, open: "10:00", close: "22:00" },
+    "isb-padel-3": { name: "Padel Club Islamabad", area: "Islamabad", city: "Islamabad", sport: "padel", surface: "Artificial Grass", price: 4500, total: 2, type: "private", amenities: "Cafe,AC", featured: 0, open: "10:00", close: "23:00" },
+    "isb-padel-4": { name: "DHA Islamabad Padel Courts", area: "DHA", city: "Islamabad", sport: "padel", surface: "Artificial Grass", price: 5000, total: 2, type: "private", amenities: "Cafe,Parking,AC", featured: 1, open: "10:00", close: "23:00" },
+    "isb-padel-5": { name: "Bahria Town Padel Courts", area: "Bahria", city: "Islamabad", sport: "padel", surface: "Artificial Grass", price: 4000, total: 2, type: "private", amenities: "Cafe,Parking", featured: 0, open: "12:00", close: "22:00" },
+    "isb-padel-6": { name: "Sports Complex Padel Courts", area: "Islamabad", city: "Islamabad", sport: "padel", surface: "Artificial Grass", price: 3000, total: 2, type: "public", amenities: "Parking", featured: 0, open: "12:00", close: "21:00" },
+    "isb-padel-7": { name: "Embassy Club Padel Courts", area: "Islamabad", city: "Islamabad", sport: "padel", surface: "Artificial Grass", price: 5500, total: 1, type: "restricted", amenities: "Cafe,AC", featured: 0, open: "10:00", close: "21:00" },
+    "isb-padel-8": { name: "Park View Padel Courts", area: "Islamabad", city: "Islamabad", sport: "padel", surface: "Artificial Grass", price: 3500, total: 2, type: "private", amenities: "Parking,Cafe", featured: 0, open: "12:00", close: "22:00" },
+    "isb-padel-9": { name: "Capital Padel Club", area: "Islamabad", city: "Islamabad", sport: "padel", surface: "Artificial Grass", price: 4500, total: 2, type: "private", amenities: "Cafe,AC", featured: 0, open: "10:00", close: "22:00" },
+    "isb-padel-10": { name: "Twin City Padel Courts", area: "Islamabad/Rawalpindi", city: "Islamabad", sport: "padel", surface: "Artificial Grass", price: 3500, total: 2, type: "semi-private", amenities: "Parking", featured: 0, open: "10:00", close: "22:00" },
+  };
+
+  const allCourts = { ...tennisCourts, ...padelCourts };
+
+  for (const [id, c] of Object.entries(allCourts)) {
     await db.execute({
-      sql: `INSERT INTO courts (id, name, city, surface, surfaces, price_per_hour, photo, distance, total_courts, amenities, featured, open_time, close_time, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      args: [c.id, c.name, c.city, c.surface, c.surfaces, c.price, c.photo, c.distance, c.totalCourts, c.amenities, c.featured, c.open, c.close, Date.now()],
+      sql: `INSERT INTO courts (id, name, area, city, sport_type, surface, surfaces, price_per_hour, photo, distance, total_courts, amenities, court_type, is_open, open_time, close_time, featured, phone, whatsapp, location_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [id, c.name, c.area, c.city, c.sport, c.surface, c.surface, c.price, `https://picsum.photos/seed/${id}/600/400`, "0 km", c.total, `[${c.amenities.split(",").map(a => `"${a.trim()}"`).join(",")}]`, c.type, 1, c.open, c.close, c.featured, "", "", "", now],
     });
   }
-  console.log(`Seeded ${courts.length} courts`);
+  console.log(`Seeded ${Object.keys(allCourts).length} courts (${Object.keys(tennisCourts).length} tennis, ${Object.keys(padelCourts).length} padel)`);
 }
 
 export async function runQuery<T = Record<string, unknown>>(
@@ -186,4 +264,26 @@ export async function runStatement(
   await initializeTables();
   const db = getClient();
   await db.execute({ sql, args: params });
+}
+
+export async function sendPushNotification(title: string, body: string, icon?: string) {
+  if (typeof window === "undefined") return;
+  
+  if (!("Notification" in window)) {
+    console.log("Notifications not supported");
+    return;
+  }
+  
+  if (Notification.permission === "granted") {
+    new Notification(title, {
+      body,
+      icon: icon || "/icons/icon-192.svg",
+      badge: "/icons/icon-192.svg",
+    });
+  } else if (Notification.permission !== "denied") {
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      new Notification(title, { body, icon: icon || "/icons/icon-192.svg" });
+    }
+  }
 }

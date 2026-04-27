@@ -99,8 +99,8 @@ export default function LoginPage() {
         <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-lime-500 to-lime-600 flex items-center justify-center mb-6 lime-glow">
           <TennisRacketLogo size={48} className="text-black" />
         </div>
-        <h1 className="text-3xl font-black text-foreground mb-2">Welcome Back!</h1>
-        <p className="text-muted-foreground text-lg">Sign in to continue</p>
+        <h1 className="text-3xl font-black text-foreground mb-2">Welcome back!</h1>
+        <p className="text-muted-foreground text-lg">Let's get you back in the game</p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex-1 px-6 space-y-5">

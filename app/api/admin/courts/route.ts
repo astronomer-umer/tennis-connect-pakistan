@@ -6,7 +6,7 @@ export async function GET() {
   const guard = await adminGuard();
   if (guard) return guard;
   
-  const courts = await runQuery("SELECT * FROM courts ORDER BY featured DESC, name ASC");
+  const courts = await runQuery("SELECT * FROM courts ORDER BY featured DESC, city ASC, name ASC");
   return NextResponse.json(courts);
 }
 
@@ -15,14 +15,14 @@ export async function POST(request: Request) {
   if (guard) return guard;
   
   const body = await request.json();
-  const { name, city, surface, surfaces, pricePerHour, photo, distance, totalCourts, amenities, isOpen, openTime, closeTime, featured } = body;
+  const { name, area, city, sportType, surface, surfaces, pricePerHour, photo, distance, totalCourts, amenities, courtType, isOpen, openTime, closeTime, featured, phone, whatsapp, locationUrl } = body;
   
-  const id = `court-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  const id = `${city?.toLowerCase() || "court"}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   
   await runStatement(
-    `INSERT INTO courts (id, name, city, surface, surfaces, price_per_hour, photo, distance, total_courts, amenities, is_open, open_time, close_time, featured, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [id, name, city, surface, surfaces || surface, pricePerHour, photo || "", distance || "0 km", totalCourts || 1, amenities || "", isOpen ? 1 : 0, openTime || "06:00", closeTime || "22:00", featured ? 1 : 0, Date.now()]
+    `INSERT INTO courts (id, name, area, city, sport_type, surface, surfaces, price_per_hour, photo, distance, total_courts, amenities, court_type, is_open, open_time, close_time, featured, phone, whatsapp, location_url, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [id, name, area || "", city, sportType || "tennis", surface, surfaces || surface, pricePerHour, photo || "", distance || "0 km", totalCourts || 1, amenities || "[]", courtType || "public", isOpen ? 1 : 0, openTime || "06:00", closeTime || "22:00", featured ? 1 : 0, phone || "", whatsapp || "", locationUrl || "", Date.now()]
   );
 
   return NextResponse.json({ success: true, id });
@@ -33,11 +33,11 @@ export async function PUT(request: Request) {
   if (guard) return guard;
   
   const body = await request.json();
-  const { id, name, city, surface, surfaces, pricePerHour, photo, distance, totalCourts, amenities, isOpen, openTime, closeTime, featured } = body;
+  const { id, name, area, city, sportType, surface, surfaces, pricePerHour, photo, distance, totalCourts, amenities, courtType, isOpen, openTime, closeTime, featured, phone, whatsapp, locationUrl } = body;
   
   await runStatement(
-    `UPDATE courts SET name = ?, city = ?, surface = ?, surfaces = ?, price_per_hour = ?, photo = ?, distance = ?, total_courts = ?, amenities = ?, is_open = ?, open_time = ?, close_time = ?, featured = ? WHERE id = ?`,
-    [name, city, surface, surfaces || surface, pricePerHour, photo || "", distance || "0 km", totalCourts || 1, amenities || "", isOpen ? 1 : 0, openTime || "06:00", closeTime || "22:00", featured ? 1 : 0, id]
+    `UPDATE courts SET name = ?, area = ?, city = ?, sport_type = ?, surface = ?, surfaces = ?, price_per_hour = ?, photo = ?, distance = ?, total_courts = ?, amenities = ?, court_type = ?, is_open = ?, open_time = ?, close_time = ?, featured = ?, phone = ?, whatsapp = ?, location_url = ? WHERE id = ?`,
+    [name, area || "", city, sportType || "tennis", surface, surfaces || surface, pricePerHour, photo || "", distance || "0 km", totalCourts || 1, amenities || "[]", courtType || "public", isOpen ? 1 : 0, openTime || "06:00", closeTime || "22:00", featured ? 1 : 0, phone || "", whatsapp || "", locationUrl || "", id]
   );
 
   return NextResponse.json({ success: true });

@@ -23,6 +23,13 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      redirectURI: `${process.env.NEXT_PUBLIC_APP_URL || "https://tennis-connect-pakistan.vercel.app"}/api/auth/callback/google`,
+    },
+  },
   trustedOrigins: [
     "http://localhost:3000",
     process.env.NEXT_PUBLIC_APP_URL || "https://tennis-connect-pakistan.vercel.app",

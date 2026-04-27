@@ -81,7 +81,7 @@ export function BookingModal({ court, onClose }: BookingModalProps) {
     const msg = encodeURIComponent(
       `Assalam o Alaikum! I'd like to confirm my booking at ${court.name} on ${selectedDate ? format(selectedDate, "dd MMM") : ""} at ${selectedTime}. Payment via ${payment}. Shukria! 🎾`
     );
-    window.open(`https://wa.me/+923001234567?text=${msg}`, "_blank");
+    window.open(`https://wa.me/923392211838?text=${msg}`, "_blank");
   };
 
   return (

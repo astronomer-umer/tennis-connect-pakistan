@@ -1,7 +1,7 @@
 // Tennis Connect Pakistan — Service Worker
-// Network-first strategy with offline fallback
+// Network-first strategy with offline fallback + Push Notifications
 
-const CACHE_VERSION = "tcp-v4";
+const CACHE_VERSION = "tcp-v5";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
@@ -39,6 +39,46 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+// ── Push Notifications ─────────────────────────────────────────────────────
+
+self.addEventListener("push", (event) => {
+  if (!event.data) return;
+
+  const data = event.data.json();
+  const title = data.title || "Vibe Up";
+  const options = {
+    body: data.body || "New notification",
+    icon: data.icon || "/icons/icon-192.svg",
+    badge: "/icons/icon-192.svg",
+    vibrate: [200, 100, 200],
+    data: { url: data.url || "/" },
+    actions: [
+      { action: "open", title: "Open" },
+      { action: "dismiss", title: "Dismiss" },
+    ],
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  if (event.action === "dismiss") return;
+
+  const url = event.notification.data?.url || "/";
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url === url && "focus" in client) {
+          return client.focus();
+        }
+      }
+      return clients.openWindow(url);
+    })
+  );
+});
+
 // ── Fetch ─────────────────────────────────────────────────────────────────────
 
 self.addEventListener("fetch", (event) => {
@@ -53,7 +93,8 @@ self.addEventListener("fetch", (event) => {
   if (
     url.hostname === "picsum.photos" ||
     url.hostname === "randomuser.me" ||
-    url.hostname === "images.unsplash.com"
+    url.hostname === "images.unsplash.com" ||
+    url.hostname === "api.dicebear.com"
   ) {
     event.respondWith(cacheFirst(request, IMAGE_CACHE));
     return;
@@ -66,7 +107,7 @@ self.addEventListener("fetch", (event) => {
   }
 });
 
-// ── Strategies ────────────────────────────────────────────────────────────────
+// ── Strategies ────���───────────────────────────────────────────────────────────
 
 async function cacheFirst(request, cacheName) {
   const cached = await caches.match(request);

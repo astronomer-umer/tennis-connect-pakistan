@@ -1,10 +1,14 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { format } from "date-fns";
 import { MessageCircle, Zap } from "lucide-react";
 import { useAppStore, type Match } from "@/store/useAppStore";
 import { ChatModal } from "@/components/matches/ChatModal";
+
+const ONBOARDING_COMPLETED_KEY = "onboarding_completed";
 
 function MatchCard({ match, onClick }: { match: Match; onClick: () => void }) {
   const lastMsg = match.messages[match.messages.length - 1];
@@ -64,8 +68,16 @@ function MatchCard({ match, onClick }: { match: Match; onClick: () => void }) {
 }
 
 export default function MatchesPage() {
+  const router = useRouter();
   const { matches, activeChatMatchId, setActiveChatMatchId } = useAppStore();
   const activeMatch = matches.find((m) => m.id === activeChatMatchId);
+
+  useEffect(() => {
+    const completed = localStorage.getItem(ONBOARDING_COMPLETED_KEY);
+    if (!completed) {
+      router.replace("/onboarding");
+    }
+  }, [router]);
 
   return (
     <div className="flex flex-col min-h-dvh bg-background pb-tab">

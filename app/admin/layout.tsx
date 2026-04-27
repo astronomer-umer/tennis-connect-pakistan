@@ -24,7 +24,7 @@ export default async function AdminLayout({
         <aside className="w-64 bg-gray-800 min-h-screen p-4">
           <div className="mb-8">
             <h1 className="text-xl font-bold text-brand">🎾 Admin Panel</h1>
-            <p className="text-xs text-gray-400">Tennis Connect Pakistan</p>
+            <p className="text-xs text-gray-400">Vibe Up</p>
           </div>
           
           <nav className="space-y-2">

@@ -278,7 +278,7 @@ export default function DocsPage() {
                 <div className="text-4xl animate-bounce">🎾</div>
                 <div>
                   <h1 className="text-2xl font-black bg-gradient-to-r from-green-400 to-orange-400 bg-clip-text text-transparent">
-                    Tennis Connect Pakistan
+                    Vibe Up
                   </h1>
                   <p className="text-xs text-gray-400">Complete Documentation & Demo</p>
                 </div>
@@ -327,7 +327,7 @@ export default function DocsPage() {
               </div>
               <h2 className="text-6xl font-black mb-6">
                 <span className="bg-gradient-to-r from-green-400 via-white to-orange-400 bg-clip-text text-transparent">
-                  Tennis Connect Pakistan
+                  Vibe Up
                 </span>
               </h2>
               <p className="text-xl text-gray-400 max-w-3xl mx-auto">
@@ -729,7 +729,7 @@ export default function DocsPage() {
 
           <footer className="text-center py-12 border-t border-white/10">
             <div className="text-6xl mb-4">🎾</div>
-            <h2 className="text-3xl font-black mb-2">Tennis Connect Pakistan</h2>
+            <h2 className="text-3xl font-black mb-2">Vibe Up</h2>
             <p className="text-gray-400 mb-6">Growing the tennis community, one match at a time.</p>
             <div className="flex justify-center gap-4">
               <Link href="/" className="px-6 py-3 bg-green-500 text-black font-bold rounded-xl hover:bg-green-400 transition-colors">
