@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Privacy Policy | Vibe Up",
-  description: "Privacy Policy for Vibe Up",
+  title: "Privacy Policy | PlayPlan",
+  description: "Privacy Policy for PlayPlan",
 };
 
 export default function PrivacyPolicy() {

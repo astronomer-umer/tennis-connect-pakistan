@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://tennis-connect-pakistan.vercel.app/sitemap.xml",
+    sitemap: "https://playplan.vercel.app/sitemap.xml",
   };
 }

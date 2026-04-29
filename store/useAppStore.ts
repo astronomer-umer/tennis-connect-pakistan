@@ -173,7 +173,7 @@ export const useAppStore = create<AppStore>()(
         set((s) => ({ userProfile: { ...s.userProfile, ...partial } })),
     }),
     {
-      name: "lezzplay-app-store",
+      name: "playplan-app-store",
       partialize: (s) => ({
         selectedCity: s.selectedCity,
         swipedRightIds: s.swipedRightIds,

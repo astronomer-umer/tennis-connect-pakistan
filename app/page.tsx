@@ -29,7 +29,7 @@ export default function DiscoverPage() {
           </div>
           <div>
             <h1 className="text-foreground font-bold text-xl leading-none">
-              Vibe Up
+              PlayPlan
             </h1>
             <p className="text-orange-500 text-xs font-bold tracking-widest uppercase">
               Pakistan

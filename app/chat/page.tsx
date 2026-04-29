@@ -93,7 +93,7 @@ export default function ChatWithUsPage() {
             <TennisRacketLogo size={36} className="text-black" />
           </div>
           <div>
-            <h1 className="text-2xl font-black text-foreground">Vibe Up HQ</h1>
+            <h1 className="text-2xl font-black text-foreground">PlayPlan HQ</h1>
             <p className="text-muted-foreground text-sm">Holler at us! 🎾</p>
           </div>
         </div>

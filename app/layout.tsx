@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
+import { GoogleAnalytics } from "@/components/providers/GoogleAnalytics";
 import "./globals.css";
 import { BottomTabBar } from "@/components/layout/BottomTabBar";
 import { ServiceWorkerRegistrar } from "@/components/layout/ServiceWorkerRegistrar";
@@ -22,18 +23,18 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://lezzplay.pk"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://playplan.vercel.app"),
   title: {
-    default: "Vibe Up | Find Tennis Players & Courts",
-    template: "%s | Vibe Up",
+    default: "PlayPlan | Find Tennis Players & Courts",
+    template: "%s | PlayPlan",
   },
   description:
-    "Pakistan's tennis app. Find players, book courts, and vibe! Swipe to connect with players in your city.",
-  applicationName: "Vibe Up",
+    "Pakistan's tennis & padel app. Swipe. Match. Play. Find players, book courts!",
+  applicationName: "PlayPlan",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "TCP",
+    title: "PlayPlan",
     startupImage: [
       {
         url: "/icons/icon-512.svg",
@@ -44,6 +45,7 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false },
   keywords: [
     "tennis",
+    "padel",
     "pakistan",
     "courts",
     "players",
@@ -52,35 +54,36 @@ export const metadata: Metadata = {
     "karachi",
     "islamabad",
     "tennis app",
+    "padel app",
     "book court",
     "find tennis partner",
     "sports networking",
   ],
-  authors: [{ name: "Vibe Up" }],
-  creator: "Vibe Up",
-  publisher: "Vibe Up",
+  authors: [{ name: "CLARITI" }],
+  creator: "CLARITI",
+  publisher: "CLARITI",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "/",
-    siteName: "Vibe Up",
-    title: "Vibe Up | Find Tennis Players & Courts",
-    description: "Pakistan's tennis app. Find players, book courts, and vibe!",
+    siteName: "PlayPlan",
+    title: "PlayPlan | Swipe. Match. Play.",
+    description: "Pakistan's tennis & padel app. Find players, book courts!",
     images: [
       {
         url: "/icons/icon-512.svg",
         width: 512,
         height: 512,
-        alt: "Vibe Up",
+        alt: "PlayPlan",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Vibe Up",
-    description: "Pakistan's tennis app. Find players, book courts, and vibe!",
+    title: "PlayPlan",
+    description: "Pakistan's tennis & padel app. Swipe. Match. Play.",
     images: ["/icons/icon-512.svg"],
-    creator: "@lezzplay_pk",
+    creator: "@clariti_pk",
   },
   robots: {
     index: true,
@@ -113,6 +116,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geist.variable} antialiased overflow-x-hidden overscroll-none`}>
+        <GoogleAnalytics />
         <ServiceWorkerRegistrar />
         <AnimatedBackground>
           <SoundProvider>

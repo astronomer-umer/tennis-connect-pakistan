@@ -9,7 +9,7 @@ test.describe("Onboarding Flow", () => {
   test("new user should be redirected to onboarding", async ({ page }) => {
     await page.goto("/");
     await page.waitForURL("**/onboarding");
-    await expect(page.locator("text=Vibe Up")).toBeVisible();
+    await expect(page.locator("text=PlayPlan")).toBeVisible();
   });
 
   test("onboarding welcome screen shows get started button", async ({ page }) => {

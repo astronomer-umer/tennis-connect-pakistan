@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Vibe Up | Pakistan",
-    short_name: "Vibe Up",
+    name: "PlayPlan | Pakistan",
+    short_name: "PlayPlan",
     description: "Find tennis players & book courts in Pakistan. Let's play!",
     start_url: "/",
     scope: "/",

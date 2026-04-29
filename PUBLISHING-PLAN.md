@@ -1,10 +1,10 @@
-# Vibe Up - Publishing Plan
+# PlayPlan - Publishing Plan
 
-> Launch strategy for **Vibe Up** - Pakistan's premier sports networking app.
+> Launch strategy for **PlayPlan** - Pakistan's premier sports networking app.
 
 ## App Overview
 
-**Vibe Up** (formerly "Tennis Connect Pakistan" / "Play Slay")
+**PlayPlan** (formerly "Tennis Connect Pakistan" / "Play Slay")
 - **Mission:** Connect tennis players across Pakistan, book courts seamlessly
 - **Target:** Players aged 16-45 in Lahore, Karachi, Islamabad, Rawalpindi, Faisalabad, Multan, Peshawar
 - **Price:** Free (with premium features future)
@@ -14,7 +14,7 @@
 ## 🚀 Launch Timeline
 
 ### Phase 1: Soft Launch (Week 1-2)
-- [ ] Deploy to Vercel ✅ (https://tennis-connect-pakistan.vercel.app)
+- [ ] Deploy to Vercel ✅ (https://playplan.vercel.app)
 - [ ] Share with tennis clubs in Lahore & Karachi
 - [ ] Gather feedback from 50-100 initial users
 - [ ] Fix bugs, optimize UX
@@ -42,7 +42,7 @@
 
 ### Google Play Store
 
-**Title:** Vibe Up - Find Players & Courts
+**Title:** PlayPlan - Find Players & Courts
 
 **Short Description (80 chars):**
 ```
@@ -51,7 +51,7 @@ Pakistan's sports app. Find players & book courts. 🎾
 
 **Full Description (4000 chars):**
 ```
-Vibe Up - The Ultimate Sports Networking App in Pakistan 🇵🇰🎾
+PlayPlan - The Ultimate Sports Networking App in Pakistan 🇵🇰🎾
 
 FIND PLAYERS
 • Discover tennis players in Lahore, Karachi, Islamabad & more
@@ -81,7 +81,7 @@ FEATURES:
 ✓ Booking notifications
 ✓ Works offline
 
-Download Vibe Up and join Pakistan's fastest-growing sports community!
+Download PlayPlan and join Pakistan's fastest-growing sports community!
 
 Rate: Free
 Size: ~2MB
@@ -95,7 +95,7 @@ Size: ~2MB
 
 ### Apple App Store
 
-**Title:** Vibe Up
+**Title:** PlayPlan
 
 **Subtitle:** Find Players & Courts
 
@@ -109,7 +109,7 @@ Size: ~2MB
 
 ### Microsoft Store
 
-**App Name:** Vibe Up
+**App Name:** PlayPlan
 
 **Description:** Find players & book courts in Pakistan.
 
@@ -150,7 +150,7 @@ Size: ~2MB
 - **Content:** Trendy tennis dating content, duets with popular creators
 
 ### Facebook
-- **Group:** Vibe Up Pakistan Tennis Community
+- **Group:** PlayPlan Pakistan Tennis Community
 - **Event:** Launch day giveaway
 
 ### WhatsApp Channel
@@ -191,9 +191,11 @@ Size: ~2MB
 
 ## 🔗 Links
 
-- **Live App:** https://tennis-connect-pakistan.vercel.app
-- **Docs:** https://tennis-connect-pakistan.vercel.app/docs
-- **Admin:** https://tennis-connect-pakistan.vercel.app/admin-login
+- **Live App:** https://playplan.vercel.app
+
+- **Docs:** https://playplan.vercel.app/docs
+
+- **Admin:** https://playplan.vercel.app/admin-login
 - **Repo:** https://github.com/astronomer-umer/tennis-connect-pakistan
 
 ---
@@ -201,7 +203,7 @@ Size: ~2MB
 ## 📅 Action Items
 
 1. [x] Build & deploy app ✅
-2. [x] Change name to "Vibe Up" ✅
+2. [x] Change name to "PlayPlan" ✅
 3. [ ] Create app icons (1024x1024)
 4. [ ] Create screenshots for stores
 5. [ ] Set up Google Play Console account

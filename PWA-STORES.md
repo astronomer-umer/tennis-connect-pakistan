@@ -1,6 +1,6 @@
 # 📱 PWA Store Publishing Guide
 
-This guide explains how to publish Tennis Connect Pakistan as a PWA to all major app stores.
+This guide explains how to publish PlayPlan as a PWA to all major app stores.
 
 ## 🎯 What is a PWA?
 
@@ -29,7 +29,7 @@ Open [pwabuilder.com](https://www.pwabuilder.com) in your browser.
 ### Step 2: Enter Your URL
 Input your deployed PWA URL:
 ```
-https://tennis-connect-pakistan.vercel.app
+https://playplan.vercel.app
 ```
 
 ### Step 3: Generate Store Packages
@@ -62,7 +62,7 @@ Download each platform's package and submit to respective stores.
 
 ### Store Listing
 ```
-Name: Tennis Connect Pakistan
+Name: PlayPlan
 Tagline: Find tennis players & book courts in Pakistan
 Category: Sports > Other Sports
 Age Rating: 3+
@@ -93,7 +93,7 @@ Languages: English
 
 ### Store Listing
 ```
-Title: Tennis Connect Pakistan
+Title: PlayPlan
 Short Description: Pakistan's tennis networking app
 Full Description: [Use README.md template]
 Category: Sports > Racquet Sports
@@ -136,9 +136,9 @@ Price: Free
 
 ### Store Listing
 ```
-Name: Tennis Connect Pakistan
+Name: PlayPlan
 Subtitle: Find Players, Book Courts
-URL: https://tennis-connect-pakistan.vercel.app
+URL: https://playplan.vercel.app
 Category: Sports
 Subcategory: Racquet Sports
 Content Rating: 4+
@@ -167,7 +167,7 @@ Since it's a PWA, you can distribute without stores:
 ### Option 1: Install Link
 Add to your website:
 ```html
-<a href="https://tennis-connect-pakistan.vercel.app">
+<a href="https://playplan.vercel.app">
   Install Tennis Connect
 </a>
 ```

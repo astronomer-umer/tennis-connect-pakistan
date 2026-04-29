@@ -1,4 +1,4 @@
-# Tennis Connect Pakistan 🎾
+# PlayPlan 🎾
 
 > Pakistan's premier tennis networking PWA. Find players, book courts, and grow the tennis community.
 
@@ -12,11 +12,11 @@
 </p>
 
 <p align="center">
-  <a href="https://tennis-connect-pakistan.vercel.app">🌐 Live App</a>
+  <a href="https://playplan.vercel.app">🌐 Live App</a>
   •
-  <a href="https://tennis-connect-pakistan.vercel.app/docs">📖 Docs</a>
+  <a href="https://playplan.vercel.app/docs">📖 Docs</a>
   •
-  <a href="https://tennis-connect-pakistan.vercel.app/admin-login">🛡️ Admin</a>
+  <a href="https://playplan.vercel.app/admin-login">🛡️ Admin</a>
 </p>
 
 ---
@@ -62,7 +62,7 @@ You can publish the PWA directly to all stores using [PWABuilder](https://www.pw
 
 ```bash
 # 1. Go to pwabuilder.com
-# 2. Enter: https://tennis-connect-pakistan.vercel.app
+# 2. Enter: https://playplan.vercel.app
 # 3. Download packages for each store
 # 4. Submit to respective stores
 ```
@@ -76,7 +76,7 @@ You can publish the PWA directly to all stores using [PWABuilder](https://www.pw
 5. Submit to [Microsoft Partner Center](https://partner.microsoft.com)
 
 **Store Details:**
-- Name: **Tennis Connect Pakistan**
+- Name: **PlayPlan**
 - Category: Sports
 - Age Rating: 3+
 - Price: Free
@@ -171,7 +171,7 @@ Pakistan's #1 tennis app. Find players & book courts instantly. 🎾
 ### Long Description (4000 chars)
 
 ```
-Tennis Connect Pakistan - The Ultimate Tennis Networking App 🇵🇰🎾
+PlayPlan - The Ultimate Tennis Networking App 🇵🇰🎾
 
 SWIPE & MATCH
 • Discover tennis players in Lahore, Karachi, Islamabad, Rawalpindi & Faisalabad
@@ -216,7 +216,7 @@ Perfect for:
 • Competitive players wanting tournament practice
 • Anyone wanting to grow their tennis network
 
-Download Tennis Connect Pakistan and join Pakistan's fastest-growing tennis community!
+Download PlayPlan and join Pakistan's fastest-growing tennis community!
 
 Rate: Free
 Size: ~2MB

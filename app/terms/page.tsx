@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Terms of Service | Vibe Up",
-  description: "Terms of Service for Vibe Up",
+  title: "Terms of Service | PlayPlan",
+  description: "Terms of Service for PlayPlan",
 };
 
 export default function TermsOfService() {
@@ -16,14 +16,14 @@ export default function TermsOfService() {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-2">1. Acceptance of Terms</h2>
             <p className="text-sm">
-              By accessing and using Vibe Up, you accept and agree to be bound by the terms and provision of this agreement.
+              By accessing and using PlayPlan, you accept and agree to be bound by the terms and provision of this agreement.
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-2">2. Use License</h2>
             <p className="text-sm">
-              Permission is granted to temporarily use Vibe Up for personal, non-commercial use only. This is the grant of a license, not a transfer of title.
+              Permission is granted to temporarily use PlayPlan for personal, non-commercial use only. This is the grant of a license, not a transfer of title.
             </p>
           </section>
 
@@ -47,7 +47,7 @@ export default function TermsOfService() {
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-2">5. Limitation of Liability</h2>
             <p className="text-sm">
-              Vibe Up shall not be liable for any indirect, incidental, or consequential damages arising out of your use of the app.
+              PlayPlan shall not be liable for any indirect, incidental, or consequential damages arising out of your use of the app.
             </p>
           </section>
 

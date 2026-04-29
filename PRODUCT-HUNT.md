@@ -3,14 +3,14 @@
 ## Pre-Launch Checklist
 
 ### ✅ App Status
-- [x] Live at https://tennis-connect-pakistan.vercel.app
+- [x] Live at https://playplan.vercel.app
 - [x] PWA-ready with manifest
 - [x] Service worker configured
 - [x] Offline support enabled
 - [x] App icons generated
 
 ### ✅ Branding
-- [x] App name: Tennis Connect Pakistan
+- [x] App name: PlayPlan
 - [x] Tagline ready
 - [x] App icon: public/icons/icon-512.svg
 - [x] Screenshots captured
@@ -30,7 +30,7 @@
 
 ### Basic Info
 ```
-Product Name: Tennis Connect Pakistan
+Product Name: PlayPlan
 Tagline: Find tennis players & book courts in Pakistan 🇵🇰🎾
 ```
 
@@ -51,7 +51,7 @@ Pakistan's #1 tennis app. Swipe to match players & book courts.
 
 ## 📝 280-Character Pitch
 ```
-Tennis Connect Pakistan - The 🇵🇰 tennis networking app. 
+PlayPlan - The 🇵🇰 tennis networking app. 
 
 Swipe to match players, book courts with JazzCash/EasyPaisa, track your NTRP rating. 
 
@@ -61,7 +61,7 @@ Built as a PWA that works offline. 🎾
 ## 📄 Full Description (Markdown)
 
 ```markdown
-# Tennis Connect Pakistan 🎾
+# PlayPlan 🎾
 
 Pakistan's premier tennis networking PWA.
 
@@ -93,7 +93,7 @@ Next.js • React • Tailwind CSS • Turso • better-auth
 
 ---
 
-🌐 https://tennis-connect-pakistan.vercel.app
+🌐 https://playplan.vercel.app
 ```
 
 ---
@@ -176,7 +176,7 @@ Week 4: Review feedback
 ```
 🎉 WE'RE LIVE! 🎉
 
-Tennis Connect Pakistan is now on @ProductHunt!
+PlayPlan is now on @ProductHunt!
 
 Find tennis players, book courts, and grow your game.
 
@@ -216,7 +216,7 @@ Please upvote! 🙏 #indiegame #startup
 
 ### Twitter Thread
 ```
-🧵 1/ Today we're launching Tennis Connect Pakistan on @ProductHunt!
+🧵 1/ Today we're launching PlayPlan on @ProductHunt!
 
 A PWA I built to help 🇵🇰 tennis players find partners and book courts.
 
@@ -229,7 +229,7 @@ Why? Because finding tennis partners in Pakistan is HARD.
 - WhatsApp is the only way to find games
 
 3/ The Solution:
-Tennis Connect Pakistan 🎾
+PlayPlan 🎾
 
 Swipe-based player matching ✅
 Court booking with JazzCash ✅
@@ -249,7 +249,7 @@ Thank you! 🎾
 
 ### LinkedIn Post
 ```
-🚀 Just launched Tennis Connect Pakistan on Product Hunt!
+🚀 Just launched PlayPlan on Product Hunt!
 
 I've been playing tennis in Pakistan for years, and one thing I've noticed? Finding tennis partners is incredibly hard.
 
@@ -272,7 +272,7 @@ title: [Launch] I built an app to help tennis players in Pakistan find partners 
 
 Hey r/tennis! 🎾
 
-I just launched Tennis Connect Pakistan on Product Hunt.
+I just launched PlayPlan on Product Hunt.
 
 As a tennis player in Pakistan, I noticed that finding partners is really hard - most people use WhatsApp groups which are chaotic.
 
@@ -312,9 +312,9 @@ Would love your feedback! And if you know anyone in Pakistan who plays tennis, p
 ## 📞 Links
 
 - **Product Hunt**: https://www.producthunt.com/posts/tennis-connect-pakistan
-- **Live App**: https://tennis-connect-pakistan.vercel.app
-- **Admin**: https://tennis-connect-pakistan.vercel.app/admin-login
-- **Docs**: https://tennis-connect-pakistan.vercel.app/docs
+- **Live App**: https://playplan.vercel.app
+- **Admin**: https://playplan.vercel.app/admin-login
+- **Docs**: https://playplan.vercel.app/docs
 - **GitHub**: https://github.com/your-username/tennis-connect-pakistan
 - **PWA Store Guide**: https://github.com/your-username/tennis-connect-pakistan/blob/main/PWA-STORES.md
 

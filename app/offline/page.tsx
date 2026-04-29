@@ -51,7 +51,7 @@ export default function OfflinePage() {
         Try Reconnecting
       </button>
 
-      <p className="text-zinc-700 text-xs">Vibe Up · خوش آمدید</p>
+      <p className="text-zinc-700 text-xs">PlayPlan · خوش آمدید</p>
     </div>
   );
 }

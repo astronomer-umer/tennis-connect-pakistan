@@ -339,13 +339,13 @@ export default function OnboardingPage() {
           </div>
 
           <h1 className="text-5xl font-black text-white mb-3 tracking-tight leading-tight">
-            Vibe<br />
-            <span className="text-lime-400">Up</span>
+            Play<br />
+            <span className="text-lime-400">Plan</span>
           </h1>
           <p className="text-orange-400 text-lg font-bold tracking-widest uppercase mb-8">Pakistan</p>
 
           <p className="text-white/60 text-lg leading-relaxed max-w-sm mb-12">
-            Find players, book courts, and vibe! 🎾
+            Swipe. Match. Play. 🎾
           </p>
 
           <button
