@@ -2,11 +2,12 @@
 
 import { logger } from "./logger";
 
-const API_BASE = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+// Always use relative URLs so API calls go to the same origin (localhost in dev, vercel in prod)
+// Never hardcode the base URL — that causes CORS errors when dev hits prod APIs
+const API_BASE = "";
 
-logger.info("API", `API initialized with base: ${API_BASE}`);
+logger.info("API", `API initialized with base: ${process.env.NEXT_PUBLIC_APP_URL || "relative"}`);
 logger.info("API", `Environment: ${process.env.NODE_ENV}`);
-logger.info("API", `App URL: ${process.env.NEXT_PUBLIC_APP_URL || "localhost:3000"}`);
 
 async function fetchWithAuth(url: string, options?: RequestInit) {
   logger.debug("API", `Fetching: ${url}`, { options });
