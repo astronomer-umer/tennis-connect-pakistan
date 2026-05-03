@@ -10,11 +10,9 @@ interface SwipeRow {
   swiped_at: number;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   const session = await auth.api.getSession({
-    headers: {
-      cookie: headers().get("cookie") || "",
-    },
+    headers: request.headers,
   });
 
   if (!session?.user) {
@@ -69,8 +67,4 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ success: true });
-}
-
-function headers() {
-  return new Headers();
 }

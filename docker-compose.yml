@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: tennis-connect-pakistan
+    container_name: playplan
     ports:
       - "3000:3000"
     environment:

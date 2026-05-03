@@ -1,7 +1,7 @@
-// Tennis Connect Pakistan — Service Worker
+// PlayPlan — Service Worker
 // Network-first strategy with offline fallback + Push Notifications
 
-const CACHE_VERSION = "tcp-v5";
+const CACHE_VERSION = "pp-v1";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 
@@ -45,7 +45,7 @@ self.addEventListener("push", (event) => {
   if (!event.data) return;
 
   const data = event.data.json();
-  const title = data.title || "Vibe Up";
+  const title = data.title || "PlayPlan";
   const options = {
     body: data.body || "New notification",
     icon: data.icon || "/icons/icon-192.svg",

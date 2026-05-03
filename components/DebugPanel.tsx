@@ -13,8 +13,10 @@ export function DebugPanel() {
     url?: string;
     environment?: string;
   }>({});
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     setLogs(logger.getLogs());
 
     const interval = setInterval(() => {
@@ -28,6 +30,10 @@ export function DebugPanel() {
 
     return () => clearInterval(interval);
   }, []);
+
+  if (!isMounted || process.env.NODE_ENV === "production") {
+    return null;
+  }
 
   const refreshLogs = () => {
     setLogs(logger.getLogs());
